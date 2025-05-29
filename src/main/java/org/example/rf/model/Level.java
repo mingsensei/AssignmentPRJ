@@ -1,34 +1,35 @@
 package org.example.rf.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "level")
 public class Level {
-    private String id;
-    private String studentId;
-    private String subjectId;
-    private int level;
-    private int currentExp;
-    private int requiredExp;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "student_id")
+    private Long studentId;
+
+    @Column(name = "chapter_id")
+    private Long chapterId;
+
+    @Column(name = "level")
+    private Integer level;
 
     public Level() {}
 
-    public Level(String id, String studentId, String subjectId, int level, int currentExp, int requiredExp) {
-        this.id = id;
-        this.studentId = studentId;
-        this.subjectId = subjectId;
-        this.level = level;
-        this.currentExp = currentExp;
-        this.requiredExp = requiredExp;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getStudentId() { return studentId; }
-    public void setStudentId(String studentId) { this.studentId = studentId; }
-    public String getSubjectId() { return subjectId; }
-    public void setSubjectId(String subjectId) { this.subjectId = subjectId; }
-    public int getLevel() { return level; }
-    public void setLevel(int level) { this.level = level; }
-    public int getCurrentExp() { return currentExp; }
-    public void setCurrentExp(int currentExp) { this.currentExp = currentExp; }
-    public int getRequiredExp() { return requiredExp; }
-    public void setRequiredExp(int requiredExp) { this.requiredExp = requiredExp; }
+    public Long getStudentId() { return studentId; }
+    public void setStudentId(Long studentId) { this.studentId = studentId; }
+
+    public Long getChapterId() { return chapterId; }
+    public void setChapterId(Long chapterId) { this.chapterId = chapterId; }
+
+    public Integer getLevel() { return level; }
+    public void setLevel(Integer level) { this.level = level; }
 }

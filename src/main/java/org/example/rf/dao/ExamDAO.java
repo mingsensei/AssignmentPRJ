@@ -1,143 +1,86 @@
 package org.example.rf.dao;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 import org.example.rf.model.Exam;
-import org.example.rf.model.Question;
-import org.example.rf.util.DBConnection;
 
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExamDAO {
 
-    // ====== SQL ======
-    private static final String SELECT_ALL = "SELECT * FROM exams";
-    private static final String SELECT_BY_ID = "SELECT * FROM exams WHERE id = ?";
-    private static final String SELECT_BY_STUDENT_ID = "SELECT * FROM exams WHERE student_id = ?";
-    private static final String INSERT = "INSERT INTO exams (id, student_id, chapter_id, score, submitted_at) VALUES (?, ?, ?, ?, ?)";
-    private static final String DELETE = "DELETE FROM exams WHERE id = ?";
-    private static final String UPDATE_SCORE = "UPDATE exams SET score = ?, submitted_at = ? WHERE id = ?";
+    private final EntityManager entityManager;
 
-    private QuestionDAO questionDAO = new QuestionDAO();
+    public ExamDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
-    // ====== LẤY TOÀN BỘ EXAM ======
-    public List<Exam> getAllExams() {
-        List<Exam> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SELECT_ALL)) {
+    // Tạo mới Exam
+    public void create(Exam exam) {
+        EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            entityManager.persist(exam);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        }
+    }
 
-            while (rs.next()) {
-                list.add(extractExam(rs));
+    // Tìm Exam theo id
+    public Exam findById(Long id) {
+        return entityManager.find(Exam.class, id);
+    }
+
+    // Cập nhật Exam
+    public void update(Exam exam) {
+        EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            entityManager.merge(exam);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        }
+    }
+
+    // Xóa Exam theo id
+    public void delete(Long id) {
+        EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            Exam exam = entityManager.find(Exam.class, id);
+            if (exam != null) {
+                entityManager.remove(exam);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
         }
-        return list;
     }
 
-    // ====== LẤY THEO ID ======
-    public Exam getExamById(String id) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID)) {
-
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return extractExam(rs);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    // Lấy danh sách tất cả Exam
+    public List<Exam> findAll() {
+        TypedQuery<Exam> query = entityManager.createQuery("SELECT e FROM Exam e", Exam.class);
+        return query.getResultList();
     }
 
-    // ====== LẤY THEO STUDENT ======
-    public List<Exam> getExamsByStudentId(String studentId) {
-        List<Exam> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_STUDENT_ID)) {
-
-            stmt.setString(1, studentId);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                list.add(extractExam(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
+    // Tìm Exam theo studentId
+    public List<Exam> findByStudentId(Long studentId) {
+        TypedQuery<Exam> query = entityManager.createQuery(
+                "SELECT e FROM Exam e WHERE e.student.id = :studentId", Exam.class);
+        query.setParameter("studentId", studentId);
+        return query.getResultList();
     }
 
-    // ====== THÊM MỚI EXAM ======
-    public boolean insertExam(Exam exam) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT)) {
-
-            stmt.setString(1, exam.getId());
-            stmt.setString(2, exam.getStudentId());
-            stmt.setString(3, exam.getChapterId()); // ✅ chapter_id
-            stmt.setInt(4, exam.getScore());
-            stmt.setTimestamp(5, Timestamp.valueOf(exam.getSubmittedAt()));
-
-            boolean inserted = stmt.executeUpdate() > 0;
-
-            if (inserted && exam.getQuestions() != null) {
-                for (Question q : exam.getQuestions()) {
-                    q.setExamId(exam.getId());
-                    questionDAO.insertQuestion(q);
-                }
-            }
-
-            return inserted;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // ====== CẬP NHẬT ĐIỂM ======
-    public boolean updateExamScoreAndTime(String examId, int score, LocalDateTime submittedAt) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UPDATE_SCORE)) {
-
-            stmt.setInt(1, score);
-            stmt.setTimestamp(2, Timestamp.valueOf(submittedAt));
-            stmt.setString(3, examId);
-
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // ====== XOÁ EXAM ======
-    public boolean deleteExam(String id) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(DELETE)) {
-
-            stmt.setString(1, id);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // ====== PARSE EXAM ======
-    private Exam extractExam(ResultSet rs) throws SQLException {
-        String id = rs.getString("id");
-        return new Exam(
-                id,
-                rs.getString("student_id"),
-                rs.getString("chapter_id"), // ✅ đổi từ subject_id sang chapter_id
-                rs.getInt("score"),
-                rs.getTimestamp("submitted_at").toLocalDateTime(),
-                new ArrayList<>(questionDAO.getQuestionsByExamId(id))
-        );
+    // Tìm Exam theo chapterId
+    public List<Exam> findByChapterId(Long chapterId) {
+        TypedQuery<Exam> query = entityManager.createQuery(
+                "SELECT e FROM Exam e WHERE e.chapter.id = :chapterId", Exam.class);
+        query.setParameter("chapterId", chapterId);
+        return query.getResultList();
     }
 }

@@ -1,60 +1,123 @@
 package org.example.rf.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "question")
 public class Question {
-    private String id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "content", columnDefinition = "NVARCHAR(MAX)")
     private String content;
+
+    @Column(name = "option_a", columnDefinition = "NVARCHAR(MAX)")
     private String optionA;
+
+    @Column(name = "option_b", columnDefinition = "NVARCHAR(MAX)")
     private String optionB;
+
+    @Column(name = "option_c", columnDefinition = "NVARCHAR(MAX)")
     private String optionC;
+
+    @Column(name = "option_d", columnDefinition = "NVARCHAR(MAX)")
     private String optionD;
+
+    @Column(name = "correct_option", length = 1)
     private String correctOption;
-    private String studentAnswer;
-    private String examId;
-    private String explain; // ✅ Thêm thuộc tính giải thích
+
+    @Column(name = "explain", columnDefinition = "NVARCHAR(MAX)")
+    private String explain;
+
+    @Column(name = "difficulty")
+    private Integer difficulty;
+
+    @ManyToOne
+    @JoinColumn(name = "chapter_id", nullable = false)
+    private Chapter chapter;
 
     public Question() {}
 
-    public Question(String id, String content, String optionA, String optionB, String optionC,
-                    String optionD, String correctOption, String studentAnswer, String examId, String explain) {
-        this.id = id;
-        this.content = content;
-        this.optionA = optionA;
-        this.optionB = optionB;
-        this.optionC = optionC;
-        this.optionD = optionD;
-        this.correctOption = correctOption;
-        this.studentAnswer = studentAnswer;
-        this.examId = examId;
-        this.explain = explain; // ✅ Khởi tạo thuộc tính mới
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public String getContent() {
+        return content;
+    }
 
-    public String getOptionA() { return optionA; }
-    public void setOptionA(String optionA) { this.optionA = optionA; }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-    public String getOptionB() { return optionB; }
-    public void setOptionB(String optionB) { this.optionB = optionB; }
+    public String getOptionA() {
+        return optionA;
+    }
 
-    public String getOptionC() { return optionC; }
-    public void setOptionC(String optionC) { this.optionC = optionC; }
+    public void setOptionA(String optionA) {
+        this.optionA = optionA;
+    }
 
-    public String getOptionD() { return optionD; }
-    public void setOptionD(String optionD) { this.optionD = optionD; }
+    public String getOptionB() {
+        return optionB;
+    }
 
-    public String getCorrectOption() { return correctOption; }
-    public void setCorrectOption(String correctOption) { this.correctOption = correctOption; }
+    public void setOptionB(String optionB) {
+        this.optionB = optionB;
+    }
 
-    public String getStudentAnswer() { return studentAnswer; }
-    public void setStudentAnswer(String studentAnswer) { this.studentAnswer = studentAnswer; }
+    public String getOptionC() {
+        return optionC;
+    }
 
-    public String getExamId() { return examId; }
-    public void setExamId(String examId) { this.examId = examId; }
+    public void setOptionC(String optionC) {
+        this.optionC = optionC;
+    }
 
-    public String getExplain() { return explain; } // ✅ Getter
-    public void setExplain(String explain) { this.explain = explain; } // ✅ Setter
+    public String getOptionD() {
+        return optionD;
+    }
+
+    public void setOptionD(String optionD) {
+        this.optionD = optionD;
+    }
+
+    public String getCorrectOption() {
+        return correctOption;
+    }
+
+    public void setCorrectOption(String correctOption) {
+        this.correctOption = correctOption;
+    }
+
+    public String getExplain() {
+        return explain;
+    }
+
+    public void setExplain(String explain) {
+        this.explain = explain;
+    }
+
+    public Integer getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Integer difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public Chapter getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(Chapter chapter) {
+        this.chapter = chapter;
+    }
 }

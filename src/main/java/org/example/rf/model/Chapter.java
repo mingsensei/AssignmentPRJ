@@ -1,26 +1,35 @@
 package org.example.rf.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "chapter")
 public class Chapter {
-    private String id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "title", length = 255)
     private String title;
-    private String subjectId;
-    private int orderIndex;
+
+    @Column(name = "course_id")
+    private Long courseId;
+
+    @Column(name = "order_index")
+    private Integer orderIndex;
 
     public Chapter() {}
 
-    public Chapter(String id, String title, String subjectId, int orderIndex) {
-        this.id = id;
-        this.title = title;
-        this.subjectId = subjectId;
-        this.orderIndex = orderIndex;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public String getSubjectId() { return subjectId; }
-    public void setSubjectId(String subjectId) { this.subjectId = subjectId; }
-    public int getOrderIndex() { return orderIndex; }
-    public void setOrderIndex(int orderIndex) { this.orderIndex = orderIndex; }
+
+    public Long getCourseId() { return courseId; }
+    public void setCourseId(Long courseId) { this.courseId = courseId; }
+
+    public Integer getOrderIndex() { return orderIndex; }
+    public void setOrderIndex(Integer orderIndex) { this.orderIndex = orderIndex; }
 }

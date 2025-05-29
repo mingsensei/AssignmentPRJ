@@ -1,60 +1,60 @@
 package org.example.rf.servlet;
-import java.io.IOException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.example.rf.dao.UserDAO;
 import org.example.rf.model.User;
+import org.example.rf.service.UserService;
 import org.example.rf.util.HashPassword;
+
+import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    private final UserService userService = new UserService();
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // ✅ Lưu trang trước vào session (nếu có)
         String referer = request.getHeader("Referer");
-        if (referer != null && !referer.contains("login")) { // Tránh lưu lại trang login
+        if (referer != null && !referer.contains("login")) {
             request.getSession().setAttribute("redirectUrl", referer);
         }
-
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByEmail(email);
-
+        User user = userService.getUserByEmail(email);
         HttpSession session = request.getSession();
-        System.out.println("Login Session ID (Before Auth): " + session.getId());
 
         if (user != null && user.getPassword().equals(HashPassword.hashPassword(password))) {
             session.setAttribute("user", user);
-            session.setMaxInactiveInterval(60 * 60); // ✅ Giữ session 1 giờ
+            session.setMaxInactiveInterval(60 * 60);
 
-            // ✅ Debug: In thông tin session
-            System.out.println("User logged in: " + user.getEmail());
-            System.out.println("Login Session ID (After Auth): " + session.getId());
-            System.out.println("Session Attributes: ");
-            session.getAttributeNames().asIterator().forEachRemaining(attr ->
-                    System.out.println(" - " + attr + ": " + session.getAttribute(attr))
-            );
+            // Thêm cookie lưu email user, tồn tại 7 ngày
+            Cookie emailCookie = new Cookie("userEmail", email);
+            emailCookie.setMaxAge(7 * 24 * 60 * 60);
+            emailCookie.setHttpOnly(true);
+            emailCookie.setPath(request.getContextPath());
+            response.addCookie(emailCookie);
 
-            // ✅ Chuyển hướng về trang trước (nếu có)
             String redirectUrl = (String) session.getAttribute("redirectUrl");
-            if (redirectUrl != null) {
+            if (redirectUrl != null && !redirectUrl.contains("register")) {
                 session.removeAttribute("redirectUrl");
                 response.sendRedirect(redirectUrl);
             } else {
-                response.sendRedirect(request.getContextPath() + "/home"); // Mặc định về home
+                response.sendRedirect(request.getContextPath() + "/home");
             }
         } else {
             request.setCharacterEncoding("UTF-8");
@@ -62,5 +62,11 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("error", "Sai email hoặc mật khẩu!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
+    }
+
+    @Override
+    public void destroy() {
+        userService.close();
+        super.destroy();
     }
 }

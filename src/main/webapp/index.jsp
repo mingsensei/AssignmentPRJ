@@ -26,7 +26,7 @@
                 <%
                     if (user != null) {
                 %>
-                <a>Xin chào, <%= user.getName()%></a>
+                <a>Xin chào, <%= user.getUserName()%></a>
                 <%
                 } else {
                 %>

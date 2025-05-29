@@ -29,7 +29,7 @@
             <div class="signup-content">
                 <div class="signup-form">
                     <h2 class="form-title">Sign Up</h2>
-                    <form method="POST" action="register" class="register-form" id="register-form">
+                    <form method="POST" action="register" class="register-form" id="register-form" onsubmit="return checkPasswords()">
                         <div class="form-group">
                             <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                             <input type="text" name="name" id="name" placeholder="Your Name" required/>
@@ -41,11 +41,14 @@
                         <div class="form-group">
                             <label for="password"><i class="zmdi zmdi-lock"></i></label>
                             <input type="password" name="password" id="password" placeholder="Password" required/>
+                            <span id="passwordError" class="error-message"></span>
                         </div>
                         <div class="form-group">
                             <label for="re_password"><i class="zmdi zmdi-lock-outline"></i></label>
                             <input type="password" name="re_password" id="re_password" placeholder="Repeat your password" required/>
+                            <span id="rePasswordError" class="error-message"></span>
                         </div>
+
                         <div class="form-group">
                             <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" required/>
                             <label for="agree-term" class="label-agree-term">
@@ -57,6 +60,36 @@
                             <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
                         </div>
                     </form>
+                    <style>
+                        .error-message {
+                            color: red;
+                            font-size: 12px;
+                            margin-top: 5px;
+                            display: none;
+                        }
+                    </style>
+
+                    <script>
+                        function checkPasswords() {
+                            const password = document.getElementById("password").value;
+                            const rePassword = document.getElementById("re_password").value;
+
+                            const rePasswordError = document.getElementById("rePasswordError");
+
+                            if (password !== rePassword) {
+                                rePasswordError.textContent = "Mật khẩu nhập lại không khớp! Vui lòng kiểm tra lại.";
+                                rePasswordError.style.display = "block";
+                                return false;
+                            }
+
+                            rePasswordError.style.display = "none";
+                            return true;
+                        }
+
+                        document.getElementById("password").addEventListener("input", checkPasswords);
+                        document.getElementById("re_password").addEventListener("input", checkPasswords);
+                    </script>
+
                 </div>
                 <div class="signup-image">
                     <figure><img src="images/signup-image.jpg" alt="sign up image"></figure>
