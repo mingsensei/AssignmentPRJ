@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300; /* phông chữ mảnh mai */
+    background: #e6f0ff;
+    color: #003366;
+    height: 90vh;
+    width: auto;
+
+}
+.container {
+   margin: 15% auto;
+    display: flex;
+    width: 80vw; /* rộng 70% màn hình */
+    max-width: 1300px;
+    min-height: 70vh; /* chiều cao cố định cho cả container */
+    background: #f9fbff; /* nền tab nhạt hơn */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(30, 144, 255, 0.25);
+    overflow: hidden;
+}
+.sidebar {
+    width: 260px;
+    background: #6ea0ff; /* màu xanh nhạt hơn so với trước */
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar h2 {
+    text-align: center;
+    padding: 30px 0;
+    margin: 0;
+    font-size: 28px;
+    border-bottom: 2px solid #1e90ff;
+    letter-spacing: 1.5px;
+}
+.sidebar button {
+    padding: 18px 30px;
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+    border-bottom: 1px solid #85a9ff;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 400;
+    transition: background 0.3s, color 0.3s;
+}
+.sidebar button:hover,
+.sidebar button.active {
+    background: #1e90ff;
+    color: white;
+}
+.content {
+    flex: 1;
+    padding: 40px 50px;
+    font-size: 14px;
+    color: #003366;
+
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.content > div.tabcontent {
+    flex: 1 1 auto; /* cho tab content chiếm hết không gian */
+    display: none;
+    overflow-y: auto;
+}
+.content > div.tabcontent.active {
+    display: block;
+}
+.content h3 {
+    margin-top: 0;
+    font-size: 28px;
+    border-bottom: 3px solid #1e90ff;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-weight: 400;
+    color:#1e90ff;
+}
+
+/* phần avatar và thông tin cá nhân */
+.profile-header {
+    width: 90%;
+    height: 75%;
+    display: flex;
+    gap: 10%;
+    justify-content:center;
+    margin-bottom: 30px;
+    background-color: #e6f0ff; /* nền nhạt bên trái */
+    padding: 20px 30px;
+    border-radius: 10px;
+}
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #1e90ff;
+    flex-shrink: 0;
+}
+.info-text {
+    flex: 1;
+    height: auto;
+    max-width: 50%;
+
+}
+.info-text p {
+    margin: 6px 0;
+    font-size: 14px;
+    font-weight: 300;
+    margin-top: 8%;
+    margin-bottom: 8%;
+}
+.info-text strong {
+    font-weight: 600;
+}
+
+/* nút chỉnh sửa */
+.edit-btn {
+    margin-top: 24px;
+    padding: 12px 26px;
+    background: #1e90ff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(30,144,255,0.3);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    align-self: flex-start;
+}
+.edit-btn:hover {
+    background: #004080;
+    box-shadow: 0 6px 14px rgba(0,64,128,0.6);
+}
+
+form label {
+    display: block;
+    margin-top: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    width: 80%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    font-size: 14px;
+    border: 1.8px solid #1e90ff;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus {
+    border-color: #004080;
+    outline: none;
+}
+form button {
+    margin-top: 28px;
+    padding: 12px 22px;
+    background: #1e90ff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+form button:hover {
+    background: #004080;
+}
+ul {
+    font-size: 14px;
+    line-height: 1.8;
+    padding-left: 20px;
+}
+
+.logout-button {
+    background-color: #1e90ff; /* xanh dương đẹp */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

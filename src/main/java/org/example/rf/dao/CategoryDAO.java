@@ -27,6 +27,14 @@ public class CategoryDAO {
             throw e;
         }
     }
+    // Lấy 4 category đầu tiên theo id tăng dần
+    public List<Category> getTop4Categories() {
+        TypedQuery<Category> query = entityManager.createQuery(
+                "SELECT c FROM Category c ORDER BY c.id ASC", Category.class
+        );
+        query.setMaxResults(4);
+        return query.getResultList();
+    }
 
     // Tìm category theo id
     public Category findById(Long id) {

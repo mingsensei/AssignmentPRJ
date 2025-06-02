@@ -17,7 +17,9 @@ public class ChapterService {
         this.em = JPAUtil.getEntityManager(); // Tạo EntityManager 1 lần
         this.chapterDAO = new ChapterDAO(em); // Tạo DAO 1 lần dùng chung
     }
-
+    public List<Chapter> getChaptersByCourseId(Long courseId) {
+        return chapterDAO.findByCourseId(courseId);
+    }
     // Tạo chương mới
     public void createChapter(Chapter chapter) {
         chapterDAO.create(chapter);

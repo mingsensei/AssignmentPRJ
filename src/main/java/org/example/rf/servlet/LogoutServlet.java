@@ -20,4 +20,10 @@ public class LogoutServlet extends HttpServlet {
         // Chuyển hướng về trang đăng nhập
         response.sendRedirect(request.getContextPath() + "/home");
     }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
+
 }

@@ -12,32 +12,9 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/header.css" />
 </head>
 <body>
-<header>
-    <nav class="navbar">
-        <div class="logo">EduPlatform</div>
-        <ul class="nav-links">
-            <li><a href="subject.jsp">Môn học</a></li>
-            <li><a href="#">Kiểm tra</a></li>
-            <li><a href="#">AI Agent</a></li>
-            <li>
-                <%
-                    User user = (User) session.getAttribute("user");
-                %>
-                <%
-                    if (user != null) {
-                %>
-                <a>Xin chào, <%= user.getUserName()%></a>
-                <%
-                } else {
-                %>
-                <a href="<%= request.getContextPath() %>/login">Đăng nhập</a>
-                <%
-                    }
-                %>
-            </li>
-        </ul>
-    </nav>
-</header>
+
+
+
 <main>
     <section class="hero">
         <div class="hero-content">
@@ -49,8 +26,6 @@
 </main>
 
 
-<footer>
-    <p>&copy; 2025 EduPlatform. All rights reserved.</p>
-</footer>
+
 </body>
 </html>

@@ -6,6 +6,7 @@ import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService {
@@ -43,10 +44,14 @@ public class CategoryService {
         return categoryDAO.findAll();
     }
 
+    public ArrayList<Category> getTop4Courses() {
+        return new ArrayList<>(categoryDAO.getTop4Categories());
+    }
     // Đóng EntityManager khi không cần nữa
     public void close() {
         if (em != null && em.isOpen()) {
             em.close();
         }
     }
+
 }

@@ -4,4 +4,11 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <include-prelude>/header.jsp</include-prelude>
+            <include-coda>/footer.jsp</include-coda>
+        </jsp-property-group>
+    </jsp-config>
 </web-app>

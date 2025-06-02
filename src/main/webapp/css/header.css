@@ -2,23 +2,26 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
 }
 
 body {
     font-family: sans-serif;
-    background-color: #f9fafb;
+    overflow-x: hidden;
 }
 
-/* NAVBAR */
+/* NAVBAR: cố định trên cùng */
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     background-color: #ffffff;
     padding: 30px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    z-index: 1000;
 }
 
 .logo {
@@ -43,17 +46,24 @@ body {
     color: #2563eb;
 }
 
-/* MAIN chiếm phần còn lại để đẩy footer xuống cuối */
+/* MAIN: phần giữa, cho phép cuộn, có padding trên dưới tránh bị navbar/footer che khuất */
 main {
     flex: 1;
+    margin-top: 100px; /* tương đương chiều cao navbar */
+    margin-bottom: 60px; /* tương đương chiều cao footer */
+    overflow-y: auto;
 }
 
-/* FOOTER */
+/* FOOTER: cố định dưới cùng */
 footer {
+    bottom: 0;
+    left: 0;
+    width: 100%;
     text-align: center;
     padding: 20px;
     background-color: #ffffff;
     border-top: 1px solid #e5e7eb;
     font-size: 0.9rem;
     color: #6b7280;
+    z-index: 1000;
 }
