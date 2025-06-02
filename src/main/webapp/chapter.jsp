@@ -1,5 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -9,7 +10,6 @@
   <title>Chi tiết khóa học - ${course.name}</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0; padding: 0;
       background-color: #f0f4fa;
       color: #333;
@@ -24,10 +24,10 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       overflow: hidden;
     }
-    .hero-image {
+    .hero img {
       flex: 1 1 400px;
-      max-width: 600px;
-      height: auto;
+      max-width: 850px;
+      max-height: 420px;
       object-fit: cover;
     }
     .hero-info {
@@ -109,7 +109,7 @@
 <body>
 
 <div class="hero">
-  <img class="hero-image" src="#" alt="${course.name}" />
+  <img src="${pageContext.request.contextPath}/images/course${course.id}.webp" alt="${course.name}">
   <div class="hero-info">
     <div>
       <div class="course-name">${course.name}</div>

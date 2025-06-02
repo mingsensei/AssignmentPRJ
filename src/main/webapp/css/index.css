@@ -5,8 +5,7 @@
 }
 
 html, body {
-
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Hero section full screen */
