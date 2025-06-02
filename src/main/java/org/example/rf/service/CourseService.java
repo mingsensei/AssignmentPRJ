@@ -1,11 +1,13 @@
 package org.example.rf.service;
 
 import org.example.rf.dao.CourseDAO;
+import org.example.rf.model.Category;
 import org.example.rf.model.Course;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseService {
@@ -43,10 +45,14 @@ public class CourseService {
         return courseDAO.findAll();
     }
 
+    public ArrayList<Course> getTop4Courses() {
+        return new ArrayList<>(courseDAO.getTop4Courses());
+    }
     // Đóng EntityManager khi không cần nữa
     public void close() {
         if (em != null && em.isOpen()) {
             em.close();
         }
     }
+
 }

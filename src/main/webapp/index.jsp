@@ -18,7 +18,7 @@
         <div class="hero-content">
             <h1>Chào mừng đến với nền tảng học tập thông minh</h1>
             <p>Khám phá tài liệu, luyện tập kiểm tra và sử dụng AI để học hiệu quả hơn!</p>
-            <a href="<%= request.getContextPath() %>/subject" class="btn-primary">Bắt đầu học</a>
+            <a href="<%= request.getContextPath() %>/courses" class="btn-primary">Bắt đầu học</a>
         </div>
     </section>
 </main>
