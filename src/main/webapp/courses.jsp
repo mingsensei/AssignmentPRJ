@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -16,7 +16,7 @@
     <div class="carousel-track" id="carouselTrack">
         <c:forEach var="course" items="${featuredCourses}">
             <div class="carousel-card">
-                <a href="chapter?courseId=${course.id}">
+                <a href="courses?courseId=${course.id}">
                     <img src="${pageContext.request.contextPath}/images/course${course.id}.webp" alt="${course.name}">
                     <div class="carousel-title">${course.name}</div>
                     <div class="carousel-description">${course.description}</div>
@@ -37,19 +37,18 @@
 
 <h2>Tất cả khoá học</h2>
 <div class="course-grid">
-    <c:forEach var="category" items="${categoryList}">
+    <c:forEach var="course" items="${courseList}">
         <div class="course-card">
-            <a href="<%= request.getContextPath() %>/chapter?courseId=${category.id}">
-                <img src="${pageContext.request.contextPath}/images/course${category.id}.webp" alt="${category.name}">
+            <a href="<%= request.getContextPath() %>/courses?courseId=${course.id}">
+                <img src="${pageContext.request.contextPath}/images/course${course.id}.webp" alt="${course.name}">
                 <div class="course-info">
-                    <div class="course-title">${category.name}</div>
-                    <div class="course-description">${category.description}</div>
+                    <div class="course-title">${course.name}</div>
+                    <div class="course-description">${course.description}</div>
                 </div>
             </a>
         </div>
     </c:forEach>
 </div>
-
 
 <!-- ===== JS SLIDER ===== -->
 <script>
@@ -83,4 +82,3 @@
 
 </body>
 </html>
-

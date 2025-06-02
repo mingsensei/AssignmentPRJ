@@ -17,48 +17,26 @@ import java.util.List;
 public class ChapterServlet extends HttpServlet {
 
     private ChapterService chapterService;
-    private CourseService courseService;
 
     @Override
     public void init() {
         chapterService = new ChapterService();
-        courseService = new CourseService();
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String courseIdParam = req.getParameter("courseId");
-        if (courseIdParam == null) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing courseId");
-            return;
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getServletPath();
+
+        if(path.equals("/chapter")) {
+            int chapterId = Integer.parseInt(request.getParameter("chapterId"));
+            request.setAttribute("chapterId", chapterId);
+            request.getRequestDispatcher("/chapter.jsp").forward(request, response);
         }
-
-        Long courseId;
-        try {
-            courseId = Long.parseLong(courseIdParam);
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid courseId");
-            return;
-        }
-
-        Course course = courseService.getCourseById(courseId);
-        if (course == null) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Course not found");
-            return;
-        }
-
-        List<Chapter> chapters = chapterService.getChaptersByCourseId(courseId);
-
-        req.setAttribute("course", course);
-        req.setAttribute("chapters", chapters);
-
-        req.getRequestDispatcher("/chapter.jsp").forward(req, resp);
     }
 
     @Override
     public void destroy() {
         chapterService.close();
-        courseService.close();
         super.destroy();
     }
 }
