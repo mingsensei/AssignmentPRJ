@@ -18,11 +18,10 @@ public class CourseServlet extends HttpServlet {
         List<Category> categoryList = categoryService.getAllCategories(); // Lấy dữ liệu từ DB
         request.setAttribute("categoryList", categoryList);
 
-        List<Category> featuredCourses = categoryService.getTop4Courses(); // Lấy 3 khoá học đầu tiên
+        List<Category> featuredCourses = categoryService.getTop4Courses(); // Lấy 4 khoá học đầu tiên
         request.setAttribute("featuredCourses", featuredCourses);
         request.getRequestDispatcher("/courses.jsp").forward(request, response);
 
-        request.getRequestDispatcher("/courses.jsp").forward(request, response);
     }
 }
 

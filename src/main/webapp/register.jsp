@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<body>
+
 <%
     String error = (String) request.getAttribute("error");
     if (error != null) {

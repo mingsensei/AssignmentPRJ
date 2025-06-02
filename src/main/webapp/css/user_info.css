@@ -1,20 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
-
 
 body {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300; /* phông chữ mảnh mai */
     background: #e6f0ff;
     color: #003366;
-    height: 90vh;
-    width: auto;
-
+    min-height: 100vh;
 }
-.container {
-   margin: 15% auto;
+
+.container12 {
+    margin: 8% auto;
     display: flex;
     width: 80vw; /* rộng 70% màn hình */
-    max-width: 1300px;
+    max-width: 1200px;
     min-height: 70vh; /* chiều cao cố định cho cả container */
     background: #f9fbff; /* nền tab nhạt hơn */
     border-radius: 10px;

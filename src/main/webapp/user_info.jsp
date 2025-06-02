@@ -1,5 +1,6 @@
-<%@ page language="java" pageEncoding="UTF-8" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 
 <%@ page import="org.example.rf.model.User" %>
 
@@ -16,7 +17,7 @@
   User user = (User) request.getAttribute("user");
 %>
 
-<div class="container">
+<div class="container12">
   <div class="sidebar">
     <h2>Trang cá nhân</h2>
     <button class="active" onclick="openTab('profile', event)">Thông tin cá nhân</button>

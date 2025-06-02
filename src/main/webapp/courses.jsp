@@ -1,11 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: macos
-  Date: 2/6/25
-  Time: 10:52
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -24,7 +17,7 @@
         <c:forEach var="course" items="${featuredCourses}">
             <div class="carousel-card">
                 <a href="chapter?courseId=${course.id}">
-                    <img src="https://via.placeholder.com/800x240/007bff/ffffff?text=${course.name}" alt="${course.name}">
+                    <img src="${pageContext.request.contextPath}/images/course${course.id}.webp" alt="${course.name}">
                     <div class="carousel-title">${course.name}</div>
                     <div class="carousel-description">${course.description}</div>
                 </a>
@@ -47,7 +40,7 @@
     <c:forEach var="category" items="${categoryList}">
         <div class="course-card">
             <a href="<%= request.getContextPath() %>/chapter?courseId=${category.id}">
-                <img src="#" alt="${category.name}">
+                <img src="${pageContext.request.contextPath}/images/course${category.id}.webp" alt="${category.name}">
                 <div class="course-info">
                     <div class="course-title">${category.name}</div>
                     <div class="course-description">${category.description}</div>
