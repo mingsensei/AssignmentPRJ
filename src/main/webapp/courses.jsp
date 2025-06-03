@@ -25,16 +25,9 @@
         </c:forEach>
     </div>
 </div>
-<div class="dots" id="carouselDots">
-    <span class="dot active"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-</div>
-
+<div class="dots" id="carouselDots"></div>
 
 <!-- ===== TẤT CẢ KHOÁ HỌC ===== -->
-
 <h2>Tất cả khoá học</h2>
 <div class="course-grid">
     <c:forEach var="category" items="${categoryList}">
@@ -50,37 +43,7 @@
     </c:forEach>
 </div>
 
-
-<!-- ===== JS SLIDER ===== -->
-<script>
-    const track = document.getElementById('carouselTrack');
-    const dots = document.querySelectorAll('.dot');
-    let index = 0;
-    const totalSlides = dots.length;
-
-    function moveToSlide(i) {
-        track.style.transform = `translateX(-${i * 100}%)`;
-        dots.forEach(dot => dot.classList.remove('active'));
-        dots[i].classList.add('active');
-    }
-
-    function autoSlide() {
-        index = (index + 1) % totalSlides;
-        moveToSlide(index);
-    }
-
-    let interval = setInterval(autoSlide, 4000); // 4 giây đổi slide
-
-    dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => {
-            index = i;
-            moveToSlide(i);
-            clearInterval(interval);
-            interval = setInterval(autoSlide, 4000);
-        });
-    });
-</script>
+<script src="<%= request.getContextPath() %>/js/carousel.js"></script>
 
 </body>
 </html>
-
