@@ -34,9 +34,8 @@ public class Question {
     @Column(name = "difficulty")
     private Integer difficulty;
 
-    @ManyToOne
-    @JoinColumn(name = "chapter_id", nullable = false)
-    private Chapter chapter;
+    @Column(name = "chapter_id", nullable = false)
+    private Long chapter;
 
     public Question() {}
 
@@ -113,11 +112,11 @@ public class Question {
         this.difficulty = difficulty;
     }
 
-    public Chapter getChapter() {
+    public Long getChapter() {
         return chapter;
     }
 
-    public void setChapter(Chapter chapter) {
+    public void setChapter(Long chapter) {
         this.chapter = chapter;
     }
 }

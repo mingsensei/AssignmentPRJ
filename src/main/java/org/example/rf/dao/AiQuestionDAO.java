@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import org.example.rf.model.AiQuestion;
+import org.example.rf.model.Question;
 
 import java.util.List;
 
@@ -65,6 +66,13 @@ public class AiQuestionDAO {
     // Lấy danh sách tất cả AI Question
     public List<AiQuestion> findAll() {
         TypedQuery<AiQuestion> query = entityManager.createQuery("SELECT a FROM AiQuestion a", AiQuestion.class);
+        return query.getResultList();
+    }
+
+    public List<AiQuestion> findByDifficulty(int difficulty) {
+        TypedQuery<AiQuestion> query = entityManager.createQuery(
+                "SELECT q FROM AiQuestion q WHERE q.difficulty = :difficulty", AiQuestion.class);
+        query.setParameter("difficulty", difficulty);
         return query.getResultList();
     }
 }

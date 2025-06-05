@@ -7,6 +7,6 @@
 <body>
 <h1>Danh sách bài học</h1>
 
-<h1><a href="<%= request.getContextPath() %>/exam/start?chapterId=${chapterId}">Kiểm tra</a></h1>
+<h1><a href="<%= request.getContextPath() %>/exam/setup?chapterId=${chapterId}">Kiểm tra</a></h1>
 </body>
 </html>

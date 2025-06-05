@@ -10,9 +10,6 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/index.css" />
 </head>
 <body>
-
-
-
 <main>
     <section class="hero">
         <div class="hero-content">

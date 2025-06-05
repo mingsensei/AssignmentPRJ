@@ -1,9 +1,13 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
 @Table(name = "material")
+@Builder
+@AllArgsConstructor
 public class Material {
 
     @Id

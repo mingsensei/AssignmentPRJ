@@ -76,4 +76,14 @@ public class QuestionDAO {
         query.setParameter("difficulty", difficulty);
         return query.getResultList();
     }
+
+    public List<Question> findAllByChapterIdAndDifficulty(Long chapterId, Integer difficulty) {
+        TypedQuery<Question> query = entityManager.createQuery(
+                "SELECT q FROM Question q WHERE q.chapter.id = :chapterId AND q.difficulty = :difficulty",
+                Question.class);
+        query.setParameter("chapterId", chapterId);
+        query.setParameter("difficulty", difficulty);
+        return query.getResultList();
+    }
+
 }

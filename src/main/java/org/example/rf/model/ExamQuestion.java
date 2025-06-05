@@ -1,39 +1,37 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
 @Table(name = "exam_question")
+@Builder
+@AllArgsConstructor
 public class ExamQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // exam_id
-    @ManyToOne
-    @JoinColumn(name = "exam_id")
-    private Exam exam;
+    @Column(name = "exam_id")
+    private Long examId;
 
-    // question_id
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @Column(name = "question_id")
+    private Long questionId;
 
-    // ai_question_id
-    @ManyToOne
-    @JoinColumn(name = "ai_question_id")
-    private AiQuestion aiQuestion;
+    @Column(name = "ai_question_id")
+    private Long aiQuestionId;
 
     @Column(name = "question_order")
-    private Integer questionOrder;
+    private int questionOrder;
 
     @Column(name = "student_answer", length = 1)
     private String studentAnswer;
 
-    public ExamQuestion() {}
+    public ExamQuestion() {
 
-    // Getters and setters
+    }
 
     public Long getId() {
         return id;
@@ -43,35 +41,35 @@ public class ExamQuestion {
         this.id = id;
     }
 
-    public Exam getExam() {
-        return exam;
+    public Long getExam() {
+        return examId;
     }
 
-    public void setExam(Exam exam) {
-        this.exam = exam;
+    public void setExam(Long examId) {
+        this.examId = examId;
     }
 
-    public Question getQuestion() {
-        return question;
+    public Long getQuestionId() {
+        return questionId;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
     }
 
-    public AiQuestion getAiQuestion() {
-        return aiQuestion;
+    public Long getAiQuestionId() {
+        return aiQuestionId;
     }
 
-    public void setAiQuestion(AiQuestion aiQuestion) {
-        this.aiQuestion = aiQuestion;
+    public void setAiQuestionId(Long aiQuestionId) {
+        this.aiQuestionId = aiQuestionId;
     }
 
-    public Integer getQuestionOrder() {
+    public int getQuestionOrder() {
         return questionOrder;
     }
 
-    public void setQuestionOrder(Integer questionOrder) {
+    public void setQuestionOrder(int questionOrder) {
         this.questionOrder = questionOrder;
     }
 

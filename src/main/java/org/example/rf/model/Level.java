@@ -17,7 +17,7 @@ public class Level {
     private Long chapterId;
 
     @Column(name = "level")
-    private Integer level;
+    private int level;
 
     public Level() {}
 

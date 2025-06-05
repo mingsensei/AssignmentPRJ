@@ -1,25 +1,26 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "exam")
+@Builder
+@AllArgsConstructor
 public class Exam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Quan hệ với bảng users (student_id)
-    @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
-    private User student;
+    @Column(name = "student_id", nullable = false)
+    private Long studentId;
 
-    // Quan hệ với bảng chapter
-    @ManyToOne
-    @JoinColumn(name = "chapter_id", nullable = false)
-    private Chapter chapter;
+    @Column(name = "chapter_id", nullable = false)
+    private Long chapterId;
 
     @Column(name = "score")
     private Integer score;
@@ -38,20 +39,20 @@ public class Exam {
         this.id = id;
     }
 
-    public User getStudent() {
-        return student;
+    public Long getStudentId() {
+        return studentId;
     }
 
-    public void setStudent(User student) {
-        this.student = student;
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
-    public Chapter getChapter() {
-        return chapter;
+    public Long getChapterId() {
+        return chapterId;
     }
 
-    public void setChapter(Chapter chapter) {
-        this.chapter = chapter;
+    public void setChapterId(Long chapterId) {
+        this.chapterId = chapterId;
     }
 
     public Integer getScore() {
