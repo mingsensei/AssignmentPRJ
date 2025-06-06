@@ -40,6 +40,7 @@ public class LoginServlet extends HttpServlet {
 
         if (user != null && user.getPassword().equals(HashPassword.hashPassword(password))) {
             session.setAttribute("user", user);
+            session.setAttribute("userId", user.getId().toString());
             session.setMaxInactiveInterval(60 * 60);
 
             // Thêm cookie lưu email user, tồn tại 7 ngày

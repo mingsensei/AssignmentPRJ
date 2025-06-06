@@ -1,17 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-         import="java.util.List, org.example.rf.model.Course, org.example.rf.model.Chapter" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html;
+charset=UTF-8" pageEncoding="UTF-8" import="java.util.List, org.example.rf.model.Course" %>
+<%@ page import="org.example.rf.model.Course" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Upload PDF Material</title>
     <style>
+        /* Giữ nguyên style cũ */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-
         .container {
             width: 600px;
             margin: 0 auto;
@@ -19,22 +19,18 @@
             padding: 20px;
             border-radius: 5px;
         }
-
         h1 {
             text-align: center;
             color: #333;
         }
-
         .form-group {
             margin-bottom: 15px;
         }
-
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-
         input[type="text"], select {
             width: 100%;
             padding: 8px;
@@ -42,11 +38,9 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-
         input[type="file"] {
             padding: 8px 0;
         }
-
         button {
             background-color: #4CAF50;
             color: white;
@@ -56,17 +50,14 @@
             cursor: pointer;
             font-size: 16px;
         }
-
         button:hover {
             background-color: #45a049;
         }
-
         .error {
             color: red;
             font-weight: bold;
             margin-bottom: 15px;
         }
-
         .success {
             color: green;
             font-weight: bold;
@@ -88,9 +79,16 @@
             <label for="courseId">Môn học:</label>
             <select id="courseId" name="courseId" required>
                 <option value="">-- Chọn môn học --</option>
-                <c:forEach var="course" items="${courses}">
-                    <option value="${course.id}">${course.name}</option>
-                </c:forEach>
+                <%
+                    List<Course> courses = (List<Course>) request.getAttribute("courses");
+                    if (courses != null) {
+                        for (Course course : courses) {
+                %>
+                <option value="<%= course.getId() %>"><%= course.getName() %></option>
+                <%
+                        }
+                    }
+                %>
             </select>
         </div>
 
@@ -112,31 +110,38 @@
     </form>
 </div>
 
-<!-- Embed all chapters into JavaScript -->
 <script>
-    const allChapters = [
-        <c:forEach var="chapter" items="${chapters}">
-        {
-            id: "${chapter.id}",
-            title: "${chapter.title}",
-            courseId: "${chapter.courseId}"
-        },
-        </c:forEach>
-    ];
-
     document.getElementById('courseId').addEventListener('change', function () {
-        const selectedCourseId = this.value;
+        const courseId = this.value;
         const chapterSelect = document.getElementById('chapterId');
 
-        chapterSelect.innerHTML = '<option value="">-- Chọn chương --</option>';
+        chapterSelect.innerHTML = '<option value="">-- Đang tải chương --</option>';
 
-        const filtered = allChapters.filter(ch => ch.courseId === selectedCourseId);
-        filtered.forEach(ch => {
-            const opt = document.createElement('option');
-            opt.value = ch.id;
-            opt.textContent = ch.title;
-            chapterSelect.appendChild(opt);
-        });
+        if (!courseId) {
+            chapterSelect.innerHTML = '<option value="">-- Chọn chương --</option>';
+            return;
+        }
+
+        fetch('<%=request.getContextPath()%>/chapters-by-course?courseId=' + encodeURIComponent(courseId))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tải chương');
+                }
+                return response.json();
+            })
+            .then(data => {
+                chapterSelect.innerHTML = '<option value="">-- Chọn chương --</option>';
+                data.forEach(chapterId => {
+                    const option = document.createElement('option');
+                    option.value = chapterId.id;
+                    option.textContent = chapterId.title;
+                    chapterSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                chapterSelect.innerHTML = '<option value="">-- Lỗi tải chương --</option>';
+                console.error(error);
+            });
     });
 </script>
 </body>

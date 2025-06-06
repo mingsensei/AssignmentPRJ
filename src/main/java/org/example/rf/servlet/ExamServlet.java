@@ -6,19 +6,23 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.rf.dto.QuestionResponse;
-import org.example.rf.service.ExamService;
-import org.example.rf.service.LevelService;
-import org.example.rf.service.QuestionService;
+import org.example.rf.model.Exam;
+import org.example.rf.model.User;
+import org.example.rf.service.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/exam/*")
 public class ExamServlet extends HttpServlet {
 
     private final ExamService examService = new ExamService();
     private final LevelService levelService = new LevelService();
+    private final ExamQuestionService examQuestionService = new ExamQuestionService();
     private final QuestionService questionService = new QuestionService();
+    private final ChapterService chapterService = new ChapterService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,6 +46,10 @@ public class ExamServlet extends HttpServlet {
 
         if (pathInfo == null || pathInfo.equals("/")) {
             handleExamPost(request, response);
+        } else if(pathInfo.equals("/submit")) {
+            handleExamSubmit(request, response);
+        } else if (pathInfo.equals("/addMore")) {
+            handleAddMoreQuestionPost(request, response);
         }
     }
 
@@ -51,8 +59,9 @@ public class ExamServlet extends HttpServlet {
         request.getRequestDispatcher("/setupExam.jsp").forward(request, response);
     }
 
-    private void handleExamPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String studentIdParam = (String) request.getSession().getAttribute("studentId");
+    private void handleExamPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        User user = (User) request.getSession().getAttribute("user");
+        Long studentId = user.getId();
         String numQuestionsParam = request.getParameter("numQuestionsParam");
         String chapterIdParam = request.getParameter("chapterId");
         String difficultyParam = request.getParameter("difficulty");
@@ -69,7 +78,6 @@ public class ExamServlet extends HttpServlet {
         }
 
         int numQuestions = Integer.parseInt(numQuestionsParam);
-        Long studentId = Long.parseLong(studentIdParam);
         Long chapterId = Long.parseLong(chapterIdParam);
         int difficulty = 1;
         switch (difficultyParam) {
@@ -92,8 +100,71 @@ public class ExamServlet extends HttpServlet {
                 difficulty = 5;
                 break;
         }
-        List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId);
+        Exam exam= examService.createNewExam(chapterId, studentId);
+        request.getSession().setAttribute("examId", exam.getId().toString());
+        List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId, exam);
         request.setAttribute("questionList", questionList);
+        request.getRequestDispatcher("/exam.jsp").forward(request, response);
+    }
+
+    private void handleExamSubmit(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        String examIdStr = (String) request.getSession().getAttribute("examId");
+        User user = (User) request.getSession().getAttribute("user");
+        Long studentId = user.getId();
+        if (examIdStr == null) {
+            response.getWriter().println("No active exam found.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        try {
+            Long examId = Long.parseLong(examIdStr);
+
+            Map<String, String> studentAnswers = extractStudentAnswers(request);
+
+            examQuestionService.saveStudentAnswers(examId, studentAnswers);
+            Exam exam = examService.getExamById(examId);
+            int level = examService.updateLevelOfStudent(studentId, exam.getChapterId(), examId);
+            request.getSession().removeAttribute("examId");
+
+            response.sendRedirect(request.getContextPath() + "/exam/result?examId=" + examId);
+
+        } catch (Exception e) {
+            response.getWriter().println("Error submitting exam: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private Map<String, String> extractStudentAnswers(HttpServletRequest request) {
+        Map<String, String> answers = new HashMap<>();
+
+        for (String paramName : request.getParameterMap().keySet()) {
+            if (paramName.startsWith("answer_")) {
+                String questionId = paramName.substring(7);
+                String answer = request.getParameter(paramName);
+                if (answer != null && !answer.trim().isEmpty()) {
+                    answers.put(questionId, answer);
+                }
+            }
+        }
+
+        return answers;
+    }
+
+    private void handleAddMoreQuestionPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String additionalQuestionsParam = (String)request.getParameter("additionalQuestions");
+        int additionalQuestions = Integer.parseInt(additionalQuestionsParam);
+        String examIdParam = (String) request.getSession().getAttribute("examId");
+        Long examId = Long.parseLong(examIdParam);
+        User user = (User) request.getSession().getAttribute("user");
+        Map<String, String> studentAnswers = extractStudentAnswers(request);
+        examQuestionService.saveStudentAnswers(examId, studentAnswers);
+        Exam exam = examService.getExamById(examId);
+        Long studentId = user.getId();
+        List<QuestionResponse> questionResponseList = examService.addMoreQuestionForExam(examId, additionalQuestions, studentId, exam.getChapterId());
+        request.setAttribute("questionList", questionResponseList);
+        request.getRequestDispatcher("/exam.jsp").forward(request, response);
     }
 
 }

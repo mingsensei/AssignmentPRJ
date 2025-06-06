@@ -68,5 +68,3 @@ public class CourseServlet extends HttpServlet {
         super.destroy();
     }
 }
-
-

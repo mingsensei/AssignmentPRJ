@@ -65,7 +65,7 @@ public class QuestionDAO {
 
     public List<Question> findByChapterId(Long chapterId) {
         TypedQuery<Question> query = entityManager.createQuery(
-                "SELECT q FROM Question q WHERE q.chapter.id = :chapterId", Question.class);
+                "SELECT q FROM Question q WHERE q.chapterId = :chapterId", Question.class);
         query.setParameter("chapterId", chapterId);
         return query.getResultList();
     }
@@ -79,7 +79,7 @@ public class QuestionDAO {
 
     public List<Question> findAllByChapterIdAndDifficulty(Long chapterId, Integer difficulty) {
         TypedQuery<Question> query = entityManager.createQuery(
-                "SELECT q FROM Question q WHERE q.chapter.id = :chapterId AND q.difficulty = :difficulty",
+                "SELECT q FROM Question q WHERE q.chapterId = :chapterId AND q.difficulty = :difficulty",
                 Question.class);
         query.setParameter("chapterId", chapterId);
         query.setParameter("difficulty", difficulty);

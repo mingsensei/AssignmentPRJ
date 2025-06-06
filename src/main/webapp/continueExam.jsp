@@ -1,16 +1,20 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: PC
-  Date: 6/3/2025
-  Time: 7:20 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Title</title>
+    <title>Tiếp tục bài kiểm tra?</title>
+    <link rel="stylesheet" href="css/continueExam.css">
 </head>
 <body>
-
+<h1>Bạn muốn tiếp tục với nhiều câu hỏi hơn?</h1>
+<form action="${pageContext.request.contextPath}/exam/addMore" method="post">
+    <input type="hidden" name="examId" value="<%= request.getParameter("examId") %>">
+    <input type="hidden" name="action" value="continue">
+    <label>
+        <input type="radio" name="continueChoice" value="yes"> Có, cho tôi thêm câu hỏi:
+        <input type="number" name="additionalQuestions" value="10">
+    </label><br>
+    <input type="submit" value="Xác nhận">
+</form>
 </body>
 </html>

@@ -136,4 +136,27 @@ public class PythonApiClient {
         return jsonResponse.getString("vector_db_path");
     }
 
+    public String callPythonAPIForTheta(String questionsData) throws IOException {
+        URL url = new URL(PYTHON_API_URL_CALCULATE_LEVEL); // Use the correct URL
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/json"); // Thay đổi content type
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = questionsData.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            return response.toString();
+        } finally {
+            connection.disconnect();
+        }
+    }
 }
