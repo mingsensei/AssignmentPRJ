@@ -179,12 +179,13 @@ CREATE TABLE blog (
                       created_at DATETIME,
                       updated_at DATETIME
 );
-
+use ASSIGNMENT_PRJ;
+DROP TABLE blog_user;
 CREATE TABLE blog_user (
                            id BIGINT IDENTITY(1,1) PRIMARY KEY,
                            blog_id BIGINT,
                            user_id BIGINT,
-                           role NVARCHAR(50),
+                           blog_role NVARCHAR(50),
                            assigned_at DATETIME,
                            FOREIGN KEY (blog_id) REFERENCES blog(id),
                            FOREIGN KEY (user_id) REFERENCES users(id)
