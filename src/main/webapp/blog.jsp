@@ -115,7 +115,7 @@
                 <img src="https://i.pravatar.cc/48" class="author-avatar" alt="Author"/>
                 <c:forEach var="blogUser" items="${blogUsers}">
                     <div class="author-info">
-                        
+                        <div class="name">${blogUser.user.userName}</div>
                         <div class="role">${blogUser.blogRole}</div>
                     </div>
                 </c:forEach>

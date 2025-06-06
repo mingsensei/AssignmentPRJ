@@ -1,3 +1,5 @@
+USE ASSIGNMENT_PRJ;
+
 CREATE TABLE users (
                        id BIGINT IDENTITY(1,1) PRIMARY KEY,
                        user_name NVARCHAR(100),
@@ -180,7 +182,7 @@ CREATE TABLE blog (
                       updated_at DATETIME
 );
 use ASSIGNMENT_PRJ;
-DROP TABLE blog_user;
+
 CREATE TABLE blog_user (
                            id BIGINT IDENTITY(1,1) PRIMARY KEY,
                            blog_id BIGINT,
@@ -581,13 +583,6 @@ INSERT INTO lesson (title, description, video_url, course_id, order_index, chapt
                                                                                            (N'Linux Shell Commands', N'Using basic shell commands fluently in Linux environment.', NULL, 8, 1, 51),
                                                                                            (N'Basic C/C++ Programming on Linux', N'Fundamental C/C++ programming and shell scripting basics.', NULL, 8, 2, 51),
                                                                                            (N'Using AI Tools to Explore OS Concepts', N'Applying AI tools like ChatGPT to deepen understanding of OS components.', NULL, 8, 3, 51);
-
-
-
-
-
-
-
 
 
 

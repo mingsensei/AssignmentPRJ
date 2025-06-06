@@ -12,12 +12,12 @@ public class BlogUser {
     private Long id;
 
     // ManyToOne với Blog
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "blog_id")
     private Blog blog;
 
     // ManyToOne với User
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -70,4 +70,11 @@ public class BlogUser {
     public void setAssignedAt(LocalDateTime assignedAt) {
         this.assignedAt = assignedAt;
     }
+
+    @Override
+    public String toString() {
+        return "BlogUser{" + "id=" + id + ", blog=" + blog + ", user=" + user + ", blogRole=" + blogRole + ", assignedAt=" + assignedAt + '}';
+    }
+    
+    
 }
