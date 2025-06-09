@@ -2,7 +2,7 @@
 
 <%
     String uri = request.getRequestURI();
-    boolean skipHeader = uri.contains("login.jsp") || uri.contains("register.jsp") || uri.contains("upload-material.jsp");
+    boolean skipHeader = uri.contains("login") || uri.contains("register") ;
 
     if (!skipHeader) {
         HttpSession session1 = request.getSession(false);
@@ -28,11 +28,11 @@
         <a class="navbar-brand" href="<%= request.getContextPath() %>/">NMQ AI <span>Education</span></a>
 
         <ul>
-            <li><a href="<%= request.getContextPath() %>/courses">Course</a></li>
-            <li><a href="<%= request.getContextPath() %>/ai-agent">AI Agent</a></li>
-            <li><a href="<%= request.getContextPath() %>/exam">AI Exam</a></li>
-            <li><a href="<%= request.getContextPath() %>/blog">Blog</a></li>
-            <li><a href="<%= request.getContextPath() %>/about">About</a></li>
+            <li><a  class="<%= uri.contains("category") || uri.contains("course") ? "active" : "" %>" href="<%= request.getContextPath() %>/category">Course</a></li>
+            <li><a  class="<%= uri.contains("ai-agent") ? "active" : "" %>" href="<%= request.getContextPath() %>/ai-agent">AI Agent</a></li>
+            <li><a  class="<%= uri.contains("exam") ? "active" : "" %>" href="<%= request.getContextPath() %>/exam">AI Exam</a></li>
+            <li><a   class="<%= uri.contains("blog") ? "active" : "" %>" href="<%= request.getContextPath() %>/blog">Blog</a></li>
+            <li><a   class="<%= uri.contains("blog") ? "active" : "" %>" href="<%= request.getContextPath() %>/about">About</a></li>
         </ul>
 
         <div class="searchform" action="#">
@@ -60,6 +60,9 @@
             }
         %>
         <div class="auth-buttons">
+            <a href="<%= request.getContextPath() %>/enrollment" class="logup-button">
+                📖My Course
+            </a>
             <a href="<%= request.getContextPath() %>/user-info" class="login-button">
                 👤 <%= userName %>
             </a>

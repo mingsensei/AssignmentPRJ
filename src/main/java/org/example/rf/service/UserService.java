@@ -1,12 +1,14 @@
 package org.example.rf.service;
 
 import org.example.rf.dao.UserDAO;
+import org.example.rf.model.Enrollment;
 import org.example.rf.model.User;
 import org.example.rf.util.HashPassword;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserService {
@@ -35,8 +37,9 @@ public class UserService {
     }
 
     // Cập nhật User
-    public void updateUser(User user) {
+    public boolean updateUser(User user) {
         userDAO.update(user);
+        return true;
     }
 
     // Xóa User theo ID
@@ -82,4 +85,7 @@ public class UserService {
             em.close();
         }
     }
+
+
 }
+

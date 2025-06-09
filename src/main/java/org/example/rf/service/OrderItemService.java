@@ -49,4 +49,7 @@ public class OrderItemService {
             em.close();
         }
     }
+    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
+        return orderItemDAO.findByOrderId(orderId);
+    }
 }

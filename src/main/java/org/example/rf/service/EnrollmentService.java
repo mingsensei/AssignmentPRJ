@@ -6,6 +6,7 @@ import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EnrollmentService {
@@ -49,4 +50,9 @@ public class EnrollmentService {
             em.close();
         }
     }
+
+    public ArrayList<Enrollment> findByUserId(long userId){
+        return new ArrayList<>(enrollmentDAO.findByUserId(userId));
+    }
+
 }

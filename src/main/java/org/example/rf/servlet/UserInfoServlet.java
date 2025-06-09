@@ -58,6 +58,10 @@ public class UserInfoServlet extends HttpServlet {
             return;
         }
 
+        if ("updateInfo".equals(action)) {
+            updateUserInfo(request, response, user);
+        }
+
         if ("updatePassword".equals(action)) {
             updatePassword(request, response, user);
         } else if ("logout".equals(action)) {
@@ -75,14 +79,14 @@ public class UserInfoServlet extends HttpServlet {
         // Kiểm tra mật khẩu hiện tại
         if (!userService.checkPassword(user.getId(), currentPass)) {
             request.setAttribute("error", "Mật khẩu hiện tại không đúng");
-            request.getRequestDispatcher("/user-info.jsp").forward(request, response);
+            request.getRequestDispatcher("/user_info.jsp").forward(request, response);
             return;
         }
 
         // Kiểm tra mật khẩu mới và xác nhận
         if (newPass == null || !newPass.equals(confirmPass)) {
             request.setAttribute("error", "Mật khẩu mới và xác nhận không khớp");
-            request.getRequestDispatcher("/user-info.jsp").forward(request, response);
+            request.getRequestDispatcher("/user_info.jsp").forward(request, response);
             return;
         }
 
@@ -92,6 +96,29 @@ public class UserInfoServlet extends HttpServlet {
         // Có thể cập nhật lại thông tin user trong session nếu cần
 
         request.setAttribute("message", "Cập nhật mật khẩu thành công");
-        request.getRequestDispatcher("/user-info.jsp").forward(request, response);
+        request.getRequestDispatcher("/user_info.jsp").forward(request, response);
     }
+    private void updateUserInfo(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
+        String lastName = request.getParameter("lastName");
+        String firstName = request.getParameter("firstName");
+        String phone = request.getParameter("phone");
+        String userName = request.getParameter("userName");
+
+        user.setLastName(lastName);
+        user.setFirstName(firstName);
+        user.setPhone(phone);
+        user.setUserName(userName);
+
+        boolean success = userService.updateUser(user);
+
+        if (success) {
+            request.getSession().setAttribute("user", user);
+            request.setAttribute("message", "Cập nhật thông tin thành công");
+        } else {
+            request.setAttribute("error", "Cập nhật thông tin thất bại");
+        }
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("user_info.jsp").forward(request, response);
+    }
+
 }

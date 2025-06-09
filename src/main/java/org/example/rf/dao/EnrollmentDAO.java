@@ -67,4 +67,12 @@ public class EnrollmentDAO {
         TypedQuery<Enrollment> query = entityManager.createQuery("SELECT e FROM Enrollment e", Enrollment.class);
         return query.getResultList();
     }
+    // Lấy danh sách Enrollment theo userId
+    public List<Enrollment> findByUserId(Long userId) {
+        TypedQuery<Enrollment> query = entityManager.createQuery(
+                "SELECT e FROM Enrollment e WHERE e.user.id = :userId", Enrollment.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
 }

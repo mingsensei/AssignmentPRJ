@@ -12,6 +12,7 @@
   <title>Trang Quản Lý Thông Tin Cá Nhân</title>
   <link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_info.css" />
 </head>
+<%@ include file="header.jsp" %>
 <body>
 <%
   User user = (User) request.getAttribute("user");
@@ -31,15 +32,38 @@
       <h3>Thông tin cá nhân</h3>
       <div class="profile-header">
         <img class="avatar" src="https://i.pravatar.cc/150" alt="Ảnh đại diện" />
-        <div class="info-text">
+
+        <!-- VIEW MODE -->
+        <div class="info-text" id="infoDisplay">
           <p><strong>Họ tên:</strong> <%= user.getLastName() %> <%= user.getFirstName() %></p>
           <p><strong>Email:</strong> <%= user.getEmail() %></p>
           <p><strong>Số điện thoại:</strong> <%= user.getPhone() != null ? user.getPhone() : "Chưa cập nhật" %></p>
           <p><strong>Tên người dùng:</strong> <%= user.getUserName() %></p>
           <p><strong>Vai trò:</strong> <%= user.getRole() %></p>
-          <button class="edit-btn">Chỉnh sửa thông tin</button>
+          <button class="edit-btn" onclick="toggleEdit(true)">Chỉnh sửa thông tin</button>
         </div>
+
+        <!-- EDIT MODE (ẩn ban đầu) -->
+        <form id="infoEdit" action="user-info" method="post" style="display: none">
+          <input type="hidden" name="action" value="updateInfo" />
+          <label>Họ:</label>
+          <input type="text" name="lastName" value="<%= user.getLastName() %>" required><br>
+
+          <label>Tên:</label>
+          <input type="text" name="firstName" value="<%= user.getFirstName() %>" required><br>
+
+          <label>Số điện thoại:</label>
+          <input type="text" name="phone" value="<%= user.getPhone() != null ? user.getPhone() : "" %>"><br>
+
+          <label>Tên người dùng:</label>
+          <input type="text" name="userName" value="<%= user.getUserName() %>" required><br>
+
+          <button type="submit">Lưu thay đổi</button>
+          <button type="button" onclick="toggleEdit(false)">Hủy</button>
+        </form>
+
       </div>
+
     </div>
 
     <div id="security" class="tabcontent">
@@ -76,18 +100,8 @@
   </div>
 </div>
 
-<script>
-  function openTab(tabName, evt) {
-    const tabcontents = document.querySelectorAll(".tabcontent");
-    tabcontents.forEach(tc => tc.classList.remove("active"));
-
-    const btns = document.querySelectorAll(".sidebar button");
-    btns.forEach(btn => btn.classList.remove("active"));
-
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-  }
-</script>
+<script src="<%= request.getContextPath() %>/js/userinfo.js"></script>
 
 </body>
+<%@ include file="footer.jsp" %>
 </html>
