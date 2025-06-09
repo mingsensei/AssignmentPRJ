@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExamService {
 
@@ -36,32 +37,26 @@ public class ExamService {
         this.levelDAO = new LevelDAO(em);
     }
 
-    // Tạo mới Exam
     public void createExam(Exam exam) {
         examDAO.create(exam);
     }
 
-    // Tìm Exam theo ID
     public Exam getExamById(Long id) {
         return examDAO.findById(id);
     }
 
-    // Cập nhật Exam
     public void updateExam(Exam exam) {
         examDAO.update(exam);
     }
 
-    // Xóa Exam theo ID
     public void deleteExam(Long id) {
         examDAO.delete(id);
     }
 
-    // Lấy danh sách tất cả Exam
     public List<Exam> getAllExams() {
         return examDAO.findAll();
     }
 
-    // Đóng EntityManager khi không còn dùng
     public void close() {
         if (em != null && em.isOpen()) {
             em.close();
@@ -70,42 +65,31 @@ public class ExamService {
 
     public List<QuestionResponse> getQuestionsForExam(int numQuestions, Long chapterId, int difficulty, Long studentId, Exam exam) throws IOException {
         int firstIndexOrderQuestion = 1;
-        List<Question> questionList = questionDAO.findAllByChapterIdAndDifficulty(exam.getId(), numQuestions);
-        for (Question question : questionList) {
-            ExamQuestion examQuestion = ExamQuestion.builder()
-                    .questionId(question.getId())
-                    .examId(exam.getId())
-                    .questionOrder(firstIndexOrderQuestion)
-                    .build();
-            examQuestionDAO.create(examQuestion);
-            firstIndexOrderQuestion++;
-        }
+        List<Question> questionList = questionDAO.findAllByChapterIdAndDifficulty(exam.getId(), difficulty);
+        AtomicInteger order = new AtomicInteger(firstIndexOrderQuestion);
+        questionList.stream()
+                .map(question -> ExamQuestion.builder()
+                        .questionId(question.getId())
+                        .examId(exam.getId())
+                        .questionOrder(order.getAndIncrement())
+                        .build())
+                .forEach(examQuestionDAO::create);
+
         List<AiQuestion> aiQuestionList = new ArrayList<>();
-
-        if(questionList.isEmpty() || questionList.size() < numQuestions) {
-            int numAiQuestions = numQuestions - questionList.size();
-            List<Material> materialList =  materialDAO.findAllByChapterId(chapterId);
-//            List<String> vectorDbPathList = new ArrayList<>();
-//            for (Material material : materialList) {
-//                vectorDbPathList.add(material.getVectorDbPath());
-//            }
-            String vectorDbPath = materialList.get(0).getVectorDbPath();
-            aiQuestionList = pythonApiClient.generateQuestion(numAiQuestions, difficulty, vectorDbPath);
+        int numAiQuestions = numQuestions - questionList.size();
+        if(questionList.isEmpty() || numAiQuestions > 0) {
+            aiQuestionList = getGeneratedAiQuestions(chapterId, numAiQuestions, difficulty);
         }
 
-        for (AiQuestion aiQuestion : aiQuestionList) {
-            aiQuestionDAO.create(aiQuestion);
-        }
+        aiQuestionList.forEach(aiQuestionDAO::create);
+        aiQuestionList.stream()
+                .map(aiQuestion -> ExamQuestion.builder()
+                        .aiQuestionId(aiQuestion.getId())
+                        .examId(exam.getId())
+                        .questionOrder(order.getAndIncrement())
+                        .build())
+                .forEach(examQuestionDAO::create);
 
-        for (AiQuestion aiQuestion : aiQuestionList) {
-            ExamQuestion examQuestion = ExamQuestion.builder()
-                    .aiQuestionId(aiQuestion.getId())
-                    .examId(exam.getId())
-                    .questionOrder(firstIndexOrderQuestion)
-                    .build();
-            examQuestionDAO.create(examQuestion);
-            firstIndexOrderQuestion++;
-        }
 
         List<QuestionResponse> questionResponseList = new ArrayList<>();
         for (AiQuestion aiQuestion : aiQuestionList) {
@@ -151,28 +135,18 @@ public class ExamService {
         int levelValue = updateLevelOfStudent(studentId, chapterId, examId);
         List<QuestionRequestPython> questionRequestPythons = aiQuestionDAO.findAnsweredQuestionData(examId);
         int firstIndexOrderQuestion = questionRequestPythons.size() + 1;
-        List<Material> materialList =  materialDAO.findAllByChapterId(chapterId);
-//            List<String> vectorDbPathList = new ArrayList<>();
-//            for (Material material : materialList) {
-//                vectorDbPathList.add(material.getVectorDbPath());
-//            }
-        String vectorDbPath = materialList.get(0).getVectorDbPath();
-        List<AiQuestion> aiQuestionList = new ArrayList<>();
-        aiQuestionList = pythonApiClient.generateQuestion(additionalQuestions, levelValue, vectorDbPath);
 
-        for (AiQuestion aiQuestion : aiQuestionList) {
-            aiQuestionDAO.create(aiQuestion);
-        }
+        List<AiQuestion> aiQuestionList = getGeneratedAiQuestions(chapterId, additionalQuestions, levelValue);
+        aiQuestionList.forEach(aiQuestionDAO::create);
 
-        for (AiQuestion aiQuestion : aiQuestionList) {
-            ExamQuestion examQuestion = ExamQuestion.builder()
-                    .aiQuestionId(aiQuestion.getId())
-                    .examId(examId)
-                    .questionOrder(firstIndexOrderQuestion)
-                    .build();
-            examQuestionDAO.create(examQuestion);
-            firstIndexOrderQuestion++;
-        }
+        AtomicInteger order = new AtomicInteger(firstIndexOrderQuestion);
+        aiQuestionList.stream()
+                .map(aiQuestion -> ExamQuestion.builder()
+                        .aiQuestionId(aiQuestion.getId())
+                        .examId(examId)
+                        .questionOrder(order.getAndIncrement())
+                        .build())
+                .forEach(examQuestionDAO::create);
 
         List<QuestionResponse> questionResponseList = new ArrayList<>();
         for (AiQuestion aiQuestion : aiQuestionList) {
@@ -198,7 +172,7 @@ public class ExamService {
         JSONArray questionsData = new JSONArray();
         for (QuestionRequestPython question : questionRequestPythons) {
             JSONObject questionData = new JSONObject();
-            questionData.put("difficulty", question.getDifficulty()); // lấy difficulty từ câu hỏi cũ
+            questionData.put("difficulty", question.getDifficulty());
             questionData.put("isCorrect", question.getStudentAnswer().equals(question.getCorrectAnswer()));
             questionsData.put(questionData);
         }
@@ -219,5 +193,15 @@ public class ExamService {
             levelDAO.create(level);
         }
         return levelValue;
+    }
+
+    private List<AiQuestion> getGeneratedAiQuestions(Long chapterId, int numAiQuestions, int difficulty) throws IOException {
+        List<Material> materialList =  materialDAO.findAllByChapterId(chapterId);
+//            List<String> vectorDbPathList = new ArrayList<>();
+//            for (Material material : materialList) {
+//                vectorDbPathList.add(material.getVectorDbPath());
+//            }
+        String vectorDbPath = materialList.get(0).getVectorDbPath();
+        return pythonApiClient.generateQuestion(numAiQuestions, difficulty, vectorDbPath);
     }
 }

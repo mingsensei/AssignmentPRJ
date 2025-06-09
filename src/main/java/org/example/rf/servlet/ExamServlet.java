@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.rf.dto.QuestionResponse;
 import org.example.rf.model.Exam;
+import org.example.rf.model.Level;
 import org.example.rf.model.User;
 import org.example.rf.service.*;
 
@@ -79,27 +80,8 @@ public class ExamServlet extends HttpServlet {
 
         int numQuestions = Integer.parseInt(numQuestionsParam);
         Long chapterId = Long.parseLong(chapterIdParam);
-        int difficulty = 1;
-        switch (difficultyParam) {
-            case "ai":
-                difficulty = levelService.findByStudentIdAndChapterId(studentId, chapterId).getLevel();
-                break;
-            case "veryEasy":
-                difficulty = 1;
-                break;
-            case "easy":
-                difficulty = 2;
-                break;
-            case "medium":
-                difficulty = 3;
-                break;
-            case "hard":
-                difficulty = 4;
-                break;
-            case "veryHard":
-                difficulty = 5;
-                break;
-        }
+        int difficulty = convertDifficulty(difficultyParam, studentId, chapterId);
+
         Exam exam= examService.createNewExam(chapterId, studentId);
         request.getSession().setAttribute("examId", exam.getId().toString());
         List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId, exam);
@@ -158,13 +140,45 @@ public class ExamServlet extends HttpServlet {
         String examIdParam = (String) request.getSession().getAttribute("examId");
         Long examId = Long.parseLong(examIdParam);
         User user = (User) request.getSession().getAttribute("user");
+
         Map<String, String> studentAnswers = extractStudentAnswers(request);
         examQuestionService.saveStudentAnswers(examId, studentAnswers);
+
         Exam exam = examService.getExamById(examId);
         Long studentId = user.getId();
         List<QuestionResponse> questionResponseList = examService.addMoreQuestionForExam(examId, additionalQuestions, studentId, exam.getChapterId());
         request.setAttribute("questionList", questionResponseList);
         request.getRequestDispatcher("/exam.jsp").forward(request, response);
+    }
+
+    private int convertDifficulty(String difficultyParam, Long studentId, Long chapterId) {
+        Level level = levelService.findByStudentIdAndChapterId(studentId, chapterId);
+        int difficulty = -1;
+        switch (difficultyParam) {
+            case "ai":
+                if(level == null) {
+                    difficulty = 1;
+                }else {
+                    difficulty = level.getLevel();
+                }
+                break;
+            case "veryEasy":
+                difficulty = 1;
+                break;
+            case "easy":
+                difficulty = 2;
+                break;
+            case "medium":
+                difficulty = 3;
+                break;
+            case "hard":
+                difficulty = 4;
+                break;
+            case "veryHard":
+                difficulty = 5;
+                break;
+        }
+        return difficulty;
     }
 
 }
