@@ -1,9 +1,13 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
 @Table(name = "ai_question")
+@Builder
+@AllArgsConstructor
 public class AiQuestion {
 
     @Id

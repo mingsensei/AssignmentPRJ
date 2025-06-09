@@ -7,6 +7,8 @@ import org.example.rf.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+import org.example.rf.model.Blog;
+import org.example.rf.model.User;
 
 public class BlogUserService {
 
@@ -41,6 +43,23 @@ public class BlogUserService {
     // Lấy danh sách tất cả blog-user
     public List<BlogUser> getAllBlogUsers() {
         return blogUserDAO.findAll();
+    }
+    // In BlogUserDAO.java
+
+    // Find BlogUser by blog ID
+    public List<BlogUser> findByBlogId(Long blogId) {
+        return em.createQuery(
+                "SELECT bu FROM BlogUser bu WHERE bu.blog.id = :blogId", BlogUser.class)
+                .setParameter("blogId", blogId)
+                .getResultList();
+    }
+
+    // Find BlogUser by user ID
+    public List<BlogUser> findByUserId(Long userId) {
+        return em.createQuery(
+                "SELECT bu FROM BlogUser bu WHERE bu.user.id = :userId", BlogUser.class)
+                .setParameter("userId", userId)
+                .getResultList();
     }
 
     // Dọn dẹp EntityManager

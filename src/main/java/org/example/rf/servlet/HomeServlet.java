@@ -12,14 +12,14 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Chuyển tiếp sang index.jsp
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        // Chuyển tiếp sang home.jsp
+        request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Nếu ai đó POST tới /home, cũng forward về index.jsp
+        // Nếu ai đó POST tới /home, cũng forward về home.jsp
         doGet(request, response);
     }
 }

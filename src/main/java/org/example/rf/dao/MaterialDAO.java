@@ -63,7 +63,7 @@ public class MaterialDAO {
         return query.getResultList();
     }
 
-    public List<Material> findByChapterId(Long chapterId) {
+    public List<Material> findAllByChapterId(Long chapterId) {
         TypedQuery<Material> query = entityManager.createQuery(
                 "SELECT m FROM Material m WHERE m.chapterId = :chapterId", Material.class);
         query.setParameter("chapterId", chapterId);
