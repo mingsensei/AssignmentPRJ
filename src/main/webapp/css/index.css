@@ -3,46 +3,101 @@
     padding: 0;
     box-sizing: border-box;
 }
-
-html, body {
-    overflow-x: hidden;
+html {
+    scroll-behavior: smooth;
+    font-family: Arial, sans-serif;
 }
-
-/* Hero section full screen */
+body {
+    background-color: #f9f9f9;
+    color: #333;
+}
 .hero {
+    position: relative;
     height: 100vh;
-    background: linear-gradient(to right, #00b4d8, #90e0ef);
+    background-image: url('../images/hero.webp');
+    background-size: cover;
+    background-position: center;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2rem;
+        top: -30px !important;
 }
-
-.hero-content h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+.hero-content {
+    position: relative;
+    z-index: 2;
     color: white;
+    max-width: 800px;
+    padding: 20px;
 }
-
-.hero-content p {
-    font-size: 1.2rem;
-    color: #f8f9fa;
-    margin-bottom: 2rem;
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
 }
-
-.btn-primary {
-    padding: 0.75rem 1.5rem;
-    background-color: #03045e;
+.hero p {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+.hero a {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #00a0fb;
     color: white;
     text-decoration: none;
     border-radius: 8px;
+}
+.section {
+    padding: 80px 20px;
+    text-align: center;
+}
+.section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+.section p {
+    font-size: 18px;
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    width: 300px;
+}
+.card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.card p {
+    font-size: 16px;
+}
+.cta {
+    background-color: #00a0fb;
+    color: white;
+}
+.cta a {
+    background-color: white;
+    color: #00a0fb;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
     font-weight: bold;
 }
-
-.btn-primary:hover {
-    background-color: #023e8a;
-}
-
-

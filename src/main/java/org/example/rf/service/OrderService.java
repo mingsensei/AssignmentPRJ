@@ -2,6 +2,7 @@ package org.example.rf.service;
 
 import org.example.rf.dao.OrderDAO;
 import org.example.rf.model.Order;
+import org.example.rf.model.OrderItem;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
@@ -12,6 +13,7 @@ public class OrderService {
 
     private final EntityManager em;
     private final OrderDAO orderDAO;
+    private OrderItemService orderItemService= new OrderItemService();
 
     public OrderService() {
         this.em = JPAUtil.getEntityManager();  // Tạo EntityManager 1 lần khi khởi tạo service
@@ -48,5 +50,12 @@ public class OrderService {
         if (em != null && em.isOpen()) {
             em.close();
         }
+    }
+    public List<OrderItem> getOrderItemsByUserId(Long userId) {
+        List<OrderItem> allItems = new java.util.ArrayList<>();
+
+       allItems =orderItemService.getOrderItemsByOrderId(orderDAO.findByUserId(userId).getId());
+
+        return allItems;
     }
 }

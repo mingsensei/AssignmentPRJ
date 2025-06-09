@@ -6,8 +6,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Khoá học</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/courses.css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/category.css" />
 </head>
+<%@ include file="header.jsp" %>
 <body>
 
 <!-- ===== KHOÁ HỌC NỔI BẬT ===== -->
@@ -16,7 +17,7 @@
     <div class="carousel-track" id="carouselTrack">
         <c:forEach var="course" items="${featuredCourses}">
             <div class="carousel-card">
-                <a href="chapter?courseId=${course.id}">
+                <a href="course?courseId=${course.id}">
                     <img src="${pageContext.request.contextPath}/images/course${course.id}.webp" alt="${course.name}">
                     <div class="carousel-title">${course.name}</div>
                     <div class="carousel-description">${course.description}</div>
@@ -32,7 +33,7 @@
 <div class="course-grid">
     <c:forEach var="category" items="${categoryList}">
         <div class="course-card">
-            <a href="<%= request.getContextPath() %>/chapter?courseId=${category.id}">
+            <a href="<%= request.getContextPath() %>/course?courseId=${category.id}">
                 <img src="${pageContext.request.contextPath}/images/course${category.id}.webp" alt="${category.name}">
                 <div class="course-info">
                     <div class="course-title">${category.name}</div>
@@ -46,4 +47,5 @@
 <script src="<%= request.getContextPath() %>/js/carousel.js"></script>
 
 </body>
+<%@ include file="footer.jsp" %>
 </html>

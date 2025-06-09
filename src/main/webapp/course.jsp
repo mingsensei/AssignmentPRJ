@@ -14,6 +14,13 @@
       background-color: #f0f4fa;
       color: #333;
     }
+    .price_buy{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+
     .hero {
       display: flex;
       flex-wrap: wrap;
@@ -26,7 +33,7 @@
     }
     .hero img {
       flex: 1 1 400px;
-      max-width: 850px;
+      max-width: 700px;
       max-height: 420px;
       object-fit: cover;
     }
@@ -106,6 +113,8 @@
     }
   </style>
 </head>
+<%@ include file="header.jsp" %>
+
 <body>
 
 <div class="hero">
@@ -115,7 +124,32 @@
       <div class="course-name">${course.name}</div>
       <div class="course-description">${course.description}</div>
     </div>
-    <div class="course-price">${course.price} VNĐ</div>
+    <div class="price_buy">
+      <div class="course-price">${course.price} VNĐ</div>
+      <a href="<%= request.getContextPath() %>/cart">
+        <button
+                style="
+                text-decoration: none;
+    background-color: #1E90FF;
+    color: white;
+    padding: 10px 20px;
+    font-size: 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 62px;
+    width: 150px;
+    "
+                onmouseover="this.style.backgroundColor='#0d75d8'"
+                onmouseout="this.style.backgroundColor='#1E90FF'">
+          Buy Now
+        </button>
+
+      </a>
+    </div>
+
+
   </div>
 </div>
 
@@ -130,4 +164,5 @@
 </div>
 
 </body>
+<%@ include file="footer.jsp" %>
 </html>

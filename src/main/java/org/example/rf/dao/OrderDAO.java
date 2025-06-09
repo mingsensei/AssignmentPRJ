@@ -1,5 +1,6 @@
 package org.example.rf.dao;
 
+import jakarta.persistence.NoResultException;
 import org.example.rf.model.Order;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -63,12 +64,18 @@ public class OrderDAO {
         return query.getResultList();
     }
 
-    public List<Order> findByUserId(Long userId) {
+    public Order findByUserId(Long userId) {
         TypedQuery<Order> query = entityManager.createQuery(
                 "SELECT o FROM Order o WHERE o.user.id = :userId", Order.class);
         query.setParameter("userId", userId);
-        return query.getResultList();
+
+        try {
+            return query.setMaxResults(1).getSingleResult(); // lấy 1 kết quả duy nhất (nếu có)
+        } catch (NoResultException e) {
+            return null; // không tìm thấy
+        }
     }
+
 
     public List<Order> findByStatus(String status) {
         TypedQuery<Order> query = entityManager.createQuery(
