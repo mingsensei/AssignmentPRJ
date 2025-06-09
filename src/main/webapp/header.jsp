@@ -2,7 +2,7 @@
 
 <%
     String uri = request.getRequestURI();
-    boolean skipHeader = uri.contains("login.jsp") || uri.contains("register.jsp");
+    boolean skipHeader = uri.contains("login.jsp") || uri.contains("register.jsp") || uri.contains("upload-material.jsp");
 
     if (!skipHeader) {
         HttpSession session1 = request.getSession(false);
@@ -47,7 +47,7 @@
                     <ul class="navbar-nav m-auto">
                         <li class="nav-item"><a href="<%= request.getContextPath() %>/courses" class="nav-link">Course</a></li>
                         <li class="nav-item"><a href="<%= request.getContextPath() %>/ai-agent" class="nav-link">AI Agent</a></li>
-                        <li class="nav-item"><a href="<%= request.getContextPath() %>/exam" class="nav-link">AI Exam</a></li>
+                        <li class="nav-item"><a href="<%= request.getContextPath() %>/material" class="nav-link">Uploads Material</a></li>
                         <li class="nav-item"><a href="<%= request.getContextPath() %>/blog" class="nav-link">Blog</a></li>
                         <li class="nav-item"><a href="<%= request.getContextPath() %>/about" class="nav-link">About</a></li>
                     </ul>

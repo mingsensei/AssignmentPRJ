@@ -51,4 +51,8 @@ public class ChapterService {
             em.close();
         }
     }
+
+    public List<Chapter> getAllChaptersByCourseId(Long courseId) {
+        return chapterDAO.findByCourseId(courseId);
+    }
 }

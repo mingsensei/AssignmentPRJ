@@ -49,4 +49,8 @@ public class LevelService {
             em.close();
         }
     }
+
+    public Level findByStudentIdAndChapterId(Long studentId, Long chapterId) {
+        return levelDAO.findByStudentIdAndChapterId(studentId, chapterId);
+    }
 }
