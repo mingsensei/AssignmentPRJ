@@ -1,5 +1,6 @@
 package org.example.rf.service;
 
+import jakarta.persistence.EntityTransaction;
 import org.example.rf.dao.ExamQuestionDAO;
 import org.example.rf.model.ExamQuestion;
 import org.example.rf.util.JPAUtil;
@@ -7,6 +8,7 @@ import org.example.rf.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+import java.util.Map;
 
 public class ExamQuestionService {
 
@@ -47,6 +49,32 @@ public class ExamQuestionService {
     public void close() {
         if (em != null && em.isOpen()) {
             em.close();
+        }
+    }
+
+    public void saveStudentAnswers(Long examId, Map<String, String> studentAnswers) {
+        for (Map.Entry<String, String> entry : studentAnswers.entrySet()) {
+            String questionIdStr = entry.getKey();
+            String answer = entry.getValue();
+
+            try {
+                Long questionId = Long.parseLong(questionIdStr);
+
+                // Tìm ExamQuestion tương ứng
+                ExamQuestion examQuestion = examQuestionDAO.findByExamIdAndQuestionId(examId, questionId);
+                if (examQuestion == null) {
+                    // Thử tìm với AiQuestion
+                    examQuestion = examQuestionDAO.findByExamIdAndAiQuestionId(examId, questionId);
+                }
+
+                if (examQuestion != null) {
+                    examQuestion.setStudentAnswer(answer);
+                    examQuestionDAO.update(examQuestion);
+                }
+
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid question ID format: " + questionIdStr);
+            }
         }
     }
 }

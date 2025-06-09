@@ -1,3 +1,5 @@
+USE ASSIGNMENT_PRJ;
+
 CREATE TABLE users (
                        id BIGINT IDENTITY(1,1) PRIMARY KEY,
                        user_name NVARCHAR(100),
@@ -28,7 +30,7 @@ CREATE TABLE course (
                         FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
-CREATE TABLE chapter (
+CREATE TABLE chapterId (
                          id BIGINT IDENTITY(1,1) PRIMARY KEY,
                          title NVARCHAR(255),
                          course_id BIGINT,
@@ -45,7 +47,7 @@ CREATE TABLE lesson (
     order_index INT,
     chapter_id BIGINT,
     FOREIGN KEY (course_id) REFERENCES course(id),
-    FOREIGN KEY (chapter_id) REFERENCES chapter(id)
+    FOREIGN KEY (chapter_id) REFERENCES chapterId(id)
 );
 
 CREATE TABLE material (
@@ -55,7 +57,7 @@ CREATE TABLE material (
                           chapter_id BIGINT,
                           type VARCHAR(50),
                           vectorDbPath VARCHAR(255),
-                          FOREIGN KEY (chapter_id) REFERENCES chapter(id)
+                          FOREIGN KEY (chapter_id) REFERENCES chapterId(id)
 );
 
 CREATE TABLE enrollment (
@@ -73,7 +75,7 @@ CREATE TABLE level (
                        chapter_id BIGINT,
                        level INT,
                        FOREIGN KEY (student_id) REFERENCES users(id),
-                       FOREIGN KEY (chapter_id) REFERENCES chapter(id)
+                       FOREIGN KEY (chapter_id) REFERENCES chapterId(id)
 );
 
 CREATE TABLE exam (
@@ -83,7 +85,7 @@ CREATE TABLE exam (
                       score INT,
                       submitted_at DATETIME,
                       FOREIGN KEY (student_id) REFERENCES users(id),
-                      FOREIGN KEY (chapter_id) REFERENCES chapter(id)
+                      FOREIGN KEY (chapter_id) REFERENCES chapterId(id)
 );
 
 CREATE TABLE question (
@@ -97,7 +99,7 @@ CREATE TABLE question (
                           explain NVARCHAR(MAX),
                           difficulty INT,
                           chapter_id BIGINT,
-                          FOREIGN KEY (chapter_id) REFERENCES chapter(id)
+                          FOREIGN KEY (chapter_id) REFERENCES chapterId(id)
 );
 
 CREATE TABLE ai_question (
@@ -179,12 +181,13 @@ CREATE TABLE blog (
                       created_at DATETIME,
                       updated_at DATETIME
 );
+use ASSIGNMENT_PRJ;
 
 CREATE TABLE blog_user (
                            id BIGINT IDENTITY(1,1) PRIMARY KEY,
                            blog_id BIGINT,
                            user_id BIGINT,
-                           role NVARCHAR(50),
+                           blog_role NVARCHAR(50),
                            assigned_at DATETIME,
                            FOREIGN KEY (blog_id) REFERENCES blog(id),
                            FOREIGN KEY (user_id) REFERENCES users(id)
@@ -206,7 +209,7 @@ VALUES (
            1 -- Giả sử category_id = 1 là "Web Development"
        );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Introduction & Setup', 1, 1),
                                                         (N'Servlet and JSP', 1, 2),
                                                         (N'MVC Architecture & Filters', 1, 3),
@@ -259,7 +262,7 @@ VALUES (
            2  -- Giả sử category_id = 2 tương ứng với Internet of Things
        );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Introduction to IoT', 2, 1),
                                                         (N'Networking & Security in IoT', 2, 2),
                                                         (N'Arduino & Microcontroller Basics', 2, 3),
@@ -309,7 +312,7 @@ VALUES (
            3  -- Giả sử category_id = 3 tương ứng với Statistics & Probability
        );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Introduction to Statistics', 3, 1),
                                                         (N'Probability Theory & Random Variables', 3, 2),
                                                         (N'Discrete Distributions', 3, 3),
@@ -366,7 +369,7 @@ VALUES (
            4 -- Giả sử category_id = 4 tương ứng với Programming Fundamentals
        );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Introduction to Programming and C Language', 4, 1),
                                                         (N'Variables, Expressions, and Operators', 4, 2),
                                                         (N'Logic Constructs and Program Flow', 4, 3),
@@ -424,7 +427,7 @@ VALUES (
            5 -- Giả sử category_id = 5 tương ứng với Discrete Mathematics
        );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Propositional and Predicate Logic', 5, 1),
                                                         (N'Sets, Functions, and Sequences', 5, 2),
                                                         (N'Algorithms and Complexity', 5, 3),
@@ -492,7 +495,7 @@ INSERT INTO course (
              6
          );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Foundations of Communication and Teamwork', 6, 1),
                                                         (N'Group Psychology and Conflict Management', 6, 2),
                                                         (N'Business Communication and Writing Skills', 6, 3),
@@ -526,7 +529,7 @@ INSERT INTO course (
              7
          );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Networking Fundamentals and Protocols', 7, 1),
                                                         (N'IP Addressing and Subnetting', 7, 2),
                                                         (N'Network Device Configuration and Security', 7, 3),
@@ -561,7 +564,7 @@ INSERT INTO course (
              8
          );
 
-INSERT INTO chapter (title, course_id, order_index) VALUES
+INSERT INTO chapterId (title, course_id, order_index) VALUES
                                                         (N'Operating System Fundamentals', 8, 1),
                                                         (N'Process and Memory Management', 8, 2),
                                                         (N'File Systems and I/O Management', 8, 3),
@@ -580,13 +583,6 @@ INSERT INTO lesson (title, description, video_url, course_id, order_index, chapt
                                                                                            (N'Linux Shell Commands', N'Using basic shell commands fluently in Linux environment.', NULL, 8, 1, 51),
                                                                                            (N'Basic C/C++ Programming on Linux', N'Fundamental C/C++ programming and shell scripting basics.', NULL, 8, 2, 51),
                                                                                            (N'Using AI Tools to Explore OS Concepts', N'Applying AI tools like ChatGPT to deepen understanding of OS components.', NULL, 8, 3, 51);
-
-
-
-
-
-
-
 
 
 

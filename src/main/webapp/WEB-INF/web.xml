@@ -11,4 +11,8 @@
             <include-coda>/footer.jsp</include-coda>
         </jsp-property-group>
     </jsp-config>
+    
+    <welcome-file-list>
+        <welcome-file>home.jsp</welcome-file>
+    </welcome-file-list>
 </web-app>

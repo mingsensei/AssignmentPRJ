@@ -1,6 +1,6 @@
 <%
     String uri1 = request.getRequestURI();
-    boolean skipFooter = uri1.contains("login.jsp") || uri1.contains("register.jsp");
+    boolean skipFooter = uri1.contains("login.jsp") || uri1.contains("register.jsp") || uri1.contains("upload-material.jsp");
 
     if (!skipFooter) {
 %>

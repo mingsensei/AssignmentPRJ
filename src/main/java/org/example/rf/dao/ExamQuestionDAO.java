@@ -2,6 +2,7 @@ package org.example.rf.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.example.rf.model.ExamQuestion;
 
@@ -69,4 +70,49 @@ public class ExamQuestionDAO {
         query.setParameter("examId", examId);
         return query.getResultList();
     }
+
+    public ExamQuestion findByExamIdAndQuestionId(Long examId, Long questionId) {
+        TypedQuery<ExamQuestion> query = entityManager.createQuery(
+                "SELECT eq FROM ExamQuestion eq WHERE eq.examId = :examId AND eq.questionId = :questionId",
+                ExamQuestion.class
+        );
+        query.setParameter("examId", examId);
+        query.setParameter("questionId", questionId);
+
+        // Dùng try-catch để tránh lỗi nếu không tìm thấy
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public ExamQuestion findByExamIdAndAiQuestionId(Long examId, Long aiQuestionId) {
+        TypedQuery<ExamQuestion> query = entityManager.createQuery(
+                "SELECT eq FROM ExamQuestion eq WHERE eq.examId = :examId AND eq.aiQuestionId = :aiQuestionId",
+                ExamQuestion.class
+        );
+        query.setParameter("examId", examId);
+        query.setParameter("aiQuestionId", aiQuestionId);
+
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public List<ExamQuestion> findAnsweredExamQuestionByExamId(Long examId) {
+        String jpql = """
+        SELECT eq
+        FROM ExamQuestion eq
+        WHERE eq.examId = :examId
+          AND eq.studentAnswer IS NOT NULL
+    """;
+
+        return entityManager.createQuery(jpql, ExamQuestion.class)
+                .setParameter("examId", examId)
+                .getResultList();
+    }
+
 }

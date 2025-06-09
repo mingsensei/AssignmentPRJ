@@ -2,7 +2,7 @@
 
 <%
     String uri = request.getRequestURI();
-    boolean skipHeader = uri.contains("login.jsp") || uri.contains("register.jsp");
+    boolean skipHeader = uri.contains("login.jsp") || uri.contains("register.jsp") || uri.contains("upload-material.jsp");
 
     if (!skipHeader) {
         HttpSession session1 = request.getSession(false);
