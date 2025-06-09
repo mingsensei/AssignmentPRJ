@@ -1,245 +1,192 @@
-
-.ftco-navbar-light {
-  background: #fff !important;
-  z-index: 3;
+* {
+  margin: 0;
   padding: 0;
-  -webkit-box-shadow: 0px 5px 20px -17px rgba(0, 0, 0, 0.34);
-  -moz-box-shadow: 0px 5px 20px -17px rgba(0, 0, 0, 0.34);
-  box-shadow: 0px 5px 20px -17px rgba(0, 0, 0, 0.34); }
-@media (max-width: 991.98px) {
-  .ftco-navbar-light {
-    background: #fff;
-    position: relative;
-    top: 0;
-    padding: 10px 15px; } }
-.ftco-navbar-light .navbar-brand {
-  color: #000;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 1; }
-.ftco-navbar-light .navbar-brand span {
-  display: block;
-  font-size: 12px;
-  font-weight: 500; }
-.ftco-navbar-light .navbar-brand:hover, .ftco-navbar-light .navbar-brand:focus {
-  color: #000; }
-@media (max-width: 767.98px) {
-  .ftco-navbar-light .navbar-brand {
-    margin-bottom: 20px; } }
-@media (max-width: 991.98px) {
-  .ftco-navbar-light .navbar-nav {
-    padding-bottom: 10px; } }
-.ftco-navbar-light .navbar-nav > .nav-item > .nav-link {
-  font-size: 11px;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  padding-left: 20px;
-  padding-right: 20px;
-  font-weight: 500;
-  color: #1e90ff; /* Màu xanh dương */
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  position: relative;
-  opacity: 1 !important; }
-.ftco-navbar-light .navbar-nav > .nav-item > .nav-link:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  bottom: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin-top: 120px !important;
+}
+
+header {
+  position: fixed;
+  top: 0;
   left: 0;
-  background-color: #3399ff;
-  visibility: hidden;
-  -webkit-transform: scaleX(0);
-  -ms-transform: scaleX(0);
-  transform: scaleX(0);
-  -webkit-transition: all 0.2s ease-in-out 0s;
-  -o-transition: all 0.2s ease-in-out 0s;
-  transition: all 0.2s ease-in-out 0s;
-  z-index: -1; }
-.ftco-navbar-light .navbar-nav > .nav-item > .nav-link:hover {
-  color: white;
-}
-.ftco-navbar-light .navbar-nav > .nav-item > .nav-link:hover:before {
-  visibility: visible;
-  background-color: #0099FF;
-  -webkit-transform: scaleX(1);
-  -ms-transform: scaleX(1);
-  transform: scaleX(1); }
-@media (max-width: 991.98px) {
-  .ftco-navbar-light .navbar-nav > .nav-item > .nav-link {
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: .9rem;
-    padding-bottom: .9rem; }
-  .ftco-navbar-light .navbar-nav > .nav-item > .nav-link:hover {
-    color: #fff; } }
-@media (max-width: 767.98px) {
-  .ftco-navbar-light .navbar-nav > .nav-item > .nav-link {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); } }
-.ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu {
-  border: none;
-  background: #fff;
-  -webkit-box-shadow: 0px 10px 34px -20px rgba(0, 0, 0, 0.41);
-  -moz-box-shadow: 0px 10px 34px -20px rgba(0, 0, 0, 0.41);
-  box-shadow: 0px 10px 34px -20px rgba(0, 0, 0, 0.41);
-  border-radius: 4px; }
-.ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu .dropdown-item {
-  font-size: 12px;
-  color: #000; }
-.ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu .dropdown-item:hover, .ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu .dropdown-item:focus {
-  background: #f1bc31;
-  color: #fff; }
-@media (max-width: 991.98px) {
-  .ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu {
-    display: block !important;
-    background: #fff;
-    -webkit-box-shadow: none;
-    box-shadow: none; } }
-.ftco-navbar-light .navbar-nav > .nav-item.cta > a {
-  color: #fff;
-  background: #f1bc31;
-  border-radius: 0px; }
-@media (max-width: 767.98px) {
-  .ftco-navbar-light .navbar-nav > .nav-item.cta > a {
-    padding-left: 15px;
-    padding-right: 15px; } }
-@media (max-width: 991.98px) {
-  .ftco-navbar-light .navbar-nav > .nav-item.cta > a {
-    color: #fff;
-    background: #f1bc31;
-    border-radius: 4px; } }
-.ftco-navbar-light .navbar-nav > .nav-item.active > a {
-  color: #fff; }
-.ftco-navbar-light .navbar-nav > .nav-item.active > a:before {
-  visibility: visible;
-  background-color:#0099FF;
-  -webkit-transform: scaleX(1);
-  -ms-transform: scaleX(1);
-  border-bottom-left-radius: 5%;
-  border-bottom-right-radius: 5%;
-  transform: scaleX(1); }
-@media (max-width: 991.98px) {
-  .ftco-navbar-light .navbar-nav > .nav-item.active > a {
-    color: #000; }
-  .ftco-navbar-light .navbar-nav > .nav-item.active > a:before {
-    display: none; } }
-.ftco-navbar-light .navbar-toggler {
-  border: none;
-  color: rgba(0, 0, 0, 0.5) !important;
-  cursor: pointer;
-  padding-right: 0;
-  text-transform: uppercase;
-  font-size: 16px;
-  letter-spacing: .1em; }
-.ftco-navbar-light .navbar-toggler:focus {
-  outline: none !important; }
-
-.searchform {
-  height: 46px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-  border-radius: 5px; }
-.searchform .form-control {
-  width: calc(100% - 46px);
-  border: none;
-  background: #fff !important;
-  color: rgba(0, 0, 0, 0.7) !important;
-  font-size: 14px; }
-.searchform .form-control::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
-  color: rgba(0, 0, 0, 0.7) !important; }
-.searchform .form-control::-moz-placeholder {
-  /* Firefox 19+ */
-  color: rgba(0, 0, 0, 0.7) !important; }
-.searchform .form-control:-ms-input-placeholder {
-  /* IE 0+ */
-  color: rgba(0, 0, 0, 0.7) !important; }
-.searchform .form-control:-moz-placeholder {
-  /* Firefox 18- */
-  color: rgba(0, 0, 0, 0.7) !important; }
-.searchform .search {
-  width: 46px;
-  height: 46px; }
-.searchform .search span {
-  font-size: 18px; }
-
-.form-control {
-  height: 46px !important;
-  background: #fff !important;
-  color: #000 !important;
-  font-size: 14px;
-  border-radius: 0px;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.1); }
-.form-control:focus, .form-control:active {
-  border-color: #000; }
-
-.login-button {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  background-color: #1e90ff;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  text-decoration: none;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  transition: background-color 0.3s ease;
+  width: 100%;
   z-index: 999;
+  transition: all 0.3s ease;
 }
 
-.logup-button {
-  position: absolute;
-  top: 30px;
-  right: 8rem;
+/* Thêm phần này vào style.css */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 40px;
+  background: rgba(240, 248, 255, 0.7); /* AliceBlue mờ */
+  backdrop-filter: blur(10px);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.5s ease;
+  z-index: 1000;
+}
+
+.navbar.scrolled {
+  background-color: rgba(240, 248, 255, 0.7); /* màu trắng xám mờ */
+  backdrop-filter: none;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.navbar.hide {
+  transform: translateY(-110%);
+  transition: transform 0.5s ease;
+}
+
+.navbar:not(.hide) {
+  transform: translateY(0);
+  transition: transform 0.5s ease;
+}
+
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0066FF;
+  text-decoration: none;
+}
+
+.navbar-brand span {
+  color: #00a0fb;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 25px;
+  height: 100%;
+  min-width: 35%;
+  margin-right: 20%;
+}
+
+.navbar ul li a {
   color: #00a0fb;
   text-decoration: none;
-  z-index: 999;
+  font-weight: 500;
+  font-size: 21px;
+  transition: color 0.2s;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.login-button:hover {
-  background-color: #004080;
-}
-#ftco-navbar {
-  position: relative; /* Cho phép nút con định vị tương đối với navbar */
-}
-.elementor-sticky--effects {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  transition: background-color 1s ease !important;
-}
-
-.elementor-sticky--effects > .elementor-container {
-  min-height: 70px;
-  transition: min-height 1s ease !important;
-}
-
-.elementor-sticky--effects .header-img img {
-  max-width: 150px;
-  height: auto;
-  transition: all 0.5s ease;
-}
-
-/* Logo mặc định khi không sticky */
-.header-img img {
-  max-width: 170px;
-  height: auto;
-  transition: all 0.5s ease;
+.navbar ul li {
+  flex: 1;
 }
 
 
-.nav-link{
-  font-size: larger !important;
-  font-weight: bolder !important;
+.navbar ul li a:hover {
+  color: #3366CC;
+
+  border-radius: 2px;
 }
 
-.navbar-brand{
-  font-weight: 700 !important;
-  font-size: 20px !important;
+.searchform {
+  position: absolute;
+  top: 50%;
+  right: 20%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  width: auto; /* ❗️Không giới hạn width nữa */
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding-right: 0px; /* để không bị đụng nút */
+  z-index: 10;
+}
+
+.searchform input {
+  width: 0;
+  opacity: 0;
+  padding: 8px 0;
+  border: none;
+  outline: none;
+  transition: all 0.4s ease;
+  font-size: 16px;
+  border-radius: 20px 0 0 20px;
+  background: transparent;
+}
+
+.searchform:hover input {
+  width: 200px;
+  opacity: 1;
+  padding: 10px 16px;
+}
+
+.searchform button {
+  padding: 10px 12px;
+  background-color: #3399FF;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.auth-buttons a {
+  padding: 6px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  border: 1px solid#00a0fb;
+  color: #00a0fb;
+  transition: 0.3s;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.auth-buttons a:hover {
+  background-color: #00a0fb;
+  color: whitesmoke;
+  border-color: #00a0fb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 20px;
+  }
+
+  .navbar ul {
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .searchform {
+    margin: 10px 0;
+    width: 100%;
+  }
+
+  .auth-buttons {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: flex-start;
+  }
 }

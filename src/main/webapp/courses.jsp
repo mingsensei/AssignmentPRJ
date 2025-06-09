@@ -25,16 +25,9 @@
         </c:forEach>
     </div>
 </div>
-<div class="dots" id="carouselDots">
-    <span class="dot active"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-</div>
-
+<div class="dots" id="carouselDots"></div>
 
 <!-- ===== TẤT CẢ KHOÁ HỌC ===== -->
-
 <h2>Tất cả khoá học</h2>
 <div class="course-grid">
     <c:forEach var="course" items="${courseList}">
@@ -50,6 +43,9 @@
     </c:forEach>
 </div>
 
+<script src="<%= request.getContextPath() %>/js/carousel.js"></script>
+</body>
+</html>
 <!-- ===== JS SLIDER ===== -->
 <script>
     const track = document.getElementById('carouselTrack');
@@ -79,6 +75,5 @@
         });
     });
 </script>
-
 </body>
 </html>

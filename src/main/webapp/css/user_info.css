@@ -1,12 +1,11 @@
 
 body {
     background: #e6f0ff;
-    color: #003366;
     min-height: 100vh;
 }
 
 .container12 {
-    margin: 8% auto;
+    margin: 4% auto 7% auto;
     display: flex;
     width: 80vw; /* rộng 70% màn hình */
     max-width: 1200px;
@@ -132,16 +131,16 @@ body {
     background: #004080;
     box-shadow: 0 6px 14px rgba(0,64,128,0.6);
 }
-
-form label {
+body form label {
     display: block;
     margin-top: 20px;
     font-weight: 600;
     font-size: 14px;
 }
-form input[type="text"],
-form input[type="email"],
-form input[type="password"] {
+
+body form input[type="text"],
+body form input[type="email"],
+body form input[type="password"] {
     width: 80%;
     padding: 10px 12px;
     margin-top: 6px;
@@ -151,13 +150,15 @@ form input[type="password"] {
     box-sizing: border-box;
     transition: border-color 0.3s;
 }
-form input[type="text"]:focus,
-form input[type="email"]:focus,
-form input[type="password"]:focus {
+
+body form input[type="text"]:focus,
+body form input[type="email"]:focus,
+body form input[type="password"]:focus {
     border-color: #004080;
     outline: none;
 }
-form button {
+
+body form button {
     margin-top: 28px;
     padding: 12px 22px;
     background: #1e90ff;
@@ -169,13 +170,9 @@ form button {
     border-radius: 6px;
     transition: background 0.3s;
 }
-form button:hover {
+
+body form button:hover {
     background: #004080;
-}
-ul {
-    font-size: 14px;
-    line-height: 1.8;
-    padding-left: 20px;
 }
 
 .logout-button {
