@@ -3,8 +3,10 @@ package org.example.rf.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import org.example.rf.dto.AnswerCheckDTO;
 import org.example.rf.model.Exam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExamDAO {
@@ -83,4 +85,33 @@ public class ExamDAO {
         query.setParameter("chapterId", chapterId);
         return query.getResultList();
     }
+
+    public List<AnswerCheckDTO> findAnswerChecks(Long examId) {
+        String sql = """
+        SELECT eq.student_answer, aiq.correct_option
+        FROM exam e
+        JOIN exam_question eq ON e.id = eq.exam_id
+        JOIN ai_question aiq ON eq.ai_question_id = aiq.id
+        WHERE e.id = :examId
+          AND eq.student_answer IS NOT NULL
+    """;
+
+        List<Object[]> results = entityManager.createNativeQuery(sql)
+                .setParameter("examId", examId)
+                .getResultList();
+
+        List<AnswerCheckDTO> dtos = new ArrayList<>();
+        for (Object[] row : results) {
+            String studentAnswer = String.valueOf(row[0]);
+            String correctAnswer = String.valueOf(row[1]);
+
+            dtos.add(new AnswerCheckDTO(studentAnswer, correctAnswer));
+        }
+
+        return dtos;
+    }
+
+
+
+
 }

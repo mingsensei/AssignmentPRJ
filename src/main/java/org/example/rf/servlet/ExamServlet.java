@@ -6,9 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.rf.dto.QuestionResponse;
-import org.example.rf.model.Exam;
-import org.example.rf.model.Level;
-import org.example.rf.model.User;
+import org.example.rf.model.*;
 import org.example.rf.service.*;
 
 import java.io.IOException;
@@ -24,6 +22,7 @@ public class ExamServlet extends HttpServlet {
     private final ExamQuestionService examQuestionService = new ExamQuestionService();
     private final QuestionService questionService = new QuestionService();
     private final ChapterService chapterService = new ChapterService();
+    private final CourseService courseService = new CourseService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,6 +34,10 @@ public class ExamServlet extends HttpServlet {
             handleExamSetupGet(request, response);
         } else if (pathInfo.equals("/setup")) {
             handleExamSetupGet(request, response);
+        } else if (pathInfo.equals("/setup/demo")) {
+            handleExamSetupDemoGet(request, response);
+        }else if (pathInfo.equals("/result")) {
+            examResultGet(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -58,6 +61,14 @@ public class ExamServlet extends HttpServlet {
         String chapterId = request.getParameter("chapterId");
         request.setAttribute("chapterId", chapterId);
         request.getRequestDispatcher("/setupExam.jsp").forward(request, response);
+    }
+
+    private void handleExamSetupDemoGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Course> courseList = courseService.getAllCourses();
+        List<Chapter> chapterList = chapterService.getAllChapters();
+        request.setAttribute("courses", courseList);
+        request.setAttribute("chapters", chapterList);
+        request.getRequestDispatcher("/examSetupDemo.jsp").forward(request, response);
     }
 
     private void handleExamPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -87,6 +98,16 @@ public class ExamServlet extends HttpServlet {
         List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId, exam);
         request.setAttribute("questionList", questionList);
         request.getRequestDispatcher("/exam.jsp").forward(request, response);
+    }
+
+    private void examResultGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long examId = Long.parseLong(request.getParameter("examId"));
+        request.setAttribute("examId", examId);
+        int result = examService.getResultByExamIdAndStudentId(examId);
+        request.setAttribute("result", result);
+        int examSize = examService.getSizeByExamId(examId);
+        request.setAttribute("examSize", examSize);
+        request.getRequestDispatcher("/examResult.jsp").forward(request, response);
     }
 
     private void handleExamSubmit(HttpServletRequest request, HttpServletResponse response)
@@ -180,5 +201,7 @@ public class ExamServlet extends HttpServlet {
         }
         return difficulty;
     }
+
+
 
 }
