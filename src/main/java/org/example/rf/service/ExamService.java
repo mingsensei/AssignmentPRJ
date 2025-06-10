@@ -2,6 +2,7 @@ package org.example.rf.service;
 
 import org.example.rf.api.python.PythonApiClient;
 import org.example.rf.dao.*;
+import org.example.rf.dto.AnswerCheckDTO;
 import org.example.rf.dto.QuestionRequestPython;
 import org.example.rf.dto.QuestionResponse;
 import org.example.rf.model.*;
@@ -203,5 +204,21 @@ public class ExamService {
 //            }
         String vectorDbPath = materialList.get(0).getVectorDbPath();
         return pythonApiClient.generateQuestion(numAiQuestions, difficulty, vectorDbPath);
+    }
+
+    public int getResultByExamIdAndStudentId(Long examId) {
+        List<AnswerCheckDTO> answerCheckDTOList = examDAO.findAnswerChecks(examId);
+        int resultCount = 0;
+        for (AnswerCheckDTO answerCheckDTO : answerCheckDTOList) {
+            if(answerCheckDTO.getStudentAnswer().equals(answerCheckDTO.getCorrectOption())) {
+                resultCount++;
+            }
+        };
+        return resultCount;
+    }
+
+    public int getSizeByExamId(Long examId) {
+        List<AnswerCheckDTO> answerCheckDTOList = examDAO.findAnswerChecks(examId);
+        return answerCheckDTOList.size();
     }
 }
