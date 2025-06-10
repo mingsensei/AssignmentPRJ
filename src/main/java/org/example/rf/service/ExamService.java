@@ -80,6 +80,9 @@ public class ExamService {
         int numAiQuestions = numQuestions - questionList.size();
         if(questionList.isEmpty() || numAiQuestions > 0) {
             aiQuestionList = getGeneratedAiQuestions(chapterId, numAiQuestions, difficulty);
+            if(aiQuestionList == null) {
+                return null;
+            }
         }
 
         aiQuestionList.forEach(aiQuestionDAO::create);
@@ -198,6 +201,9 @@ public class ExamService {
 
     private List<AiQuestion> getGeneratedAiQuestions(Long chapterId, int numAiQuestions, int difficulty) throws IOException {
         List<Material> materialList =  materialDAO.findAllByChapterId(chapterId);
+        if(materialList.isEmpty()) {
+            return null;
+        }
 //            List<String> vectorDbPathList = new ArrayList<>();
 //            for (Material material : materialList) {
 //                vectorDbPathList.add(material.getVectorDbPath());
@@ -218,7 +224,7 @@ public class ExamService {
     }
 
     public int getSizeByExamId(Long examId) {
-        List<AnswerCheckDTO> answerCheckDTOList = examDAO.findAnswerChecks(examId);
-        return answerCheckDTOList.size();
+        List<ExamQuestion> examQuestionList = examQuestionDAO.findByExamId(examId);
+        return examQuestionList.size();
     }
 }

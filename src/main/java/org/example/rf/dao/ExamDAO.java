@@ -86,6 +86,7 @@ public class ExamDAO {
         return query.getResultList();
     }
 
+
     public List<AnswerCheckDTO> findAnswerChecks(Long examId) {
         String sql = """
         SELECT eq.student_answer, aiq.correct_option

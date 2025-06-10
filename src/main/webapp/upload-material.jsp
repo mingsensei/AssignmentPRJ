@@ -110,6 +110,19 @@ charset=UTF-8" pageEncoding="UTF-8" import="java.util.List, org.example.rf.model
     </form>
 </div>
 
+<div style="margin-top: 30px; text-align: center;">
+    <a href="${pageContext.request.contextPath}/home" style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+    ">← Về trang chủ</a>
+</div>
+
+
 <script>
     document.getElementById('courseId').addEventListener('change', function () {
         const courseId = this.value;

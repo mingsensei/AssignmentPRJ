@@ -96,6 +96,10 @@ public class ExamServlet extends HttpServlet {
         Exam exam= examService.createNewExam(chapterId, studentId);
         request.getSession().setAttribute("examId", exam.getId().toString());
         List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId, exam);
+        if(questionList.isEmpty()) {
+            response.getWriter().println("No materials found.");
+            request.getSession().removeAttribute("examId");
+        }
         request.setAttribute("questionList", questionList);
         request.getRequestDispatcher("/exam.jsp").forward(request, response);
     }
