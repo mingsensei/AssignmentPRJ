@@ -1,29 +1,57 @@
 package org.example.rf.dao;
 
-import jakarta.persistence.NoResultException;
-import org.example.rf.model.Order;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import org.example.rf.model.Order;
 
 import java.util.List;
 
 public class OrderDAO {
-
     private final EntityManager entityManager;
 
     public OrderDAO(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    public void create(Order order) {
-        EntityTransaction tx = entityManager.getTransaction();
+    public Order findPendingOrderByUserId(Long userId) {
+        TypedQuery<Order> query = entityManager.createQuery(
+            "SELECT o FROM Order o WHERE o.user.id = :userId AND o.status = 'pending' ORDER BY o.createdAt DESC",
+            Order.class
+        );
+        query.setParameter("userId", userId);
+        query.setMaxResults(1);
+        
+        List<Order> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
+
+    public Order create(Order order) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            tx.begin();
+            transaction.begin();
             entityManager.persist(order);
-            tx.commit();
+            transaction.commit();
+            return order;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
+    public Order update(Order order) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Order updatedOrder = entityManager.merge(order);
+            transaction.commit();
+            return updatedOrder;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             throw e;
         }
     }
@@ -32,55 +60,34 @@ public class OrderDAO {
         return entityManager.find(Order.class, id);
     }
 
-    public void update(Order order) {
-        EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            entityManager.merge(order);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }
+    public List<Order> findByUserId(Long userId) {
+        TypedQuery<Order> query = entityManager.createQuery(
+            "SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC",
+            Order.class
+        );
+        query.setParameter("userId", userId);
+        return query.getResultList();
     }
 
     public void delete(Long id) {
-        EntityTransaction tx = entityManager.getTransaction();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            tx.begin();
+            transaction.begin();
             Order order = entityManager.find(Order.class, id);
             if (order != null) {
                 entityManager.remove(order);
             }
-            tx.commit();
+            transaction.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             throw e;
         }
     }
 
     public List<Order> findAll() {
         TypedQuery<Order> query = entityManager.createQuery("SELECT o FROM Order o", Order.class);
-        return query.getResultList();
-    }
-
-    public Order findByUserId(Long userId) {
-        TypedQuery<Order> query = entityManager.createQuery(
-                "SELECT o FROM Order o WHERE o.user.id = :userId", Order.class);
-        query.setParameter("userId", userId);
-
-        try {
-            return query.setMaxResults(1).getSingleResult(); // lấy 1 kết quả duy nhất (nếu có)
-        } catch (NoResultException e) {
-            return null; // không tìm thấy
-        }
-    }
-
-
-    public List<Order> findByStatus(String status) {
-        TypedQuery<Order> query = entityManager.createQuery(
-                "SELECT o FROM Order o WHERE o.status = :status", Order.class);
-        query.setParameter("status", status);
         return query.getResultList();
     }
 }

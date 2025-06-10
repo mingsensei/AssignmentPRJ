@@ -30,7 +30,7 @@
         <ul>
             <li><a  class="<%= uri.contains("category") || uri.contains("course") ? "active" : "" %>" href="<%= request.getContextPath() %>/category">Course</a></li>
             <li><a  class="<%= uri.contains("ai-agent") ? "active" : "" %>" href="<%= request.getContextPath() %>/ai-agent">AI Agent</a></li>
-            <li><a  class="<%= uri.contains("exam") ? "active" : "" %>" href="<%= request.getContextPath() %>/exam">AI Exam</a></li>
+            <li><a  class="<%= uri.contains("exam") ? "active" : "" %>" href="<%= request.getContextPath() %>/exam/setup/demo">AI Exam</a></li>
             <li><a   class="<%= uri.contains("blog") ? "active" : "" %>" href="<%= request.getContextPath() %>/blog">Blog</a></li>
             <li><a   class="<%= uri.contains("blog") ? "active" : "" %>" href="<%= request.getContextPath() %>/about">About</a></li>
         </ul>
@@ -116,4 +116,3 @@
 
 
 </script>
-

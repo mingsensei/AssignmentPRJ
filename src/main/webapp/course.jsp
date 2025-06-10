@@ -111,6 +111,24 @@
         padding: 20px;
       }
     }
+
+    .buy-now-btn {
+      text-decoration: none;
+      background-color: #1E90FF;
+      color: white;
+      padding: 10px 20px;
+      font-size: 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      height: 62px;
+      width: 150px;
+    }
+
+    .buy-now-btn:hover {
+      background-color: #0d75d8;
+    }
   </style>
 </head>
 <%@ include file="header.jsp" %>
@@ -126,30 +144,11 @@
     </div>
     <div class="price_buy">
       <div class="course-price">${course.price} VNĐ</div>
-      <a href="<%= request.getContextPath() %>/cart">
-        <button
-                style="
-                text-decoration: none;
-    background-color: #1E90FF;
-    color: white;
-    padding: 10px 20px;
-    font-size: 24px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    height: 62px;
-    width: 150px;
-    "
-                onmouseover="this.style.backgroundColor='#0d75d8'"
-                onmouseout="this.style.backgroundColor='#1E90FF'">
-          Buy Now
-        </button>
-
-      </a>
+      <form action="${pageContext.request.contextPath}/add-to-cart" method="post">
+        <input type="hidden" name="courseId" value="${course.id}">
+        <button type="submit" class="buy-now-btn">Buy Now</button>
+      </form>
     </div>
-
-
   </div>
 </div>
 

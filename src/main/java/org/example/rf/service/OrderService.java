@@ -1,28 +1,27 @@
 package org.example.rf.service;
 
+import jakarta.persistence.EntityManager;
 import org.example.rf.dao.OrderDAO;
 import org.example.rf.model.Order;
 import org.example.rf.model.OrderItem;
 import org.example.rf.util.JPAUtil;
 
-import jakarta.persistence.EntityManager;
-
 import java.util.List;
 
 public class OrderService {
-
-    private final EntityManager em;
     private final OrderDAO orderDAO;
-    private OrderItemService orderItemService= new OrderItemService();
+    private final EntityManager entityManager;
+    private OrderItemService orderItemService;
 
     public OrderService() {
-        this.em = JPAUtil.getEntityManager();  // Tạo EntityManager 1 lần khi khởi tạo service
-        this.orderDAO = new OrderDAO(em);      // Tạo DAO 1 lần với EntityManager đó
+        this.entityManager = JPAUtil.getEntityManager();
+        this.orderDAO = new OrderDAO(entityManager);
+        this.orderItemService = new OrderItemService();
     }
 
     // Tạo mới đơn hàng
-    public void createOrder(Order order) {
-        orderDAO.create(order);
+    public Order createOrder(Order order) {
+        return orderDAO.create(order);
     }
 
     // Tìm đơn hàng theo ID
@@ -31,8 +30,8 @@ public class OrderService {
     }
 
     // Cập nhật đơn hàng
-    public void updateOrder(Order order) {
-        orderDAO.update(order);
+    public Order updateOrder(Order order) {
+        return orderDAO.update(order);
     }
 
     // Xóa đơn hàng theo ID
@@ -47,15 +46,29 @@ public class OrderService {
 
     // Đóng EntityManager khi không còn dùng nữa
     public void close() {
-        if (em != null && em.isOpen()) {
-            em.close();
+        if (entityManager != null && entityManager.isOpen()) {
+            entityManager.close();
         }
     }
+
     public List<OrderItem> getOrderItemsByUserId(Long userId) {
-        List<OrderItem> allItems = new java.util.ArrayList<>();
+        // Tìm order pending của user
+        Order pendingOrder = orderDAO.findPendingOrderByUserId(userId);
+        
+        // Nếu không có order pending, trả về list rỗng
+        if (pendingOrder == null) {
+            return new java.util.ArrayList<>();
+        }
+        
+        // Lấy danh sách order items từ order pending
+        return orderItemService.getOrderItemsByOrderId(pendingOrder.getId());
+    }
 
-       allItems =orderItemService.getOrderItemsByOrderId(orderDAO.findByUserId(userId).getId());
+    public Order findPendingOrderByUserId(Long userId) {
+        return orderDAO.findPendingOrderByUserId(userId);
+    }
 
-        return allItems;
+    public List<Order> getOrdersByUserId(Long userId) {
+        return orderDAO.findByUserId(userId);
     }
 }
