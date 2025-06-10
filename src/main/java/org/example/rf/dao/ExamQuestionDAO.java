@@ -66,7 +66,7 @@ public class ExamQuestionDAO {
 
     public List<ExamQuestion> findByExamId(Long examId) {
         TypedQuery<ExamQuestion> query = entityManager.createQuery(
-                "SELECT eq FROM ExamQuestion eq WHERE eq.exam.id = :examId", ExamQuestion.class);
+                "SELECT eq FROM ExamQuestion eq WHERE eq.examId = :examId", ExamQuestion.class);
         query.setParameter("examId", examId);
         return query.getResultList();
     }
