@@ -25,7 +25,7 @@
 
 <header>
     <nav class="navbar" id="main-navbar">
-        <a class="navbar-brand" href="<%= request.getContextPath() %>/">NMQ AI <span>Education</span></a>
+        <a class="navbar-brand" href="<%= request.getContextPath() %>/home">NMQ AI <span>Education</span></a>
 
         <ul>
             <li><a  class="<%= uri.contains("category") || uri.contains("course") ? "active" : "" %>" href="<%= request.getContextPath() %>/category">Course</a></li>

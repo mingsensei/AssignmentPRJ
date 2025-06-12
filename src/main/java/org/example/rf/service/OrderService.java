@@ -6,6 +6,7 @@ import org.example.rf.model.Order;
 import org.example.rf.model.OrderItem;
 import org.example.rf.util.JPAUtil;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderService {
@@ -70,5 +71,20 @@ public class OrderService {
 
     public List<Order> getOrdersByUserId(Long userId) {
         return orderDAO.findByUserId(userId);
+    }
+    public BigDecimal calculateTotalAmount(Long orderId) {
+        List<OrderItem> items = orderItemService.getOrderItemsByOrderId(orderId);
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (OrderItem item : items) {
+            if (item.getPrice() != null) {
+                total = total.add(item.getPrice());
+            }
+        }
+        Order order = this.getOrderById(orderId);
+        order.setTotalAmount(total);
+        orderDAO.update(order);
+        return total;
     }
 }

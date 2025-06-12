@@ -73,7 +73,7 @@ public class AddToCartServlet extends HttpServlet {
                 orderItemService.createOrderItem(orderItem);
 
                 // Cập nhật tổng tiền của order
-                pendingOrder.setTotalAmount(pendingOrder.getTotalAmount().add(new BigDecimal(course.getPrice().toString())));
+                pendingOrder.setTotalAmount(orderService.calculateTotalAmount(pendingOrder.getId()));
                 orderService.updateOrder(pendingOrder);
             }
 

@@ -86,8 +86,13 @@
             </div>
 
             <div class="float-right">
-                <button type="button"  href="<%= request.getContextPath() %>/category" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</button>
-                <button type="button" class="btn btn-lg btn-primary mt-2">Checkout</button>
+                <c:set var="order" value="${requestScope.order}" />
+                <a   href="<%= request.getContextPath() %>/category" >
+                    <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</button>
+                </a>
+                <a href="<%= request.getContextPath() %>/payment?action=pay&order=${order.id}&amount=${total}">
+                    <button type="button" class="btn btn-lg btn-primary mt-2">Checkout</button>
+                </a>
             </div>
 
         </div>

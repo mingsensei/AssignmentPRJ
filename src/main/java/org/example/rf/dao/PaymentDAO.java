@@ -69,4 +69,11 @@ public class PaymentDAO {
         query.setParameter("orderId", orderId);
         return query.getResultList();
     }
+    public List<Payment> findByUserId(Long userId) {
+        TypedQuery<Payment> query = entityManager.createQuery(
+                "SELECT p FROM Payment p WHERE p.order.user.id = :userId", Payment.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
 }
