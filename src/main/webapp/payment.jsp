@@ -73,11 +73,11 @@
         const accountNo = "0773304009";
         const template = "compact2";
 
-        const amount = ${totalAmount}; // là số, không cần dấu nháy
+        const amount = "${totalAmount}"; // là số, không cần dấu nháy
         const message = "${message}";  // là chuỗi, PHẢI có dấu nháy
         const accountName = encodeURIComponent("DUONG HONG MINH");
 
-        const qrURL = `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${amount}&addInfo=${message}&accountName=${accountName}`;
+        const qrURL = `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${totalAmount}&addInfo=${message}&accountName=${accountName}`;
 
         console.log("QR URL:", qrURL); // để kiểm tra
         document.getElementById("qr-vietqr").src = qrURL;

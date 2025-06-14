@@ -31,12 +31,12 @@ public class PaymentServlet extends HttpServlet {
         if ("pay".equals(action)) {
             Long id = Long.parseLong(request.getParameter("order"));
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
-            int rounded = amount.setScale(0, RoundingMode.HALF_UP).intValue(); // → 359
             amount = amount.divide(new BigDecimal(10));
+            int rounded = amount.setScale(0, RoundingMode.HALF_UP).intValue(); // → 359
             // Create message with user ID and order ID
             String message = user.getId() + "_" + id+ "_" + amount;
-
-            request.setAttribute("totalAmount", rounded);
+            String amountString = Integer.toString(rounded);
+            request.setAttribute("totalAmount", amountString);
             request.setAttribute("message", message);
             request.setAttribute("bankId", "mbbank");
             request.setAttribute("accountNo", "0773304009");
