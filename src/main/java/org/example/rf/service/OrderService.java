@@ -42,7 +42,12 @@ public class OrderService {
 
     // Lấy danh sách tất cả đơn hàng
     public List<Order> getAllOrders() {
-        return orderDAO.findAll();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return new OrderDAO(em).findAll();
+        } finally {
+            em.close();
+        }
     }
 
     // Đóng EntityManager khi không còn dùng nữa

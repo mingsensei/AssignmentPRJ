@@ -74,6 +74,10 @@ public class User {
     public String toString() {
         return "User{" + "id=" + id + ", userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", role=" + role + ", phone=" + phone + ", password=" + password + ", googleId=" + googleId + '}';
     }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
     
     
 }
