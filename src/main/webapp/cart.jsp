@@ -6,30 +6,24 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <head>
     <title>Cart</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.min.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cart.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script>
+        var contextPath = '<%= request.getContextPath() %>';
+    </script>
 </head>
 <%@ include file="header.jsp" %>
 
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-</head>
 <body>
-
+<%@ include file="menu.jsp" %>
 <div class="container px-3 my-5 clearfix">
     <div class="card" style="border-radius: 10px">
         <div class="card-header" style="background-color: #3399FF; border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <h2 style="margin-left: 20px; color: whitesmoke;">Cart</h2>
+            <h2 style="margin-left: 20px; color: whitesmoke;"></h2>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -49,17 +43,21 @@
                         <tr>
                             <td class="p-4">
                                 <div class="media align-items-center">
-                                    <img src="${item.imageUrl}" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                                    <img src="${pageContext.request.contextPath}/images/course${item.course.id}.webp"
+                                         class="d-block ui-w-40 ui-bordered mr-4"
+                                         alt=""
+                                         style="width: 40px; height: 40px; object-fit: cover">
+
                                     <div class="media-body">
-                                        <a href="#" class="d-block text-dark">${item.name}</a>
+                                        <a href="#" class="d-block text-dark">${item.course.name}</a>
                                     </div>
                                 </div>
                             </td>
                             <td class="text-right font-weight-semibold align-middle p-4">$${item.price}</td>
                             <td class="align-middle p-4"><input type="text" class="form-control text-center" value="1"></td>
-                            <td class="text-right font-weight-semibold align-middle p-4">$<c:out value="${item.price * item.quantity}" /></td>
+                            <td class="text-right font-weight-semibold align-middle p-4">$<c:out value="${item.price}" /></td>
                             <td class="text-center align-middle px-0">
-                                <a href="#" class="remove-item shop-tooltip close float-none text-danger" data-index="${status.index}" title="Remove">×</a>
+                                <a href="#" class="remove-item shop-tooltip close float-none text-danger" data-id="${item.id}" title="Remove">×</a>
                             </td>
 
                         </tr>
@@ -80,10 +78,6 @@
                         <label class="text-muted font-weight-normal m-0">Total price</label>
                         <div class="text-large">
                             <strong>
-                                $<c:set var="total" value="0" scope="page" />
-                                <c:forEach var="item" items="${orderItems}">
-                                    <c:set var="total" value="${total + (item.price * item.quantity)}" />
-                                </c:forEach>
                                 <c:out value="${total}" />
                             </strong>
                         </div>
@@ -92,14 +86,21 @@
             </div>
 
             <div class="float-right">
-                <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</button>
-                <button type="button" class="btn btn-lg btn-primary mt-2">Checkout</button>
+                <c:set var="order" value="${requestScope.order}" />
+                <a   href="<%= request.getContextPath() %>/category" >
+                    <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</button>
+                </a>
+                <a href="<%= request.getContextPath() %>/payment?action=pay&order=${order.id}&amount=${total}">
+                    <button type="button" class="btn btn-lg btn-primary mt-2">Checkout</button>
+                </a>
             </div>
 
         </div>
     </div>
 </div>
 </body>
+<!-- Load jQuery trước -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Sau đó mới load cart.js -->
 <script src="<%= request.getContextPath() %>/js/cart.js"></script>
 <%@ include file="footer.jsp" %>
-</html>

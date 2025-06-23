@@ -16,16 +16,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Font Awesome (cho icon search) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.min.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/footer.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/header.css">
 
 
 </head>
+<style>
+    a{
+        text-decoration: none;
+    }
+</style>
 
 <header>
     <nav class="navbar" id="main-navbar">
-        <a class="navbar-brand" href="<%= request.getContextPath() %>/">NMQ AI <span>Education</span></a>
+        <a class="navbar-brand" href="<%= request.getContextPath() %>/home">NMQ AI <span>Education</span></a>
 
         <ul>
             <li><a  class="<%= uri.contains("category") || uri.contains("course") ? "active" : "" %>" href="<%= request.getContextPath() %>/category">Course</a></li>
@@ -116,4 +121,3 @@
 
 
 </script>
-

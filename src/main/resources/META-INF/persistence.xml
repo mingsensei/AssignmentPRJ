@@ -25,9 +25,9 @@
         <properties>
             <!-- Cấu hình kết nối SQL Server -->
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=AssignmentPRJ;encrypt=true;trustServerCertificate=true" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1444;databaseName=AssignmentPRJ;encrypt=true;trustServerCertificate=true" />
             <property name="jakarta.persistence.jdbc.user" value="sa" />
-            <property name="jakarta.persistence.jdbc.password" value="123" />
+            <property name="jakarta.persistence.jdbc.password" value="12345Minh@" />
 
             <!-- Hibernate dialect cho SQL Server -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />

@@ -3,11 +3,15 @@ package org.example.rf.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "exam_question")
 @Builder
 @AllArgsConstructor
+@Getter
+@Setter
 public class ExamQuestion {
 
     @Id
@@ -26,58 +30,11 @@ public class ExamQuestion {
     @Column(name = "question_order")
     private int questionOrder;
 
+    @Setter
     @Column(name = "student_answer", length = 1)
     private String studentAnswer;
 
     public ExamQuestion() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getExam() {
-        return examId;
-    }
-
-    public void setExam(Long examId) {
-        this.examId = examId;
-    }
-
-    public Long getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
-    }
-
-    public Long getAiQuestionId() {
-        return aiQuestionId;
-    }
-
-    public void setAiQuestionId(Long aiQuestionId) {
-        this.aiQuestionId = aiQuestionId;
-    }
-
-    public int getQuestionOrder() {
-        return questionOrder;
-    }
-
-    public void setQuestionOrder(int questionOrder) {
-        this.questionOrder = questionOrder;
-    }
-
-    public String getStudentAnswer() {
-        return studentAnswer;
-    }
-
-    public void setStudentAnswer(String studentAnswer) {
-        this.studentAnswer = studentAnswer;
     }
 }
