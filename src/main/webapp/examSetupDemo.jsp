@@ -1,80 +1,89 @@
-<%@ page language="java" contentType="text/html;
-charset=UTF-8" pageEncoding="UTF-8" import="java.util.List, org.example.rf.model.Course" %>
 <%@ page import="org.example.rf.model.Course" %>
-<!DOCTYPE html>
+<%@ page import="java.util.List" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Upload PDF Material</title>
+    <title>Kiểm tra trắc nghiệm</title>
     <style>
-        /* Giữ nguyên style cũ */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px;
         }
+
         .container {
-            width: 600px;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 5px;
+            max-width: 700px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
         }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
-        input[type="text"], select {
+
+        input, select {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        input[type="file"] {
-            padding: 8px 0;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        button[type="submit"] {
+            padding: 10px 20px;
             font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
         }
-        button:hover {
-            background-color: #45a049;
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
         }
-        .error {
-            color: red;
+
+        .upload-button-wrapper {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+        }
+
+        .upload-button-wrapper a {
+            text-decoration: none;
+            padding: 10px 18px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 15px;
         }
-        .success {
-            color: green;
-            font-weight: bold;
-            margin-bottom: 15px;
+
+        .upload-button-wrapper a:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Upload PDF Material</h1>
 
-    <form action="<%= request.getContextPath() %>/material/uploads" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="title">Tiêu đề:</label>
-            <input type="text" id="title" name="title" required>
-        </div>
+    <!-- Nút thêm tài liệu bên phải -->
+    <div class="upload-button-wrapper">
+        <a href="${pageContext.request.contextPath}/material">+ Thêm tài liệu</a>
+    </div>
 
+    <form action="${pageContext.request.contextPath}/exam" method="post">
         <div class="form-group">
             <label for="courseId">Môn học:</label>
             <select id="courseId" name="courseId" required>
@@ -100,12 +109,25 @@ charset=UTF-8" pageEncoding="UTF-8" import="java.util.List, org.example.rf.model
         </div>
 
         <div class="form-group">
-            <label for="pdfFile">Chọn file PDF:</label>
-            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+            <label for="numQuestionsParam">Số câu hỏi:</label>
+            <input type="number" id="numQuestionsParam" name="numQuestionsParam" required>
         </div>
 
         <div class="form-group">
-            <button type="submit">Tải lên</button>
+            <label for="difficulty">Độ khó:</label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="">--Chọn độ khó--</option>
+                <option value="ai">AI tự xác định</option>
+                <option value="veryEasy">Rất dễ</option>
+                <option value="easy">Dễ</option>
+                <option value="medium">Trung bình</option>
+                <option value="hard">Khó</option>
+                <option value="veryHard">Rất khó</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Bắt đầu</button>
         </div>
     </form>
 </div>
