@@ -13,6 +13,8 @@ import org.example.rf.util.HashPassword;
 
 import java.io.IOException;
 
+import static org.example.rf.model.User.Role.ADMIN;
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -41,14 +43,18 @@ public class LoginServlet extends HttpServlet {
         if (user != null && user.getPassword().equals(HashPassword.hashPassword(password))) {
             session.setAttribute("user", user);
             session.setAttribute("userId", user.getId().toString());
-            session.setMaxInactiveInterval(60 * 60);
+            session.setMaxInactiveInterval(60 * 60); // 1 giờ
 
-            // Thêm cookie lưu email user, tồn tại 7 ngày
             Cookie emailCookie = new Cookie("userEmail", email);
-            emailCookie.setMaxAge(7 * 24 * 60 * 60);
+            emailCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
             emailCookie.setHttpOnly(true);
             emailCookie.setPath(request.getContextPath());
             response.addCookie(emailCookie);
+
+            if (user.getRole() == ADMIN) {
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                return;
+            }
 
             String redirectUrl = (String) session.getAttribute("redirectUrl");
             if (redirectUrl != null && !redirectUrl.contains("register")) {
@@ -57,12 +63,12 @@ public class LoginServlet extends HttpServlet {
             } else {
                 response.sendRedirect(request.getContextPath() + "/home");
             }
+
         } else {
             request.setCharacterEncoding("UTF-8");
             response.setCharacterEncoding("UTF-8");
             request.setAttribute("error", "Sai email hoặc mật khẩu!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
-
         }
     }
 

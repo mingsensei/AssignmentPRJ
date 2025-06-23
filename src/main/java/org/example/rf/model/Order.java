@@ -3,6 +3,8 @@ package org.example.rf.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 @Table(name = "orders")  // vì table tên orders, tránh trùng với từ khóa SQL
@@ -68,5 +70,9 @@ public class Order {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getCreatedAtAsDate() {
+        return java.util.Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }
