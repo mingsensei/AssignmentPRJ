@@ -49,4 +49,9 @@ public class PaymentService {
             em.close();
         }
     }
+    // Lấy danh sách các payment theo userId
+    public List<Payment> getPaymentsByUserId(Long userId) {
+        return paymentDAO.findByUserId(userId);
+    }
+
 }

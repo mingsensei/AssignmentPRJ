@@ -15,14 +15,17 @@ public class OrderItemDAO {
         this.entityManager = entityManager;
     }
 
-    public void create(OrderItem orderItem) {
-        EntityTransaction tx = entityManager.getTransaction();
+    public OrderItem create(OrderItem orderItem) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            tx.begin();
+            transaction.begin();
             entityManager.persist(orderItem);
-            tx.commit();
+            transaction.commit();
+            return orderItem;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             throw e;
         }
     }
@@ -31,29 +34,34 @@ public class OrderItemDAO {
         return entityManager.find(OrderItem.class, id);
     }
 
-    public void update(OrderItem orderItem) {
-        EntityTransaction tx = entityManager.getTransaction();
+    public OrderItem update(OrderItem orderItem) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            tx.begin();
-            entityManager.merge(orderItem);
-            tx.commit();
+            transaction.begin();
+            OrderItem updatedOrderItem = entityManager.merge(orderItem);
+            transaction.commit();
+            return updatedOrderItem;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             throw e;
         }
     }
 
     public void delete(Long id) {
-        EntityTransaction tx = entityManager.getTransaction();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            tx.begin();
+            transaction.begin();
             OrderItem orderItem = entityManager.find(OrderItem.class, id);
             if (orderItem != null) {
                 entityManager.remove(orderItem);
             }
-            tx.commit();
+            transaction.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             throw e;
         }
     }
@@ -77,5 +85,15 @@ public class OrderItemDAO {
         return query.getResultList();
     }
 
+    public boolean existsByOrderIdAndCourseId(Long orderId, Long courseId) {
+        TypedQuery<Long> query = entityManager.createQuery(
+            "SELECT COUNT(oi) FROM OrderItem oi WHERE oi.order.id = :orderId AND oi.course.id = :courseId",
+            Long.class
+        );
+        query.setParameter("orderId", orderId);
+        query.setParameter("courseId", courseId);
+        
+        return query.getSingleResult() > 0;
+    }
 
 }
