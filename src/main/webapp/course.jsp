@@ -143,11 +143,28 @@
       <div class="course-description">${course.description}</div>
     </div>
     <div class="price_buy">
-      <div class="course-price">${course.price} VNĐ</div>
-      <form action="${pageContext.request.contextPath}/add-to-cart" method="post">
-        <input type="hidden" name="courseId" value="${course.id}">
-        <button type="submit" class="buy-now-btn">Buy Now</button>
-      </form>
+
+
+
+      <c:choose>
+
+      <c:when test="${enrollments.contains(course.id)}">
+        <form action="${pageContext.request.contextPath}/mycourse?courseId=1&chapterId=?" method="get">
+          <input type="hidden" name="courseId" value="${course.id}">
+          <button type="submit" class="buy-now-btn">Enter Course</button>
+        </form>
+      </c:when>
+
+
+      <c:otherwise>
+        <div class="course-price">${course.price} VNĐ</div>
+        <form action="${pageContext.request.contextPath}/add-to-cart" method="post">
+          <input type="hidden" name="courseId" value="${course.id}">
+          <button type="submit" class="buy-now-btn">Buy Now</button>
+        </form>
+      </c:otherwise>
+      </c:choose>
+
     </div>
   </div>
 </div>
@@ -157,7 +174,7 @@
   <c:forEach var="chapter" items="${chapters}">
     <div class="chapter-item">
       <div class="chapter-name">${chapter.title}</div>
-      <!-- Không có mô tả chapter trong model, nếu có bạn thêm ở đây -->
+
     </div>
   </c:forEach>
 </div>

@@ -7,12 +7,10 @@ import org.example.rf.model.Category;
 
 import java.util.List;
 
-public class CategoryDAO {
-
-    private final EntityManager entityManager;
+public class CategoryDAO extends GenericDAO<Category, Long> {
 
     public CategoryDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+        super(entityManager, Category.class);
     }
 
     // Tạo mới category
@@ -27,6 +25,7 @@ public class CategoryDAO {
             throw e;
         }
     }
+
     // Lấy 4 category đầu tiên theo id tăng dần
     public List<Category> getTop4Categories() {
         TypedQuery<Category> query = entityManager.createQuery(
