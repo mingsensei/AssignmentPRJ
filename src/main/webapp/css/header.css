@@ -99,40 +99,33 @@ header {
 
 
 .searchform {
-    position: absolute;
-    top: 50%;
-    right: 23%;
-    transform: translateY(-50%);
-    display: flex;
+    position: relative;
+    display: flex !important;
     align-items: center;
-    width: auto; /* ❗️Không giới hạn width nữa */
     background: white;
     border-radius: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding-right: 0px; /* để không bị đụng nút */
-    z-index: 10;
+    padding: 0 0 0 8px;
+    margin-right: 10px;
+    min-width: 180px;
+    max-width: 260px;
 }
-
-.searchform input {
-    width: 0;
-    opacity: 0;
-    padding: 8px 0;
+.searchform input[type="search"] {
+    width: 140px;
+    min-width: 80px;
     border: none;
     outline: none;
-    transition: all 0.4s ease;
     font-size: 16px;
-    border-radius: 20px 0 0 20px;
     background: transparent;
+    border-radius: 20px 0 0 20px;
+    box-shadow: none;
 }
-
-.searchform:hover input {
-    width: 200px;
-    opacity: 1;
-    padding: 10px 16px;
+.searchform input[type="search"]:focus {
+    background: #f0f8ff;
+    box-shadow: none;
 }
-
 .searchform button {
-    padding: 10px 12px;
+    padding: 8px 14px;
     background-color: #3399FF;
     border: none;
     border-radius: 20px;
@@ -140,6 +133,7 @@ header {
     font-size: 18px;
     cursor: pointer;
     z-index: 1;
+    margin-left: 2px;
 }
 
 
@@ -202,4 +196,34 @@ header {
         width: 100%;
         justify-content: flex-start;
     }
+}
+
+/* Responsive cho header mới */
+@media (max-width: 992px) {
+    .navbar-nav {
+        margin-right: 0 !important;
+        min-width: unset !important;
+        gap: 10px !important;
+    }
+    .searchform {
+        margin: 10px 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    .auth-buttons {
+        margin-top: 10px;
+    }
+}
+ul.navbar-nav {
+    flex-wrap: nowrap;
+    min-width: auto;
+    margin-right: 5%;
+}
+.nav-item {
+    white-space: nowrap;
+}
+.auth-buttons a {
+    white-space: nowrap;
+    padding: 10px 25px;
+    font-size: 0.9rem;
 }

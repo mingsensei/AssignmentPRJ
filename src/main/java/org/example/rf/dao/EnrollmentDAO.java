@@ -7,12 +7,10 @@ import org.example.rf.model.Enrollment;
 
 import java.util.List;
 
-public class EnrollmentDAO {
-
-    private final EntityManager entityManager;
+public class EnrollmentDAO extends GenericDAO<Enrollment, Long> {
 
     public EnrollmentDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+        super(entityManager, Enrollment.class);
     }
 
     // Tạo mới Enrollment
@@ -67,6 +65,7 @@ public class EnrollmentDAO {
         TypedQuery<Enrollment> query = entityManager.createQuery("SELECT e FROM Enrollment e", Enrollment.class);
         return query.getResultList();
     }
+
     // Lấy danh sách Enrollment theo userId
     public List<Enrollment> findByUserId(Long userId) {
         TypedQuery<Enrollment> query = entityManager.createQuery(
@@ -74,5 +73,4 @@ public class EnrollmentDAO {
         query.setParameter("userId", userId);
         return query.getResultList();
     }
-
 }

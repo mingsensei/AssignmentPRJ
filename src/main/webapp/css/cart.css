@@ -160,3 +160,20 @@ body{
     background-color: #5a6268;
     border-color: #545b62;
 }
+
+@media (min-width: 801px) {
+    .card {
+        margin-left: 200px !important; /* đúng bằng chiều rộng sidebar */
+    }
+}
+@media (max-width: 800px) {
+    .card {
+        margin-left: 0 !important;
+    }
+    .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+
