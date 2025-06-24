@@ -54,7 +54,7 @@
                                 </div>
                             </td>
                             <td class="text-right font-weight-semibold align-middle p-4">$${item.price}</td>
-                            <td class="align-middle p-4"><input type="text" class="form-control text-center" value="1"></td>
+                            <td class="align-middle p-4"><input type="text" class="form-control text-center" value="1" min="1" max="1"></td>
                             <td class="text-right font-weight-semibold align-middle p-4">$<c:out value="${item.price}" /></td>
                             <td class="text-center align-middle px-0">
                                 <a href="#" class="remove-item shop-tooltip close float-none text-danger" data-id="${item.id}" title="Remove">×</a>

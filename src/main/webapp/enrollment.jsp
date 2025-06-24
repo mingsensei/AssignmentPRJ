@@ -20,40 +20,39 @@
 <body>
 <%@ include file="menu.jsp" %>
 
-
-
-<c:forEach var="courseList" items="${courseList}" varStatus="status">
-
-    <div class="course-card">
-        <div class="course-header">
+<div class="container">
+  <div class="row">
+    <c:forEach var="courseList" items="${courseList}" varStatus="status">
+      <div class="col-12 mb-4 d-flex align-items-stretch">
+        <div class="course-card w-100">
+          <div class="course-header">
             <img src="${pageContext.request.contextPath}/images/course${courseList.id}.webp" alt="Course Image" class="course-image" />
             <div class="course-info">
-                <h3 class="course-title"> ${courseList.name}</h3>
-
-                <div class="chap_but">
-                    <a>${courseList.description}</a>
-                    <button class="toggle-btn" onclick="toggleChapters(this)">
-                        <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
+              <h3 class="course-title"> ${courseList.name}</h3>
+              <div class="chap_but">
+                <a>${courseList.description}</a>
+                <button class="toggle-btn" onclick="toggleChapters(this)">
+                  <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+              </div>
             </div>
-                <div class="course-level">Intermediate</div>
-
+            <div class="course-level">Intermediate</div>
+          </div>
+          <div class="chapter-progress">
+            <c:forEach var="i" begin="1" end="${chapters[status.index]}">
+              <div class="chapter-item">
+                <div class="chapter-circle ${i == 1 ? 'active' : ''}">${i}</div>
+              </div>
+            </c:forEach>
+          </div>
         </div>
-            <div class="chapter-progress">
-                <c:forEach var="i" begin="1" end="${chapters[status.index]}">
-                    <div class="chapter-item">
-                        <div class="chapter-circle ${i == 1 ? 'active' : ''}">${i}</div>
-                    </div>
-                </c:forEach>
-            </div>
-
-    </div>
-
-</c:forEach>
+      </div>
+    </c:forEach>
+  </div>
+</div>
 
 <script>
     function toggleChapters(button) {
