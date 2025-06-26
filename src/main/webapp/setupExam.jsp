@@ -1,9 +1,22 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Chọn số câu hỏi và độ khó</title>
 </head>
 <body>
+
+<%-- ✅ Hiển thị thông báo lỗi nếu có --%>
+<c:if test="${not empty errorMessage}">
+    <div style="color:red; margin-bottom: 10px; border: 1px solid red; padding: 10px;">
+        <strong>Lỗi:</strong> ${errorMessage}<br>
+
+        <c:if test="${errorMessage contains 'giới hạn'}">
+            <p>Vui lòng <a href="${pageContext.request.contextPath}/plan-pricing">nâng cấp gói</a> để tiếp tục sử dụng đầy đủ tính năng.</p>
+        </c:if>
+    </div>
+</c:if>
+
 <h1>Cài đặt bài kiểm tra</h1>
 <form action="${pageContext.request.contextPath}/exam" method="post">
     <label for="numQuestionsParam">Số câu hỏi cần làm:</label>

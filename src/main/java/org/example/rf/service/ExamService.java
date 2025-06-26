@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +29,10 @@ public class ExamService {
     private final MaterialDAO materialDAO;
     private final PythonApiClient pythonApiClient;
     private final LevelDAO levelDAO;
+    private final TestAttemptService testAttemptService;
+    private final UserSubscriptionService subscriptionService;
+    private final PlanService planService;
+
     public ExamService() {
         this.pythonApiClient = new PythonApiClient();
         this.em = JPAUtil.getEntityManager();  // Tạo EntityManager 1 lần
@@ -36,6 +42,10 @@ public class ExamService {
         this.examQuestionDAO = new ExamQuestionDAO(em);
         this.materialDAO = new MaterialDAO(em);
         this.levelDAO = new LevelDAO(em);
+        this.testAttemptService = new TestAttemptService();
+        this.subscriptionService = new UserSubscriptionService();
+        this.planService = new PlanService();
+
     }
 
     public void createExam(Exam exam) {
@@ -127,13 +137,45 @@ public class ExamService {
     }
 
     public Exam createNewExam(Long chapterId, Long studentId) {
+        // Lấy subscription đang active
+        UserSubscription subscription = subscriptionService
+                .getAllSubscriptions().stream()
+                .filter(s -> s.getUserId().equals(studentId) &&
+                        (s.getEndDate() == null || s.getEndDate().isAfter(LocalDate.now())))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User không có gói dịch vụ hợp lệ"));
+
+        // Lấy plan tương ứng
+        Plan plan = planService.getPlanById(subscription.getPlanId());
+
+        // Đếm số lần đã làm bài kiểm tra
+        long currentAttempts = testAttemptService
+                .getAllTestAttempts().stream()
+                .filter(attempt -> attempt.getUserId().equals(studentId))
+                .count();
+
+        if (currentAttempts >= plan.getMaxTestAttempts()) {
+            throw new RuntimeException("Bạn đã đạt giới hạn làm bài kiểm tra của gói hiện tại");
+        }
+
+        // Cho phép tạo Exam
         Exam exam = Exam.builder()
                 .studentId(studentId)
                 .chapterId(chapterId)
                 .build();
         examDAO.create(exam);
+
+        // Ghi nhận lượt attempt
+        TestAttempt testAttempt = TestAttempt.builder()
+                .userId(studentId)
+                .testId(exam.getId()) // hoặc examId nếu test = exam
+                .attemptedAt(LocalDateTime.now())
+                .build();
+        testAttemptService.createTestAttempt(testAttempt);
+
         return exam;
     }
+
 
     public List<QuestionResponse> addMoreQuestionForExam(Long examId, int additionalQuestions, Long studentId, Long chapterId) throws IOException {
         int levelValue = updateLevelOfStudent(studentId, chapterId, examId);

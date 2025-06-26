@@ -2,6 +2,7 @@
     <persistence-unit name="your-persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <!-- Các entity cũ -->
         <class>org.example.rf.model.User</class>
         <class>org.example.rf.model.Category</class>
         <class>org.example.rf.model.Course</class>
@@ -22,12 +23,18 @@
         <class>org.example.rf.model.Blog</class>
         <class>org.example.rf.model.BlogUser</class>
 
+        <!-- ✅ Các entity mới thêm -->
+        <class>org.example.rf.model.Plan</class>
+        <class>org.example.rf.model.UserSubscription</class>
+        <class>org.example.rf.model.TestAttempt</class>
+        <class>org.example.rf.model.UserPost</class>
+
         <properties>
             <!-- Cấu hình kết nối SQL Server -->
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=AssignmentPRJ;encrypt=true;trustServerCertificate=true" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1444;databaseName=AssignmentPRJ;encrypt=true;trustServerCertificate=true" />
             <property name="jakarta.persistence.jdbc.user" value="sa" />
-            <property name="jakarta.persistence.jdbc.password" value="123" />
+            <property name="jakarta.persistence.jdbc.password" value="12345Minh@" />
 
             <!-- Hibernate dialect cho SQL Server -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />

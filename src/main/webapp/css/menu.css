@@ -14,24 +14,26 @@
 
 #sidebar{
   box-sizing: border-box;
-  height: calc(100vh - 360px);
-  width: 200px;
-  padding: 5px 1em;
+  height: calc(40vh);
+  width:180px ;
+  padding: 2px 1em;
   background-color: var(--base-clr);
   border-radius: 5px;
   position: fixed;
   top: 120px;
+  left:10px;
   align-self: start;
   transition: 300ms ease-in-out;
   overflow: hidden;
   text-wrap: nowrap;
 }
 #sidebar.close{
-  padding: 5px;
-  width: 65px;
+  padding: 6px;
+  width: 50px;
 }
 #sidebar ul{
   list-style: none;
+  margin-left:-50px;
 }
 #sidebar > ul > li:first-child{
   display: flex;

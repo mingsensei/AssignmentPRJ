@@ -163,7 +163,7 @@ body{
 
 @media (min-width: 801px) {
     .card {
-        margin-left: 200px !important; /* đúng bằng chiều rộng sidebar */
+        margin-left: 12% !important; /* đúng bằng chiều rộng sidebar */
     }
 }
 @media (max-width: 800px) {
