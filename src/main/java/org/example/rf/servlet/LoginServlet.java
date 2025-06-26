@@ -7,11 +7,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.example.rf.model.Plan;
 import org.example.rf.model.User;
+import org.example.rf.model.UserSubscription;
+import org.example.rf.service.PlanService;
 import org.example.rf.service.UserService;
+import org.example.rf.service.UserSubscriptionService;
 import org.example.rf.util.HashPassword;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static org.example.rf.model.User.Role.ADMIN;
 
@@ -20,7 +25,8 @@ public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final UserService userService = new UserService();
-
+    private final UserSubscriptionService userSubService = new UserSubscriptionService();
+    private final PlanService planService = new PlanService();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

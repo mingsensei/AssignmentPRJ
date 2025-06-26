@@ -1,4 +1,5 @@
 <%@ page import="org.example.rf.model.User" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%
     String uri = request.getRequestURI();
@@ -54,17 +55,35 @@
                         <a class="nav-link <%= uri.contains("about") ? "active" : "" %>" href="<%= request.getContextPath() %>/about">About</a>
                     </li>
                 </ul>
-                <form class="d-flex searchform" role="search" action="#" onsubmit="return false;">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-primary" type="submit" id="search-btn"><i class="fa fa-search"></i></button>
-                </form>
+
                 <div class="auth-buttons ms-3">
                     <% if (user == null) { %>
                         <a href="<%= request.getContextPath() %>/register" class="btn logup-button">Sign Up</a>
                         <a href="<%= request.getContextPath() %>/login" class="btn login-button">Login</a>
                     <% } else { %>
                         <a href="<%= request.getContextPath() %>/enrollment" class="btn logup-button">My Course</a>
-                        <a href="<%= request.getContextPath() %>/user-info" class="btn login-button">👤 <%= user.getUserName() %></a>
+                    <c:choose>
+                        <c:when test="${sessionScope.currentPlan.name == 'Personal'}">
+                            <a href="${pageContext.request.contextPath}/user-info"
+                               class="btn plan-personal"
+                               style="background-color: #ffc107; color: black;">
+                                👤 ${sessionScope.user.userName}
+                            </a>
+                        </c:when>
+                        <c:when test="${sessionScope.currentPlan.name == 'Ultimate'}">
+                            <a href="${pageContext.request.contextPath}/user-info"
+                               class="btn plan-ultimate"
+                               style="background-color: #6f42c1; color: white;">
+                                👤 ${sessionScope.user.userName}
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/user-info"
+                               class="btn plan-free">
+                                👤 ${sessionScope.user.userName}
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
                     <% } %>
                 </div>
             </div>

@@ -1,11 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="header.jsp" %>
-<%@ include file="menu.jsp" %>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" crossorigin="anonymous" />
-<style type="text/css">
-    body{margin-top:20px;}
+<style>
     .pricing-box {
         -webkit-box-shadow: 0px 5px 30px -10px rgba(0, 0, 0, 0.1);
         box-shadow: 0px 5px 30px -10px rgba(0, 0, 0, 0.1);
@@ -57,6 +53,12 @@
         <div class="row mt-5 pt-4">
             <div class="col-lg-4">
                 <div class="pricing-box mt-4">
+                    <c:if test="${currentPlanName eq 'Free'}">
+                        <div class="pricing-badge">
+                            <span class="badge">Current Plan</span>
+                        </div>
+                    </c:if>
+
                     <i class="mdi mdi-account h1"></i>
                     <h4 class="f-20">Starter</h4>
                     <div class="mt-4 pt-2">
@@ -64,7 +66,7 @@
                         <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>5 Free</b> AI Exam</p>
                         <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>Limited</b> AI Chatbot function</p>
                         <p class="mb-2"><i class="mdi mdi-close-circle text-danger f-18 mr-2"></i><b>No</b> Mentor's support</p>
-                        <p class="mb-2"><i class="mdi mdi-close-circle text-danger f-18 mr-2"></i><b>No</b> Blogs | Q&A</p>
+                        <p class="mb-2"><i class="mdi mdi-close-circle text-danger f-18 mr-2"></i><b>1</b> Blogs | Q&A</p>
                     </div>
                     <p class="mt-4 pt-2 text-muted"></p>
                     <div class="pricing-plan mt-4 pt-2">
@@ -72,15 +74,18 @@
                         <p class="text-muted mb-0">Per Month</p>
                     </div>
                     <div class="mt-4 pt-3">
-                        <a href="#" class="btn btn-primary btn-rounded">Purchase Now</a>
+                        <button class="btn btn-secondary btn-rounded" disabled>Already Subscribed</button>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="pricing-box mt-4">
-                    <div class="pricing-badge">
-                        <span class="badge">Featured</span>
-                    </div>
+                    <c:if test="${currentPlanName eq 'Personal'}">
+                        <div class="pricing-badge">
+                            <span class="badge">Current Plan</span>
+                        </div>
+                    </c:if>
+
                     <i class="mdi mdi-account-multiple h1 text-primary"></i>
                     <h4 class="f-20 text-primary">Personal</h4>
                     <div class="mt-4 pt-2">
@@ -88,7 +93,7 @@
                         <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>30</b> AI Exam</p>
                         <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>Full</b> AI Chatbiot function</p>
                         <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>Mentor's</b> Support</p>
-                        <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>5</b> Blogs | Q&A</p>
+                        <p class="mb-2"><i class="mdi mdi-checkbox-marked-circle text-success f-18 mr-2"></i><b>10</b> Blogs | Q&A</p>
                     </div>
                     <p class="mt-4 pt-2 text-muted"></p>
                     <div class="pricing-plan mt-4 pt-2">
@@ -96,12 +101,30 @@
                         <p class="text-muted mb-0">Per Month</p>
                     </div>
                     <div class="mt-4 pt-3">
-                        <a href="#" class="btn btn-primary btn-rounded">Purchase Now</a>
+                        <c:choose>
+                            <c:when test="${plan.name eq currentPlanName}">
+                                <button class="btn btn-secondary btn-rounded" disabled>Already Subscribed</button>
+                            </c:when>
+
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/payment?action=payplan&planName=Personal&planId=2"
+                                   class="btn btn-primary btn-rounded">
+                                    Purchase Now
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
+
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="pricing-box mt-4">
+                    <c:if test="${currentPlanName eq 'Ultimate'}">
+                        <div class="pricing-badge">
+                            <span class="badge">Current Plan</span>
+                        </div>
+                    </c:if>
+
                     <i class="mdi mdi-account-multiple-plus h1"></i>
                     <h4 class="f-20">Ultimate</h4>
                     <div class="mt-4 pt-2">
@@ -117,8 +140,19 @@
                         <p class="text-muted mb-0">Per Month</p>
                     </div>
                     <div class="mt-4 pt-3">
-                        <a href="#" class="btn btn-primary btn-rounded">Purchase Now</a>
+                        <c:choose>
+                            <c:when test="${plan.name eq currentPlanName}">
+                                <button class="btn btn-secondary btn-rounded" disabled>Already Subscribed</button>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/payment?action=payplan&planName=Ultimate&planId=2"
+                                   class="btn btn-primary btn-rounded">
+                                    Purchase Now
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
+
                 </div>
             </div>
         </div>

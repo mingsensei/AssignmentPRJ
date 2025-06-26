@@ -29,7 +29,7 @@ h2::before {
 }
 @media(min-width: 1501px){
     .main-content{
-        margin-left: 12% ;' /* đúng bằng chiều rộng sidebar */
+        margin-left: 12% ; /* đúng bằng chiều rộng sidebar */
     }
 }
 @media(max-width: 1500px) {

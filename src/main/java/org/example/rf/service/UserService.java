@@ -1,13 +1,19 @@
 package org.example.rf.service;
 
+import org.example.rf.dao.PlanDAO;
 import org.example.rf.dao.UserDAO;
+import org.example.rf.dao.UserSubscriptionDAO;
 import org.example.rf.model.Enrollment;
+import org.example.rf.model.Plan;
 import org.example.rf.model.User;
+import org.example.rf.model.UserSubscription;
 import org.example.rf.util.HashPassword;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +21,31 @@ public class UserService {
 
     private final EntityManager em;
     private final UserDAO userDAO;
+    private final PlanDAO planDAO;
+    private final UserSubscriptionDAO subscriptionDAO;
 
     public UserService() {
         this.em = JPAUtil.getEntityManager(); // Tạo EntityManager 1 lần
-        this.userDAO = new UserDAO(em);       // Tạo DAO 1 lần với EntityManager đó
+        this.userDAO = new UserDAO(em);
+        this.planDAO = new PlanDAO(em);
+        this.subscriptionDAO = new UserSubscriptionDAO(em);// Tạo DAO 1 lần với EntityManager đó
     }
 
     // Tạo mới User
     public void createUser(User user) {
         userDAO.create(user);
+        Plan freePlan = planDAO.findByName("Free");
+
+        // 3. Tạo subscription mặc định
+        UserSubscription subscription = UserSubscription.builder()
+                .userId(user.getId()) // user đã được persist → có ID
+                .planId(freePlan.getId())
+                .startDate(LocalDate.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        subscriptionDAO.create(subscription);
     }
 
     // Tìm User theo ID
