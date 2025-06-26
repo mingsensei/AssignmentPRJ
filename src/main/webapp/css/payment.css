@@ -1,0 +1,39 @@
+body {
+    background-color: #f9faff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f8ff;
+}
+
+.text-primary {
+    color: #1E90FF !important;
+}
+
+.bg-primary {
+    background-color: #1E90FF !important;
+}
+
+.badge {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+h2::before {
+    content: "📋 ";
+}
+@media(min-width: 1501px){
+    .main-content{
+        margin-left: 12% ;' /* đúng bằng chiều rộng sidebar */
+    }
+}
+@media(max-width: 1500px) {
+    .main-content {
+        margin-left: 17%; /* đúng bằng chiều rộng sidebar */
+    }
+}

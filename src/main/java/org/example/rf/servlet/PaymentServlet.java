@@ -45,8 +45,11 @@ public class PaymentServlet extends HttpServlet {
 
             request.getRequestDispatcher("/payment.jsp").forward(request, response);
         } else if ("view".equals(action)) {
-            // Forward to transaction history page
-            request.getRequestDispatcher("/transaction.jsp").forward(request, response);
+            // Lấy lịch sử thanh toán của user
+            java.util.List<org.example.rf.model.Payment> paymentList = paymentService.getPaymentsByUserId(user.getId());
+            request.setAttribute("paymentList", paymentList);
+            System.out.println("PaymentList size: " + paymentList.size());
+            request.getRequestDispatcher("/paymentview.jsp").forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/cart");
         }

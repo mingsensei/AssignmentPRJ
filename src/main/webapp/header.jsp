@@ -63,7 +63,7 @@
                         <a href="<%= request.getContextPath() %>/register" class="btn logup-button">Sign Up</a>
                         <a href="<%= request.getContextPath() %>/login" class="btn login-button">Login</a>
                     <% } else { %>
-                        <a href="<%= request.getContextPath() %>/enrollment" class="btn logup-button">📖My Course</a>
+                        <a href="<%= request.getContextPath() %>/enrollment" class="btn logup-button">My Course</a>
                         <a href="<%= request.getContextPath() %>/user-info" class="btn login-button">👤 <%= user.getUserName() %></a>
                     <% } %>
                 </div>
