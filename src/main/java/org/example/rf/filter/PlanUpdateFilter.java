@@ -23,6 +23,16 @@ public class PlanUpdateFilter implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) req;
+        String path = request.getRequestURI();
+
+        // Bỏ qua các tài nguyên tĩnh
+        if (path.endsWith(".webp") || path.endsWith(".css") || path.endsWith(".js") || path.endsWith(".png") ||
+                path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".gif") ||
+                path.endsWith(".svg") || path.endsWith(".woff2") || path.endsWith(".ttf")) {
+            chain.doFilter(req, res);
+            return;
+        }
+
         HttpSession session = request.getSession(false);
 
         if (session != null) {
@@ -33,7 +43,7 @@ public class PlanUpdateFilter implements Filter {
 
                 if (activeSub != null) {
                     Plan currentPlan = planService.getPlanById(activeSub.getPlanId());
-                    session.setAttribute("currentPlan", currentPlan);  // cập nhật session mỗi lần
+                    session.setAttribute("currentPlan", currentPlan);  // cập nhật mỗi request
                 } else {
                     session.setAttribute("currentPlan", null);
                 }
@@ -42,4 +52,5 @@ public class PlanUpdateFilter implements Filter {
 
         chain.doFilter(req, res);
     }
+
 }

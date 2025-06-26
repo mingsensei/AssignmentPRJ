@@ -54,24 +54,24 @@
     </div>
   </div>
 
-  <script>
-      function toggleChapters(button) {
-          const progress = button.closest('.course-card').querySelector('.chapter-progress');
-
-          if (progress.style.maxHeight && progress.style.maxHeight !== '0px') {
-              // Đóng
-              progress.style.transition = 'max-height 0.4s ease-out';
-              progress.style.maxHeight = '0px';
-              button.classList.remove('rotate');
-          } else {
-              // Mở
-              progress.style.transition = 'max-height 0.4s ease-in';
-              progress.style.maxHeight = progress.scrollHeight + 'px';
-              button.classList.add('rotate');
-          }
-      }
-  </script>
+  <%@ include file="footer.jsp" %>
 </div>
+</body>
 
-<%@ include file="footer.jsp" %>
+<script>
+  function toggleChapters(button) {
+    const progress = button.closest('.course-card').querySelector('.chapter-progress');
 
+    if (progress.style.maxHeight && progress.style.maxHeight !== '0px') {
+      // Đóng
+      progress.style.transition = 'max-height 0.4s ease-out';
+      progress.style.maxHeight = '0px';
+      button.classList.remove('rotate');
+    } else {
+      // Mở
+      progress.style.transition = 'max-height 0.4s ease-in';
+      progress.style.maxHeight = progress.scrollHeight + 'px';
+      button.classList.add('rotate');
+    }
+  }
+</script>

@@ -102,7 +102,7 @@
                     </div>
                     <div class="mt-4 pt-3">
                         <c:choose>
-                            <c:when test="${plan.name eq currentPlanName}">
+                            <c:when test="${'Personal' eq currentPlanName}">
                                 <button class="btn btn-secondary btn-rounded" disabled>Already Subscribed</button>
                             </c:when>
 
@@ -141,7 +141,7 @@
                     </div>
                     <div class="mt-4 pt-3">
                         <c:choose>
-                            <c:when test="${plan.name eq currentPlanName}">
+                            <c:when test="${'Ultimate'eq currentPlanName}">
                                 <button class="btn btn-secondary btn-rounded" disabled>Already Subscribed</button>
                             </c:when>
                             <c:otherwise>

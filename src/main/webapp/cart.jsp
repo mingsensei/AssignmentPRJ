@@ -17,9 +17,9 @@
     </script>
 </head>
 <%@ include file="header.jsp" %>
-
-<body>
 <%@ include file="menu.jsp" %>
+
+<body >
 <div class="main-content d-flex flex-column min-vh-100">
     <div class="container px-3 my-5 clearfix">
         <div class="card" style="border-radius: 10px">
@@ -99,10 +99,11 @@
             </div>
         </div>
     </div>
+    <%@ include file="footer.jsp" %>
 </div>
 </body>
 <!-- Load jQuery trước -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Sau đó mới load cart.js -->
 <script src="<%= request.getContextPath() %>/js/cart.js"></script>
-<%@ include file="footer.jsp" %>
+
