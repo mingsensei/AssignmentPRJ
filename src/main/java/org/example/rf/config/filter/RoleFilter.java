@@ -1,4 +1,4 @@
-package org.example.rf.filter;
+package org.example.rf.config.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import static org.example.rf.model.User.Role.ADMIN;
 
-@WebFilter("/admin/*")
+@WebFilter(urlPatterns = {"/admin/*", "/view/admin"})
 public class RoleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
