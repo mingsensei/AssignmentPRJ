@@ -3,18 +3,16 @@ package org.example.rf.servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import org.example.rf.dao.EnrollmentDAO;
-import org.example.rf.model.Chapter;
+
 import org.example.rf.model.Course;
 import org.example.rf.model.Enrollment;
 import org.example.rf.model.User;
 import org.example.rf.service.ChapterService;
 import org.example.rf.service.CourseService;
 import org.example.rf.service.EnrollmentService;
-import org.hibernate.Session;
+
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

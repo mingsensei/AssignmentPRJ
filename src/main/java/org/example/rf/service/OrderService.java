@@ -12,7 +12,7 @@ import java.util.List;
 public class OrderService {
     private final OrderDAO orderDAO;
     private final EntityManager entityManager;
-    private OrderItemService orderItemService;
+    private final OrderItemService orderItemService;
 
     public OrderService() {
         this.entityManager = JPAUtil.getEntityManager();
@@ -42,12 +42,7 @@ public class OrderService {
 
     // Lấy danh sách tất cả đơn hàng
     public List<Order> getAllOrders() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            return new OrderDAO(em).findAll();
-        } finally {
-            em.close();
-        }
+        return orderDAO.findAll();
     }
 
     // Đóng EntityManager khi không còn dùng nữa
