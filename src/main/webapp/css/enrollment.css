@@ -11,7 +11,9 @@ body {
     max-width: 1000px;
     border: 1px solid #ddd;
     border-radius: 12px;
-    margin: 20px auto;
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-left:180px;
     background-color: #fff;
     position: relative;
     box-shadow: 0 4px 12px rgba(0, 160, 251, 0.1)  ;
@@ -67,8 +69,8 @@ body {
     right: 20px;
     background-color: #1E90FF;
     color: white;
-    padding: 10px 12px;
-    font-size: 16px;
+    padding: 5px 12px;
+    font-size: 14px;
     border-radius: 20px;
     font-weight: bold;
 }
@@ -141,4 +143,8 @@ body {
 
 .toggle-btn.rotate .arrow-icon {
     transform: rotate(180deg); /* quay mũi tên lên trên */
+}
+
+.main-content {
+    flex: 1 0 auto;
 }
