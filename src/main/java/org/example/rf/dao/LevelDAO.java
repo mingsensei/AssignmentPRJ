@@ -2,65 +2,12 @@ package org.example.rf.dao;
 
 import org.example.rf.model.Level;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-
 import java.util.List;
 
-public class LevelDAO {
-
-    private final EntityManager entityManager;
-
+public class LevelDAO extends GenericDAO<Level, Long> {
     public LevelDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    public void create(Level level) {
-        EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            entityManager.persist(level);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }
-    }
-
-    public Level findById(Long id) {
-        return entityManager.find(Level.class, id);
-    }
-
-    public void update(Level level) {
-        EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            entityManager.merge(level);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }
-    }
-
-    public void delete(Long id) {
-        EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            Level level = entityManager.find(Level.class, id);
-            if (level != null) {
-                entityManager.remove(level);
-            }
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }
-    }
-
-    public List<Level> findAll() {
-        TypedQuery<Level> query = entityManager.createQuery("SELECT l FROM Level l", Level.class);
-        return query.getResultList();
+        super(entityManager, Level.class);
     }
 
     public List<Level> findByStudentId(Long studentId) {
