@@ -4,7 +4,7 @@
 
     if (!skipFooter) {
 %>
-<footer class="custom-footer">
+<footer class="custom-footer mt-auto">
     <div class="footer-container">
         <div class="footer-top">
             <div class="footer-logo">

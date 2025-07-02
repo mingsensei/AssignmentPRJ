@@ -4,13 +4,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
+import org.example.rf.model.Plan;
 import org.example.rf.model.User;
-import org.example.rf.service.UserService;
+import org.example.rf.model.UserSubscription;
+import org.example.rf.service.*;
 
 import java.io.IOException;
 
 @WebServlet("/user-info")
 public class UserInfoServlet extends HttpServlet {
+    private final PlanService planService = new PlanService();
+    private final UserSubscriptionService subscriptionService = new UserSubscriptionService();
+    private final TestAttemptService testAttemptService = new TestAttemptService();
+    private final UserPostService userPostService = new UserPostService();
 
     private UserService userService;
 
@@ -23,23 +29,36 @@ public class UserInfoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy user từ session
         HttpSession session = request.getSession(false);
-        if (session == null) {
+        if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login");
             return;
         }
 
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
+        request.setAttribute("user", user);
+
+        // ➤ Lấy subscription hiện tại
+        UserSubscription currentSub = subscriptionService.findActiveSub(user.getId());
+
+        if (currentSub != null) {
+            Plan currentPlan = planService.getPlanById(currentSub.getPlanId());
+            long examCount = testAttemptService.getAllTestAttempts().stream()
+                    .filter(t -> t.getUserId().equals(user.getId()))
+                    .count();
+            long postCount = userPostService.getAllPosts().stream()
+                    .filter(p -> p.getUserId().equals(user.getId()))
+                    .count();
+
+            request.setAttribute("currentPlan", currentPlan);
+            request.setAttribute("currentSubscription", currentSub);
+            request.setAttribute("examCount", examCount);
+            request.setAttribute("postCount", postCount);
         }
 
-        // Truyền user vào request để hiển thị trên JSP
-        request.setAttribute("user", user);
         request.getRequestDispatcher("user_info.jsp").forward(request, response);
     }
+
 
     // Xử lý POST (cập nhật mật khẩu và logout)
     @Override

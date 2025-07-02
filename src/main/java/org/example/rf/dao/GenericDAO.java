@@ -5,7 +5,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-public class GenericDAO<T, ID> {
+public class    GenericDAO<T, ID> {
     protected final EntityManager entityManager;
     protected final Class<T> entityClass;
 

@@ -45,9 +45,45 @@ public class PaymentServlet extends HttpServlet {
 
             request.getRequestDispatcher("/payment.jsp").forward(request, response);
         } else if ("view".equals(action)) {
-            // Forward to transaction history page
-            request.getRequestDispatcher("/transaction.jsp").forward(request, response);
-        } else {
+            // Lấy lịch sử thanh toán của user
+            java.util.List<org.example.rf.model.Payment> paymentList = paymentService.getPaymentsByUserId(user.getId());
+            request.setAttribute("paymentList", paymentList);
+            System.out.println("PaymentList size: " + paymentList.size());
+            request.getRequestDispatcher("/paymentview.jsp").forward(request, response);
+        } else if ("payplan".equals(action)) {
+            Long planId = Long.parseLong(request.getParameter("planId"));
+            String planName = request.getParameter("planName");
+
+            // Giá tiền theo planName (hoặc bạn có thể lấy từ DB nếu có lưu giá plan)
+            BigDecimal amount;
+            switch (planName) {
+                case "Personal":
+                    amount = new BigDecimal("199000");
+                    break;
+                case "Ultimate":
+                    amount = new BigDecimal("399000");
+                    break;
+                default:
+                    amount = new BigDecimal("0"); // Free hoặc lỗi
+            }
+
+            BigDecimal adjustedAmount = amount.divide(new BigDecimal(10));
+            int rounded = adjustedAmount.setScale(0, RoundingMode.HALF_UP).intValue();
+
+            String message = user.getId() + "_plan_" + planId + "_" + amount.intValue(); // ví dụ: 123_plan_2_199000
+
+            request.setAttribute("totalAmount", String.valueOf(rounded));
+            request.setAttribute("message", message);
+            request.setAttribute("bankId", "mbbank");
+            request.setAttribute("accountNo", "0773304009");
+            request.setAttribute("template", "compact2");
+            request.setAttribute("accountName", "DUONG HONG MINH");
+            request.setAttribute("planName", planName);
+            request.setAttribute("planId", planId);
+
+            request.getRequestDispatcher("/payment.jsp").forward(request, response);
+        }
+        else {
             response.sendRedirect(request.getContextPath() + "/cart");
         }
     }

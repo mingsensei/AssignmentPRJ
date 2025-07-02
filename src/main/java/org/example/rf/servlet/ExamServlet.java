@@ -88,20 +88,35 @@ public class ExamServlet extends HttpServlet {
             response.getWriter().println("Đang có 1 bài kiểm tra khác, vui lòng quay về làm");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
+        try {
+            int numQuestions = Integer.parseInt(numQuestionsParam);
+            Long chapterId = Long.parseLong(chapterIdParam);
+            int difficulty = convertDifficulty(difficultyParam, studentId, chapterId);
 
-        int numQuestions = Integer.parseInt(numQuestionsParam);
-        Long chapterId = Long.parseLong(chapterIdParam);
-        int difficulty = convertDifficulty(difficultyParam, studentId, chapterId);
+            // Gọi ExamService: sẽ kiểm tra quota và ném lỗi nếu đã hết giới hạn
+            Exam exam = examService.createNewExam(chapterId, studentId);
+            request.getSession().setAttribute("examId", exam.getId().toString());
 
-        Exam exam= examService.createNewExam(chapterId, studentId);
-        request.getSession().setAttribute("examId", exam.getId().toString());
-        List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId, exam);
-        if(questionList.isEmpty()) {
-            response.getWriter().println("No materials found.");
-            request.getSession().removeAttribute("examId");
+            List<QuestionResponse> questionList = examService.getQuestionsForExam(numQuestions, chapterId, difficulty, studentId, exam);
+            if (questionList == null || questionList.isEmpty()) {
+                request.getSession().removeAttribute("examId");
+                request.setAttribute("errorMessage", "Không tìm thấy tài liệu hoặc không thể tạo câu hỏi.");
+                request.getRequestDispatcher("/setupExam.jsp").forward(request, response);
+                return;
+            }
+
+            request.setAttribute("questionList", questionList);
+            request.getRequestDispatcher("/exam.jsp").forward(request, response);
+
+        } catch (RuntimeException e) {
+            // Lỗi vượt quota hoặc logic khác từ createNewExam
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("/setupExam.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Lỗi hệ thống khi tạo bài kiểm tra: " + e.getMessage());
         }
-        request.setAttribute("questionList", questionList);
-        request.getRequestDispatcher("/exam.jsp").forward(request, response);
     }
 
     private void examResultGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
