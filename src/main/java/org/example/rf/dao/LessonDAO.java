@@ -19,7 +19,7 @@ public class LessonDAO extends GenericDAO<Lesson, Long> {
 
     public List<Lesson> findByChapterId(Long chapterId) {
         TypedQuery<Lesson> query = entityManager.createQuery(
-                "SELECT l FROM Lesson l WHERE l.chapter.id = :chapterId", Lesson.class);
+                "SELECT l FROM Lesson l WHERE l.chapterId = :chapterId ORDER BY l.orderIndex ASC", Lesson.class);
         query.setParameter("chapterId", chapterId);
         return query.getResultList();
     }

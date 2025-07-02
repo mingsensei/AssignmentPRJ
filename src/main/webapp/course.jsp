@@ -149,10 +149,14 @@
       <c:choose>
 
       <c:when test="${enrollments.contains(course.id)}">
-        <form action="${pageContext.request.contextPath}/mycourse?courseId=1&chapterId=?" method="get">
-          <input type="hidden" name="courseId" value="${course.id}">
-          <button type="submit" class="buy-now-btn">Enter Course</button>
-        </form>
+        <c:choose>
+          <c:when test="${not empty firstChapterId && not empty firstLessonId}">
+            <a href="${pageContext.request.contextPath}/learning?courseid=${course.id}&chapterid=${firstChapterId}&lessonid=${firstLessonId}" class="buy-now-btn" style="display:inline-block;text-align:center;line-height:40px;">Enter Course</a>
+          </c:when>
+          <c:otherwise>
+            <span class="buy-now-btn" style="background:#ccc;cursor:not-allowed;">No Content</span>
+          </c:otherwise>
+        </c:choose>
       </c:when>
 
 
