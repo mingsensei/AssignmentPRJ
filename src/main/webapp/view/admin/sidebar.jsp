@@ -1,6 +1,6 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/admin/dashboard.jsp">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/admin/dashboard">
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-tachometer-alt"></i>
     </div>
@@ -36,13 +36,6 @@
     <a class="nav-link" href="${pageContext.request.contextPath}/admin/order">
       <i class="fas fa-fw fa-credit-card"></i>
       <span>Order</span>
-    </a>
-  </li>
-
-  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/role') ? 'active' : ''}">
-    <a class="nav-link" href="${pageContext.request.contextPath}/admin/role">
-      <i class="fas fa-fw fa-user-tag"></i>
-      <span>Role</span>
     </a>
   </li>
 
