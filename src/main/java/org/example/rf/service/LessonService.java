@@ -49,4 +49,8 @@ public class LessonService {
             em.close();
         }
     }
+
+    public List<Lesson> getLessonsByChapterId(Long chapterId) {
+        return lessonDAO.findByChapterId(chapterId);
+    }
 }

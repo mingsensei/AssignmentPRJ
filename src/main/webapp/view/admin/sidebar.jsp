@@ -18,10 +18,10 @@
 
   <hr class="sidebar-divider">
 
-  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/setting') ? 'active' : ''}">
-    <a class="nav-link" href="${pageContext.request.contextPath}/admin/settings">
+  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/category') ? 'active' : ''}">
+    <a class="nav-link" href="${pageContext.request.contextPath}/admin/category">
       <i class="fas fa-fw fa-cog"></i>
-      <span>Settings</span>
+      <span>Category</span>
     </a>
   </li>
 
@@ -49,7 +49,7 @@
   <li class="nav-item ${pageContext.request.servletPath.contains('/admin/slider') ? 'active' : ''}">
     <a class="nav-link" href="${pageContext.request.contextPath}/admin/slider">
       <i class="fas fa-fw fa-images"></i>
-      <span>Slider</span>
+      <span>Material</span>
     </a>
   </li>
 

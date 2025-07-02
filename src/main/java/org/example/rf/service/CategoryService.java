@@ -15,31 +15,26 @@ public class CategoryService {
     private final CategoryDAO categoryDAO;
 
     public CategoryService() {
-        this.em = JPAUtil.getEntityManager();  // Tạo EntityManager 1 lần
-        this.categoryDAO = new CategoryDAO(em); // Tạo DAO 1 lần dùng chung
+        this.em = JPAUtil.getEntityManager();
+        this.categoryDAO = new CategoryDAO(em);
     }
 
-    // Tạo category mới
     public void createCategory(Category category) {
         categoryDAO.create(category);
     }
 
-    // Tìm category theo ID
     public Category getCategoryById(Long id) {
         return categoryDAO.findById(id);
     }
 
-    // Cập nhật category
     public void updateCategory(Category category) {
         categoryDAO.update(category);
     }
 
-    // Xóa category theo ID
     public void deleteCategory(Long id) {
         categoryDAO.delete(id);
     }
 
-    // Lấy danh sách tất cả category
     public List<Category> getAllCategories() {
         return categoryDAO.findAll();
     }
@@ -47,11 +42,18 @@ public class CategoryService {
     public ArrayList<Category> getTop4Courses() {
         return new ArrayList<>(categoryDAO.getTop4Categories());
     }
-    // Đóng EntityManager khi không cần nữa
+
+    public boolean categoryNameExists(String name, Long excludeId) {
+        return categoryDAO.existsByName(name, excludeId);
+    }
+
+    public boolean isCategoryInUse(Long categoryId) {
+        return categoryDAO.isCategoryInUse(categoryId);
+    }
+
     public void close() {
         if (em != null && em.isOpen()) {
             em.close();
         }
     }
-
 }
