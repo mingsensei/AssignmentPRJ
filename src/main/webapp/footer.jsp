@@ -35,7 +35,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p><small>&copy; 2019 Edu AI. All Rights Reserved.</small></p>
+            <p><small>&copy; 2025 Edu AI. All Rights Reserved.</small></p>
         </div>
     </div>
 </footer>
