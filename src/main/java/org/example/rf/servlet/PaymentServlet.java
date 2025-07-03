@@ -7,16 +7,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.rf.model.Cart;
+import org.example.rf.model.Order;
+import org.example.rf.model.Payment;
 import org.example.rf.model.User;
+import org.example.rf.service.OrderService;
 import org.example.rf.service.PaymentService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/payment")
 public class PaymentServlet extends HttpServlet {
     PaymentService paymentService = new PaymentService();
+    OrderService orderService = new OrderService();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -42,11 +48,17 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("accountNo", "0773304009");
             request.setAttribute("template", "compact2");
             request.setAttribute("accountName", "DUONG HONG MINH");
-
+            request.setAttribute("userId", user.getId());
+            Order order = orderService.getOrderById(id);
+            request.setAttribute("order", order);
             request.getRequestDispatcher("/payment.jsp").forward(request, response);
         } else if ("view".equals(action)) {
             // Lấy lịch sử thanh toán của user
-            java.util.List<org.example.rf.model.Payment> paymentList = paymentService.getPaymentsByUserId(user.getId());
+            List<Payment> oderPaymentList = paymentService.getOrderPaymentsByUserId(user.getId());
+            List<Payment> planePaymentList = paymentService.getPlanPaymentsByUserId(user.getId());
+            List<Payment> paymentList = new ArrayList<>(oderPaymentList); // hoặc planePaymentList
+            paymentList.addAll(planePaymentList);
+
             request.setAttribute("paymentList", paymentList);
             System.out.println("PaymentList size: " + paymentList.size());
             request.getRequestDispatcher("/paymentview.jsp").forward(request, response);
@@ -80,7 +92,7 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("accountName", "DUONG HONG MINH");
             request.setAttribute("planName", planName);
             request.setAttribute("planId", planId);
-
+            request.setAttribute("userId", user.getId());
             request.getRequestDispatcher("/payment.jsp").forward(request, response);
         }
         else {

@@ -14,70 +14,82 @@
 <%@ include file="header.jsp" %>
 <body>
 <%@ include file="menu.jsp" %>
-<div class="main-content d-flex flex-column min-vh-100">
-    <div class="container py-4"><h2 class="mb-4 text-primary fw-bold"> Payment History</h2>
+<div class="content_wrapper d-flex flex-column min-vh-100">
+    <div class="main-content d-flex flex-column">
+        <div class="container py-4"><h2 class="mb-4 text-primary fw-bold"> Payment History</h2>
 
-        <div class="table-responsive shadow-sm rounded-4 overflow-hidden bg-white">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-primary text-white">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Method</th>
-                    <th scope="col">Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:choose>
-                    <c:when test="${not empty paymentList}">
-                        <c:forEach var="payment" items="${paymentList}" varStatus="loop">
-                            <tr>
-                                <td>${loop.index + 1}</td>
-                                <td>
-                                    <i class="bi bi-calendar2-check text-primary me-1"></i>
-                                        ${payment.formattedPayDate}
-                                </td>
-                                <td class="fw-semibold text-primary">${payment.amount}VND</td>
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${payment.status eq 'SUCCESS'}">
+            <div class="table-responsive shadow-sm rounded-4 overflow-hidden bg-white">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-primary text-white">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Method</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                        <c:when test="${not empty paymentList}">
+                            <c:forEach var="payment" items="${paymentList}" varStatus="loop">
+                                <tr>
+                                    <td>${loop.index + 1}</td>
+                                    <td>
+                                        <i class="bi bi-calendar2-check text-primary me-1"></i>
+                                            ${payment.formattedPayDate}
+                                    </td>
+                                    <td class="fw-semibold text-primary">${payment.amount}VND</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${payment.status eq 'SUCCESS'}">
                                             <span class="badge bg-success px-3 py-2 fs-6 rounded-pill">
                                                 <i class="bi bi-check-circle me-1"></i>${payment.status}
                                              </span>
-                                        </c:when>
-                                        <c:when test="${payment.status eq 'PENDING'}">
+                                            </c:when>
+                                            <c:when test="${payment.status eq 'PENDING'}">
                                             <span class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill">
                                                 <i class="bi bi-hourglass-split me-1"></i>${payment.status}
                                             </span>
-                                        </c:when>
-                                        <c:otherwise>
+                                            </c:when>
+                                            <c:otherwise>
                                             <span class="badge bg-danger px-3 py-2 fs-6 rounded-pill">
                                                 <i class="bi bi-x-circle me-1"></i>${payment.status}
                                             </span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
 
-                                <td><i class="bi bi-bank me-1"></i>${payment.bankCode}</td>
-                                <td>${payment.transactionNo}</td>
+                                    <td><i class="bi bi-bank me-1"></i>${payment.bankCode}</td>
+                                    <td>${payment.transactionNo}</td>
+                                </tr>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div style="padding: 30px; background-color: #E6F7FF; border: 2px dashed #3399FF; border-radius: 12px;">
+                                        <h4 style="color: #3399FF; font-weight: 600;">
+                                            <i class="bi bi-emoji-frown me-2"></i>No payment history found
+                                        </h4>
+                                        <p style="color: #666;">Looks like you haven't made any transactions yet.</p>
+                                        <a href="${pageContext.request.contextPath}/category">
+                                            <button class="btn btn-primary mt-3 px-4 py-2">Start Shopping</button>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                <i class="bi bi-emoji-frown me-2"></i>No payment history found.
-                            </td>
-                        </tr>
-                    </c:otherwise>
-                </c:choose>
-                </tbody>
-            </table>
+                        </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    <%@ include file="footer.jsp" %>
 </div>
+
 </body>
 <script src="<%= request.getContextPath() %>/js/cart.js"></script>
-<%@ include file="footer.jsp" %>
+

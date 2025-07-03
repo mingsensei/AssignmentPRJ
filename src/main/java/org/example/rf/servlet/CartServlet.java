@@ -12,30 +12,40 @@ import org.example.rf.service.OrderService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/cart")
 public class CartServlet extends HttpServlet {
     private final OrderService orderService = new OrderService();
     private final OrderItemService orderItemService = new OrderItemService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        // Lấy danh sách sản phẩm từ session
+
+        // Lấy danh sách sản phẩm từ đơn hàng đang chờ xử lý
         List<OrderItem> orderItems = orderService.getOrderItemsByUserId(user.getId());
-        // Nếu chưa có thì tạo mới (optional)
         if (orderItems == null) {
-            orderItems = new java.util.ArrayList<>();
+            orderItems = new ArrayList<>();
         }
-        Order order = new Order();
-        order = orderService.findPendingOrderByUserId(user.getId());
-        BigDecimal total = orderService.calculateTotalAmount(order.getId());
+
+        // Lấy đơn hàng đang pending nếu có
+        Order order = orderService.findPendingOrderByUserId(user.getId());
+
+        // Tính tổng tiền, nếu order == null thì để total = 0
+        BigDecimal total = BigDecimal.ZERO;
+        if (order != null) {
+            total = orderService.calculateTotalAmount(order.getId());
+        }
+
         // Đưa dữ liệu sang JSP
         request.setAttribute("order", order);
         request.setAttribute("orderItems", orderItems);
         request.setAttribute("total", total);
+
         // Forward tới trang cart.jsp
         request.getRequestDispatcher("cart.jsp").forward(request, response);
     }
@@ -46,24 +56,26 @@ public class CartServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        
+
         try {
-            // Lấy ID của item cần xóa từ request
             Long itemId = Long.parseLong(request.getParameter("id"));
-            // Lấy thông tin user từ session
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("user");
-            // Xóa item khỏi giỏ hàng
+
+            // Xóa item
             orderItemService.deleteOrderItem(itemId);
-            // Lấy danh sách item mới và tính tổng tiền
-            Order order = new Order();
-            order = orderService.findPendingOrderByUserId(user.getId());
-            BigDecimal newTotal = orderService.calculateTotalAmount(order.getId());
-            order.setTotalAmount(newTotal);
-            orderService.updateOrder(order);
-            // Gửi response về client
-            request.setAttribute("order", order);
-            request.setAttribute("total", newTotal);
+
+            // Tìm lại order
+            Order order = orderService.findPendingOrderByUserId(user.getId());
+
+            BigDecimal newTotal = BigDecimal.ZERO;
+            if (order != null) {
+                newTotal = orderService.calculateTotalAmount(order.getId());
+                order.setTotalAmount(newTotal);
+                orderService.updateOrder(order);
+            }
+
+            // Response JSON
             out.print("{\"success\": true, \"newTotal\": " + newTotal + ", \"message\": \"Xóa sản phẩm thành công!\"}");
         } catch (Exception e) {
             out.print("{\"success\": false, \"error\": \"Có lỗi xảy ra khi xóa sản phẩm: " + e.getMessage() + "\"}");

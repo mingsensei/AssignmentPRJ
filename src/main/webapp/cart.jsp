@@ -39,63 +39,89 @@
                         </tr>
                         </thead>
                         <tbody>
-
-                        <c:forEach var="item" items="${orderItems}">
-                            <tr>
-                                <td class="p-4">
-                                    <div class="media align-items-center">
-                                        <img src="${pageContext.request.contextPath}/images/course${item.course.id}.webp"
-                                             class="d-block ui-w-40 ui-bordered mr-4"
-                                             alt=""
-                                             style="width: 40px; height: 40px; object-fit: cover">
-
-                                        <div class="media-body">
-                                            <a href="#" class="d-block text-dark">${item.course.name}</a>
+                        <c:choose>
+                            <c:when test="${empty orderItems}">
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <div style="padding: 30px; background-color: #E6F2FF; border: 2px dashed #3399FF; border-radius: 10px;">
+                                            <h4 style="color: #3399FF; font-weight: 600; font-size: 1.5rem; margin: 0;">
+                                                 Your cart is empty!
+                                            </h4>
+                                            <p style="color: #666; margin-top: 8px;">Start adding courses to see them here.</p>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="text-right font-weight-semibold align-middle p-4">$${item.price}</td>
-                                <td class="align-middle p-4"><input type="text" class="form-control text-center" value="1" min="1" max="1"></td>
-                                <td class="text-right font-weight-semibold align-middle p-4">$<c:out value="${item.price}" /></td>
-                                <td class="text-center align-middle px-0">
-                                    <a href="#" class="remove-item shop-tooltip close float-none text-danger" data-id="${item.id}" title="Remove">×</a>
-                                </td>
-
-                            </tr>
-                        </c:forEach>
-
+                                    </td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="item" items="${orderItems}">
+                                    <tr>
+                                        <td class="p-4">
+                                            <div class="media align-items-center">
+                                                <img src="${pageContext.request.contextPath}/images/course${item.course.id}.webp"
+                                                     class="d-block ui-w-40 ui-bordered mr-4"
+                                                     alt=""
+                                                     style="width: 40px; height: 40px; object-fit: cover">
+                                                <div class="media-body">
+                                                    <a href="#" class="d-block text-dark">${item.course.name}</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-right font-weight-semibold align-middle p-4">$${item.price}</td>
+                                        <td class="align-middle p-4"><input type="text" class="form-control text-center" value="1" min="1" max="1"></td>
+                                        <td class="text-right font-weight-semibold align-middle p-4">$<c:out value="${item.price}" /></td>
+                                        <td class="text-center align-middle px-0">
+                                            <a href="#" class="remove-item shop-tooltip close float-none text-danger" data-id="${item.id}" title="Remove">×</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                         </tbody>
+
                     </table>
                 </div>
 
                 <div class="d-flex flex-wrap justify-content-between align-items-center pb-4">
-                    <div class="mt-4"></div>
-                    <div class="d-flex">
-                        <div class="text-right mt-4 mr-5">
-                            <label class="text-muted font-weight-normal m-0">Discount</label>
-                            <div class="text-large"><strong>0</strong></div>
-                        </div>
-                        <div class="text-right mt-4">
-                            <label class="text-muted font-weight-normal m-0">Total price</label>
-                            <div class="text-large">
-                                <strong>
-                                    <c:out value="${total}" />
-                                </strong>
+                    <c:if test="${not empty orderItems}">
+                        <div class="mt-4"></div>
+                        <div class="d-flex">
+                            <div class="text-right mt-4 mr-5">
+                                <label class="text-muted font-weight-normal m-0">Discount</label>
+                                <div class="text-large"><strong>0</strong></div>
+                            </div>
+                            <div class="text-right mt-4">
+                                <label class="text-muted font-weight-normal m-0">Total price</label>
+                                <div class="text-large">
+                                    <strong>
+                                        <c:out value="${total}" />
+                                    </strong>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </c:if>
                 </div>
 
                 <div class="float-right">
                     <c:set var="order" value="${requestScope.order}" />
-                    <a   href="<%= request.getContextPath() %>/category" >
+                    <a href="<%= request.getContextPath() %>/category">
                         <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</button>
                     </a>
-                    <a href="<%= request.getContextPath() %>/payment?action=pay&order=${order.id}&amount=${total}">
-                        <button type="button" class="btn btn-lg btn-primary mt-2">Checkout</button>
-                    </a>
-                </div>
+                    <c:choose>
+                        <c:when test="${empty orderItems}">
+                            <!-- Nút bị disable, không có <a> -->
+                            <button type="button" class="btn btn-lg btn-secondary mt-2" disabled title="Your cart is empty">
+                                Checkout
+                            </button>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- Nút Checkout hoạt động bình thường -->
+                            <a href="<%= request.getContextPath() %>/payment?action=pay&order=${order.id}&amount=${total}">
+                                <button type="button" class="btn btn-lg btn-primary mt-2">Checkout</button>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
 
+                </div>
             </div>
         </div>
     </div>

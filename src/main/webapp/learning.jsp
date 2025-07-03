@@ -30,13 +30,13 @@
             </h5>
             <c:forEach var="chapter" items="${chapters}" varStatus="chapStatus">
                 <div class="chapter mb-3">
-                    <div class="chapter-title" data-bs-toggle="collapse" data-bs-target="#chapter${chapter.id}">
+                    <div class="chapter-title" onclick="toggleChapter(${chapter.id})">
                         Chương ${chapStatus.index + 1}: ${chapter.title}
                         <span class="status-icon status-none"></span>
                     </div>
                     <c:set var="chapterIdStr" value="${chapter.id}" />
-                    <div class="collapse${(empty param.chapterid && chapStatus.index == 0) || (chapterIdStr == param.chapterid) ? ' show' : ''}" id="chapter${chapter.id}">
-                        <c:forEach var="ls" items="${allLessons}">
+                    <div class="collapse" id="chapter${chapter.id}">
+                    <c:forEach var="ls" items="${allLessons}">
                             <c:if test="${ls.chapterId == chapter.id}">
                                 <div class="lesson-link${ls.id == param.lessonid ? ' viewed' : ''}">
                                     <a href="learning?courseid=${course.id}&chapterid=${chapter.id}&lessonid=${ls.id}" style="text-decoration:none;color:inherit;display:block;width:100%">
@@ -106,19 +106,19 @@
         sidebar.classList.toggle('collapsed');
         icon.textContent = sidebar.classList.contains('collapsed') ? '»' : '«';
     }
-
-    function loadLesson(key) {
-        const lessons = {
-            intro: { title: "Giới thiệu HTML", video: "https://www.w3schools.com/html/mov_bbb.mp4", description: "Bài học giới thiệu HTML cơ bản." },
-            structure: { title: "Cấu trúc HTML", video: "https://www.w3schools.com/html/movie.mp4", description: "Cấu trúc thẻ HTML trong trang." },
-            tags: { title: "Thẻ HTML cơ bản", video: "https://www.w3schools.com/html/mov_bbb.mp4", description: "Giới thiệu các thẻ phổ biến." },
-            image: { title: "Thêm hình ảnh", video: "https://www.w3schools.com/html/movie.mp4", description: "Cách dùng thẻ <img>." }
-        };
-        const lesson = lessons[key];
-        document.getElementById('lesson-title').textContent = lesson.title;
-        document.getElementById('lesson-video').src = lesson.video;
-        document.getElementById('lesson-description').innerHTML = `<h5 class='text-secondary'>Mô tả bài học</h5><p>${lesson.description}</p>`;
+        function toggleChapter(chapterId) {
+        const content = document.getElementById("chapter" + chapterId);
+        if (content.classList.contains("show")) {
+        bootstrap.Collapse.getInstance(content).hide();
+    } else {
+        if (!bootstrap.Collapse.getInstance(content)) {
+        new bootstrap.Collapse(content);
+    } else {
+        bootstrap.Collapse.getInstance(content).show();
     }
+    }
+    }
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
