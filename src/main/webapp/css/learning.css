@@ -92,12 +92,6 @@ body {
     color: #3b3b3b;
     cursor: pointer;
 }
-.lesson-link.viewed::after {
-    content: '\2713';
-    color: #4caf50;
-    font-size: 0.85rem;
-    margin-left: 10px;
-}
 .video-wrapper {
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(12px);
@@ -143,3 +137,54 @@ video { width: 100%; height: 100%; border-radius: 10px; object-fit: contain; }
     flex-direction: column;
     min-height: 100vh;
 }
+
+.chapter-title,
+.tickable-line, /* dùng cho bài học hoặc khóa học nếu muốn tách riêng */
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* Tick cho lesson: chỉ icon xanh, không viền tròn */
+.tick-lesson {
+    color: #28a745;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Chapter completed: chữ Completed xanh lá */
+.tick-chapter {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 0.85rem;
+}
+
+/* Course: vòng tròn xanh đậm + tick trắng */
+.tick-course {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #198754;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.tick-lesson::before,
+.tick-course::before {
+    content: '\2713'; /* Unicode checkmark */
+}
+.lesson-link.viewed {
+    background-color: #f0f8ff;
+    border-left: 4px solid #0d6efd;
+}
+
+.chapter-title {
+    cursor: pointer;
+    font-weight: 500;
+}
+
