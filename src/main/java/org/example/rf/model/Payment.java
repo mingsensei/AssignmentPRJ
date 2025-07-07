@@ -1,6 +1,9 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,99 +12,65 @@ import java.time.format.DateTimeFormatter;
 @Table(name = "payment")
 public class Payment {
 
+    @Setter
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // Liên kết đến Order
+    @Setter
+    @Getter
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id",nullable = true)
     private Order order;
 
+    @Setter
+    @Getter
     @Column(name = "amount", precision = 18, scale = 2)
     private BigDecimal amount;
-
+    @Setter
     @Column(name = "transaction_no", length = 100)
     private String transactionNo;
 
+    @Setter
     @Column(name = "bank_code", length = 50)
     private String bankCode;
 
+    @Setter
     @Column(name = "pay_date")
     private LocalDateTime payDate;
 
+    @Getter
+    @Setter
     @Column(name = "status", length = 20)
     private String status;
 
+    @Setter
+    @Getter
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Payment() {}
 
     // Getters và Setters
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     public String getTransactionNo() {
         return transactionNo;
-    }
-
-    public void setTransactionNo(String transactionNo) {
-        this.transactionNo = transactionNo;
     }
 
     public String getBankCode() {
         return bankCode;
     }
 
-    public void setBankCode(String bankCode) {
-        this.bankCode = bankCode;
-    }
-
     public LocalDateTime getPayDate() {
         return payDate;
-    }
-
-    public void setPayDate(LocalDateTime payDate) {
-        this.payDate = payDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getFormattedPayDate() {

@@ -43,6 +43,11 @@ public class LessonService {
         return lessonDAO.findAll();
     }
 
+    // Lấy danh sách lesson theo chapterId
+    public List<Lesson> getLessonsByChapterId(Long chapterId) {
+        return lessonDAO.findByChapterId(chapterId);
+    }
+
     // Đóng EntityManager khi không còn dùng
     public void close() {
         if (em != null && em.isOpen()) {
