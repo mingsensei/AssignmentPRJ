@@ -76,6 +76,7 @@
     </style>
 </head>
 <body>
+<%@ include file="header.jsp" %>
 <div class="container">
 
     <!-- Nút thêm tài liệu bên phải -->
@@ -179,5 +180,6 @@
             });
     });
 </script>
+<%@ include file="footer.jsp" %>
 </body>
 </html>
