@@ -6,7 +6,6 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blog post</title>
-        <link rel="stylesheet" href="<%= request.getContextPath()%>/css/index.css" />
         <link rel="stylesheet" href="<%= request.getContextPath()%>/css/markdownstyle.css" />
         <style>
             body {
@@ -133,8 +132,6 @@
             }
 
         </style>
-
-
     </head>
     <body>
         <%@ include file="header.jsp" %>
@@ -160,6 +157,7 @@
                 </div>
             </c:forEach>
         </div>
+        <%@ include file="footer.jsp" %>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <script>
             document.querySelectorAll('.markdown-style').forEach(el => {

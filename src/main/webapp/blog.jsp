@@ -1,12 +1,17 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="org.example.rf.model.User"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<%
+    User currentUser = (User) session.getAttribute("user");
+    request.setAttribute("currentUser", currentUser);
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>${blog.title}</title>
-        <link rel="stylesheet" href="<%= request.getContextPath()%>/css/index.css" />
         <link rel="stylesheet" href="<%= request.getContextPath()%>/css/markdownstyle.css" />
         <style>
             body {
@@ -220,7 +225,26 @@
                     <a href="blog" class="blog-breadcrumb-link">Post</a> &nbsp;&gt;
                     ${blog.title}
                 </div>
-
+                <!-- Show Edit button if current user is connected to this blog -->
+                <c:if test="${not empty currentUser}">
+                    <c:forEach var="blogUser" items="${blogUsers}">
+                        <c:if test="${blogUser.user.id == currentUser.id}">
+                            <form action="blog" method="get" style="margin-bottom: 1rem;">
+                                <input type="hidden" name="id" value="${blog.id}" />
+                                <input type="hidden" name="action" value="edit" />
+                                <button type="submit" style="
+                                        background-color: #10b981;
+                                        color: white;
+                                        border: none;
+                                        padding: 0.5rem 1rem;
+                                        border-radius: 6px;
+                                        cursor: pointer;
+                                        ">✏️ Edit Blog</button>
+                            </form>
+                            <c:remove var="blogUser"/>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
                 <div class="blog-title">${blog.title}</div>
 
                 <div class="blog-meta">
@@ -240,80 +264,79 @@
 
         </div>
         <!-- Comment Section -->
-        <!-- Comment Section -->
-        <div class="comment-container">
-            <div class="comment-box">
-                <h2>💬 Comments</h2>
+        <jsp:include page="/Comment">
+            <jsp:param name="type" value="blog" />
+            <jsp:param name="id" value="${blog.id}" />
+        </jsp:include>
 
-                <!-- Existing Comments -->
-                <c:forEach var="comment" items="${comments}">
-                    <div class="comment-item">
-                        <div class="username">${comment.user.userName}</div>
-                        <div class="markdown-style" data-raw="${fn:escapeXml(comment.content)}"></div>
-                        <div class="timestamp">${comment.createdAt}</div>
-                    </div>
-                </c:forEach>
 
-                <!-- New Comment Form -->
-                <form action="${pageContext.request.contextPath}/comment?action=create" method="post" onsubmit="return handleCommentSubmit(event)">
-                    <textarea id="commentInput" name="content" rows="5" required placeholder="Write your comment in markdown..."></textarea>
-
-                    <input type="hidden" name="blogId" value="${blog.id}" />
-                    <button type="submit">Post Comment</button>
-                </form>
-            </div>
-        </div>
-
+        <%@ include file="footer.jsp" %>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <script>
-                    document.querySelectorAll('.markdown-style').forEach(el => {
-                        const raw = el.dataset.raw;
-                        const html = marked.parse(raw);
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = html;
+            document.querySelectorAll('.markdown-style').forEach(el => {
+                const raw = el.dataset.raw;
+                const html = marked.parse(raw);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
 
-                        // Assign headings IDs BEFORE inserting into DOM
-                        let count = 0;
-                        tempDiv.querySelectorAll('h1, h2, h3').forEach(heading => {
-                            const anchor = 'toc-' + count++;
-                            heading.id = anchor;
-                        });
+                // Assign headings IDs BEFORE inserting into DOM
+                function slugify(text) {
+                    return text
+                            .toLowerCase()
+                            .trim()
+                            .replace(/[^\w\s-]/g, '')  // remove non-word characters
+                            .replace(/\s+/g, '-')      // replace spaces with hyphens
+                            .replace(/-+/g, '-');      // collapse multiple hyphens
+                }
 
-                        // Now insert the parsed content into the page
-                        el.innerHTML = tempDiv.innerHTML;
-
-                        // Build the TOC from the now-inserted headings
-                        const toc = document.getElementById('toc');
-                        toc.innerHTML = '<h3>Contents</h3><ul>';
-
-                        count = 0;
-                        el.querySelectorAll('h1, h2, h3').forEach(heading => {
-                            const tag = heading.tagName.toLowerCase();
-                            const text = heading.textContent;
-                            const anchor = heading.id;
-
-                            let margin = '0';
-                            if (tag === 'h2')
-                                margin = '1rem';
-                            if (tag === 'h3')
-                                margin = '2rem';
-
-                            toc.innerHTML +=
-                                    '<li style="margin-left: ' + margin + '"><a href="#' + anchor + '">' + text + '</a></li>';
-                        });
-
-                        toc.innerHTML += '</ul>';
-                    });
-
-                    function handleCommentSubmit(event) {
-                        const content = document.getElementById('commentInput').value.trim();
-                        if (!content) {
-                            alert("Comment cannot be empty.");
-                            event.preventDefault();
-                            return false;
-                        }
-                        return true;
+                // Assign heading IDs before inserting into DOM
+                const usedIds = new Set();
+                tempDiv.querySelectorAll('h1, h2, h3').forEach(heading => {
+                    let baseId = slugify(heading.textContent);
+                    let uniqueId = baseId;
+                    let suffix = 1;
+                    while (usedIds.has(uniqueId)) {
+                        uniqueId = baseId + "-" + (suffix++);
                     }
+                    usedIds.add(uniqueId);
+                    heading.id = uniqueId;
+                });
+
+                // Now insert the parsed content into the page
+                el.innerHTML = tempDiv.innerHTML;
+
+                // Build the TOC from the now-inserted headings
+                const toc = document.getElementById('toc');
+                toc.innerHTML = '<h3>Contents</h3><ul>';
+
+                count = 0;
+                el.querySelectorAll('h1, h2, h3').forEach(heading => {
+                    const tag = heading.tagName.toLowerCase();
+                    const text = heading.textContent;
+                    const anchor = heading.id;
+
+                    let margin = '0';
+                    if (tag === 'h2')
+                        margin = '1rem';
+                    if (tag === 'h3')
+                        margin = '2rem';
+
+                    toc.innerHTML +=
+                            '<li style="margin-left: ' + margin + '"><a href="#' + anchor + '">' + text + '</a></li>';
+                });
+
+                toc.innerHTML += '</ul>';
+            });
+
+            function handleCommentSubmit(event) {
+                const content = document.getElementById('commentInput').value.trim();
+                if (!content) {
+                    alert("Comment cannot be empty.");
+                    event.preventDefault();
+                    return false;
+                }
+                return true;
+            }
         </script>
     </body>
 </html>

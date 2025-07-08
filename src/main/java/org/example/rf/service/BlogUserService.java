@@ -48,18 +48,16 @@ public class BlogUserService {
 
     // Find BlogUser by blog ID
     public List<BlogUser> findByBlogId(Long blogId) {
-        return em.createQuery(
-                "SELECT bu FROM BlogUser bu WHERE bu.blog.id = :blogId", BlogUser.class)
-                .setParameter("blogId", blogId)
-                .getResultList();
+        return blogUserDAO.findByBlogId(blogId);
     }
 
     // Find BlogUser by user ID
     public List<BlogUser> findByUserId(Long userId) {
-        return em.createQuery(
-                "SELECT bu FROM BlogUser bu WHERE bu.user.id = :userId", BlogUser.class)
-                .setParameter("userId", userId)
-                .getResultList();
+        return blogUserDAO.findByUserId(userId);
+    }
+    
+    public List<BlogUser> findByBlogUser(Long userId, Long blogId) {
+        return blogUserDAO.findByBlogUser(userId, blogId);
     }
 
     // Dọn dẹp EntityManager
