@@ -182,13 +182,14 @@
         </style>
     </head>
     <body>
-        <form action="<%=request.getContextPath()%>/blog?action=create" method="post">
+        <form action="${pageContext.request.contextPath}/blog?action=${action}" method="post">
             <div class="topbar">
                 <div class="left-section">
                     <img src="https://i.pravatar.cc/48" alt="Avatar" class="avatar">
                     <a href="<%= request.getContextPath()%>/user-info" class="login-button"><%=user.getUserName()%></a>
                     <span class="slash">/</span>
-                    <input type="text" name="title" class="title-input" value="My blog" required />
+                    <input type="text" name="title" class="title-input" value="<%= request.getAttribute("blog") != null ? ((org.example.rf.model.Blog) request.getAttribute("blog")).getTitle() : "My blog"%>" required />
+
                 </div>
                 <div class="right-section">
                     <button class="icon-btn" title="Share">🔗 Share</button>
@@ -219,7 +220,8 @@
                         <button type="button" title="Image" onclick="insertImage()">🖼️</button>
                     </div>
 
-                    <textarea id="editor" name="content" oninput="updatePreview()" required></textarea>
+                    <textarea id="editor" name="content" oninput="updatePreview()" required>${blog.content}</textarea>
+                    <input type="hidden" name="id" value="${blog.id}"/>
                 </div>
                 <div class="preview markdown-style" id="preview">
                     <p><em>Live preview will appear here...</em></p>
@@ -312,6 +314,29 @@
                                 textarea.setRangeText(modified, start, end, 'end');
                                 updatePreview();
                             }
+                            let isSyncingEditorScroll = false;
+                            let isSyncingPreviewScroll = false;
+
+                            const editor = document.getElementById('editor');
+                            const preview = document.getElementById('preview');
+
+                            editor.addEventListener('scroll', () => {
+                                if (isSyncingEditorScroll)
+                                    return;
+                                isSyncingPreviewScroll = true;
+                                const ratio = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+                                preview.scrollTop = ratio * (preview.scrollHeight - preview.clientHeight);
+                                isSyncingPreviewScroll = false;
+                            });
+
+                            preview.addEventListener('scroll', () => {
+                                if (isSyncingPreviewScroll)
+                                    return;
+                                isSyncingEditorScroll = true;
+                                const ratio = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
+                                editor.scrollTop = ratio * (editor.scrollHeight - editor.clientHeight);
+                                isSyncingEditorScroll = false;
+                            });
         </script>
     </body>
 </html>
