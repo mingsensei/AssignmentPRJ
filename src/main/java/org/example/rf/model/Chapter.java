@@ -1,9 +1,16 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "chapter")
+@Builder
+@AllArgsConstructor
 public class Chapter {
 
     @Id
@@ -21,15 +28,11 @@ public class Chapter {
 
     public Chapter() {}
 
-    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public Long getCourseId() { return courseId; }
     public void setCourseId(Long courseId) { this.courseId = courseId; }
 
-    public Integer getOrderIndex() { return orderIndex; }
     public void setOrderIndex(Integer orderIndex) { this.orderIndex = orderIndex; }
 }

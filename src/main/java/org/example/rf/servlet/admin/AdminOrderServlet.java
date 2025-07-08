@@ -33,14 +33,8 @@ public class AdminOrderServlet extends HttpServlet {
         String path = req.getPathInfo();
 
         switch (path) {
-            case "/update":
-                updateOrder(req, resp);
-                break;
-            case "/delete":
-                deleteOrder(req, resp);
-                break;
-            default:
-                resp.sendRedirect(req.getContextPath() + "/admin/order");
+            case "/update" -> updateOrder(req, resp);
+            case "/delete" -> deleteOrder(req, resp);
         }
     }
 
