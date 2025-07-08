@@ -12,6 +12,11 @@
     <title>Thanh Toán VietQR</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/index.css" />
     <style>
+        .center-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         .payment-container {
             max-width: 600px;
             margin: 40px auto;
@@ -63,6 +68,22 @@
             </div>
 
             <p>Vui lòng quét mã QR để thanh toán. Sau khi thanh toán thành công, đơn hàng của bạn sẽ được xử lý.</p>
+            <div class="center-button">
+                <c:choose>
+                    <c:when test="${not empty planId}">
+                        <a href="${pageContext.request.contextPath}/processPayment?action=payPlan&userId=${userId}&planId=${planId}&amount=${totalAmount}" class="button"
+                           class="btn btn-primary btn-lg">
+                            Tôi đã thực hiện thanh toán
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/processPayment?action=payOrder&userId=${userId}&orderId=${order.id}&amount=${totalAmount}"
+                           class="btn btn-primary btn-lg">
+                            Tôi đã thực hiện thanh toán
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
     </div>
 

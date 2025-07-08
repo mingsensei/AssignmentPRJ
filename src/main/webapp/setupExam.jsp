@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
+
 <head>
     <title>Chọn số câu hỏi và độ khó</title>
 </head>
@@ -11,7 +13,7 @@
     <div style="color:red; margin-bottom: 10px; border: 1px solid red; padding: 10px;">
         <strong>Lỗi:</strong> ${errorMessage}<br>
 
-        <c:if test="${errorMessage contains 'giới hạn'}">
+        <c:if test="${fn:contains(errorMessage, 'Limit')}">
             <p>Vui lòng <a href="${pageContext.request.contextPath}/plan-pricing">nâng cấp gói</a> để tiếp tục sử dụng đầy đủ tính năng.</p>
         </c:if>
     </div>

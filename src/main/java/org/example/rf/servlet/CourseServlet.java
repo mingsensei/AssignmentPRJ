@@ -12,6 +12,8 @@ import org.example.rf.model.User;
 import org.example.rf.service.ChapterService;
 import org.example.rf.service.CourseService;
 import org.example.rf.service.EnrollmentService;
+import org.example.rf.service.LessonService;
+import org.example.rf.model.Lesson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,6 +58,19 @@ public class CourseServlet extends HttpServlet {
 
         List<Chapter> chapters = chapterService.getChaptersByCourseId(courseId);
 
+        // Lấy chapter đầu tiên và lesson đầu tiên (nếu có)
+        Long firstChapterId = null;
+        Long firstLessonId = null;
+        if (chapters != null && !chapters.isEmpty()) {
+            firstChapterId = chapters.get(0).getId();
+            LessonService lessonService = new LessonService();
+            List<Lesson> lessons = lessonService.getLessonsByChapterId(firstChapterId);
+            if (lessons != null && !lessons.isEmpty()) {
+                firstLessonId = lessons.get(0).getId();
+            }
+            lessonService.close();
+        }
+
         List<Enrollment> enrollments = enrollmentService.findByUserId(user.getId());
         List<Long> enrollmentIds = new ArrayList<>();
         for(Enrollment enrollment : enrollments) {
@@ -65,8 +80,9 @@ public class CourseServlet extends HttpServlet {
         req.setAttribute("course", course);
         req.setAttribute("chapters", chapters);
         req.setAttribute("enrollments", enrollmentIds);
+        req.setAttribute("firstChapterId", firstChapterId);
+        req.setAttribute("firstLessonId", firstLessonId);
         req.getRequestDispatcher("/course.jsp").forward(req, resp);
-
     }
 
     @Override

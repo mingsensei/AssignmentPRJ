@@ -22,35 +22,55 @@
 <div class="main-content d-flex flex-column min-vh-100">
   <div class="container">
     <div class="row">
-      <c:forEach var="courseList" items="${courseList}" varStatus="status">
-        <div class="col-12 mb-4 d-flex align-items-stretch">
-          <div class="course-card w-100">
-            <div class="course-header">
-              <img src="${pageContext.request.contextPath}/images/course${courseList.id}.webp" alt="Course Image" class="course-image" />
-              <div class="course-info">
-                <h3 class="course-title"> ${courseList.name}</h3>
-                <div class="chap_but">
-                  <a>${courseList.description}</a>
-                  <button class="toggle-btn" onclick="toggleChapters(this)">
-                    <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div class="course-level">Intermediate</div>
-            </div>
-            <div class="chapter-progress">
-              <c:forEach var="i" begin="1" end="${chapters[status.index]}">
-                <div class="chapter-item">
-                  <div class="chapter-circle ${i == 1 ? 'active' : ''}">${i}</div>
-                </div>
-              </c:forEach>
+      <c:choose>
+        <c:when test="${empty courseList}">
+          <!-- Thông báo khi không có khóa học -->
+          <div class="col-12 text-center py-5">
+            <div style="padding: 30px; background-color: #E6F7FF; border: 2px dashed #3399FF; border-radius: 12px;">
+              <h3 style="color: #3399FF; font-weight: 600;">📭 You have no enrolled course!</h3>
+              <p style="color: #666; margin-top: 8px;">Browse our catalog and start learning today.</p>
+              <a href="${pageContext.request.contextPath}/category">
+                <button class="btn btn-primary mt-3 px-4 py-2">Explore Courses</button>
+              </a>
             </div>
           </div>
-        </div>
-      </c:forEach>
+        </c:when>
+
+        <c:otherwise>
+          <!-- Danh sách khóa học -->
+          <c:forEach var="courseList" items="${courseList}" varStatus="status">
+            <a href="${pageContext.request.contextPath}/learning?courseid=${course.id}&chapterid=${firstChapterId}&lessonid=${firstLessonId}">
+              <div class="col-12 mb-4 d-flex align-items-stretch">
+                <div class="course-card w-100">
+                  <div class="course-header">
+                    <img src="${pageContext.request.contextPath}/images/course${courseList.id}.webp" alt="Course Image" class="course-image" />
+                    <div class="course-info">
+                      <h3 class="course-title"> ${courseList.name}</h3>
+                      <div class="chap_but">
+                        <a>${courseList.description}</a>
+                        <button class="toggle-btn" onclick="toggleChapters(this)">
+                          <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="course-level">Intermediate</div>
+                  </div>
+                  <div class="chapter-progress">
+                    <c:forEach var="i" begin="1" end="${chapters[status.index]}">
+                      <div class="chapter-item">
+                        <div class="chapter-circle ${i == 1 ? 'active' : ''}">${i}</div>
+                      </div>
+                    </c:forEach>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </c:forEach>
+        </c:otherwise>
+      </c:choose>
     </div>
   </div>
 

@@ -1,37 +1,9 @@
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
     <persistence-unit name="your-persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>org.example.rf.model.User</class>
-        <class>org.example.rf.model.Category</class>
-        <class>org.example.rf.model.Course</class>
-        <class>org.example.rf.model.Chapter</class>
-        <class>org.example.rf.model.Lesson</class>
-        <class>org.example.rf.model.Material</class>
-        <class>org.example.rf.model.Enrollment</class>
-        <class>org.example.rf.model.Level</class>
-        <class>org.example.rf.model.Exam</class>
-        <class>org.example.rf.model.Question</class>
-        <class>org.example.rf.model.AiQuestion</class>
-        <class>org.example.rf.model.ExamQuestion</class>
-        <class>org.example.rf.model.Order</class>
-        <class>org.example.rf.model.OrderItem</class>
-        <class>org.example.rf.model.Payment</class>
-        <class>org.example.rf.model.Cart</class>
-        <class>org.example.rf.model.CartItem</class>
-        <class>org.example.rf.model.Blog</class>
-        <class>org.example.rf.model.BlogUser</class>
-
-        <!-- ✅ Các entity mới thêm -->
-        <class>org.example.rf.model.Plan</class>
-        <class>org.example.rf.model.UserSubscription</class>
-        <class>org.example.rf.model.TestAttempt</class>
-        <class>org.example.rf.model.UserPost</class>
-        
-        <class>org.example.rf.model.Comment</class>
-        <class>org.example.rf.model.CommentBlog</class>
-        <class>comorg.example.rf.model.CommentCourse</class>
 
         <properties>
+            <property name="hibernate.archive.autodetection" value="class"/>
             <!-- Cấu hình kết nối SQL Server -->
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=AssignmentPRJ;encrypt=true;trustServerCertificate=true" />

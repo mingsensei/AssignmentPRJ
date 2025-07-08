@@ -155,7 +155,7 @@ public class ExamService {
                 .count();
 
         if (currentAttempts >= plan.getMaxTestAttempts()) {
-            throw new RuntimeException("Bạn đã đạt giới hạn làm bài kiểm tra của gói hiện tại");
+            throw new RuntimeException("Limit exam!");
         }
 
         // Cho phép tạo Exam
