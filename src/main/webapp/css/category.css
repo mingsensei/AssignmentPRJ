@@ -8,6 +8,13 @@ h1, h2 {
     margin-top: 40px;
 }
 
+/* Wrapper can be reused cho thanh tìm kiếm */
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
+
 /* ======= PHẦN KHOÁ HỌC NỔI BẬT ======= */
 .carousel-container {
     width: 100%;

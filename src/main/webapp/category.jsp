@@ -11,6 +11,13 @@
 <%@ include file="header.jsp" %>
 <body>
 
+<div class="search-wrapper">
+    <form class="searchform" action="search" method="get">
+        <input type="search" name="query" placeholder="Tìm khoá học..." />
+        <button type="submit">🔍</button>
+    </form>
+</div>
+
 <!-- ===== KHOÁ HỌC NỔI BẬT ===== -->
 <h1>Khoá học nổi bật</h1>
 <div class="carousel-container">

@@ -26,4 +26,25 @@ public class CourseDAO extends GenericDAO<Course, Long> {
         query.setMaxResults(4);
         return query.getResultList();
     }
+
+    // Tìm kiếm nâng cao theo nhiều từ khóa (không phân biệt hoa thường)
+    public List<Course> searchCourses(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return List.of();
+        }
+
+        String[] tokens = keyword.toLowerCase().trim().split("\\s+");
+        StringBuilder jpql = new StringBuilder("SELECT c FROM Course c WHERE ");
+        for (int i = 0; i < tokens.length; i++) {
+            if (i > 0) jpql.append(" OR ");
+            jpql.append("(LOWER(c.name) LIKE :kw").append(i)
+                .append(" OR LOWER(c.description) LIKE :kw").append(i).append(')');
+        }
+
+        TypedQuery<Course> query = entityManager.createQuery(jpql.toString(), Course.class);
+        for (int i = 0; i < tokens.length; i++) {
+            query.setParameter("kw" + i, "%" + tokens[i] + "%");
+        }
+        return query.getResultList();
+    }
 }
