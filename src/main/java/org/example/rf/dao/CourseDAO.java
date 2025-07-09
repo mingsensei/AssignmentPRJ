@@ -45,6 +45,7 @@ public class CourseDAO extends GenericDAO<Course, Long> {
         for (int i = 0; i < tokens.length; i++) {
             query.setParameter("kw" + i, "%" + tokens[i] + "%");
         }
+
         return query.getResultList();
     }
 }

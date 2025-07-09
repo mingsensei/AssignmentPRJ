@@ -11,12 +11,12 @@
 <%@ include file="header.jsp" %>
 <body>
 
-<div class="search-wrapper">
-    <form class="searchform" action="search" method="get">
-        <input type="search" name="query" placeholder="Tìm khoá học..." />
-        <button type="submit">🔍</button>
-    </form>
-</div>
+
+<form class="searchform" action="search" method="get" style="margin:20px auto; max-width:260px;">
+    <input type="search" name="query" placeholder="Tìm khoá học..." />
+    <button type="submit">🔍</button>
+</form>
+
 
 <!-- ===== KHOÁ HỌC NỔI BẬT ===== -->
 <h1>Khoá học nổi bật</h1>
