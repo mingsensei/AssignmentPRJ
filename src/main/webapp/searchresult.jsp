@@ -10,6 +10,12 @@
 </head>
 <%@ include file="header.jsp" %>
 <body>
+<div class="search-wrapper">
+    <form class="searchform" action="search" method="get">
+        <input type="search" name="query" placeholder="Tìm khoá học..." value="${query}" />
+        <button type="submit">🔍</button>
+    </form>
+</div>
 <h1>Kết quả tìm kiếm cho "<c:out value='${query}'/>"</h1>
 <div class="course-grid">
     <c:forEach var="course" items="${courses}">
