@@ -118,13 +118,13 @@
 
 
     const searchForm = document.querySelector('.searchform');
-    const searchInput = searchForm.querySelector('input');
-
-    searchForm.addEventListener('mouseenter', () => {
-        setTimeout(() => {
-            searchInput.focus();
-        }, 200); // delay nhỏ để input hiện ra trước khi focus
-    });
-
+    if (searchForm) {
+        const searchInput = searchForm.querySelector('input');
+        searchForm.addEventListener('mouseenter', () => {
+            setTimeout(() => {
+                searchInput.focus();
+            }, 200);
+        });
+    }
 
 </script>
