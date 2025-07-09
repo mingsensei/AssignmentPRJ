@@ -26,4 +26,14 @@ public class CourseDAO extends GenericDAO<Course, Long> {
         query.setMaxResults(4);
         return query.getResultList();
     }
+
+    // Tìm khóa học theo tên hoặc mô tả chứa keyword (không phân biệt hoa thường)
+    public List<Course> searchCourses(String keyword) {
+        TypedQuery<Course> query = entityManager.createQuery(
+                "SELECT c FROM Course c WHERE lower(c.name) LIKE :kw OR lower(c.description) LIKE :kw",
+                Course.class
+        );
+        query.setParameter("kw", "%" + keyword.toLowerCase() + "%");
+        return query.getResultList();
+    }
 }

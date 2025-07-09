@@ -48,6 +48,10 @@ public class CourseService {
     public ArrayList<Course> getTop4Courses() {
         return new ArrayList<>(courseDAO.getTop4Courses());
     }
+
+    public List<Course> searchCourses(String keyword) {
+        return courseDAO.searchCourses(keyword);
+    }
     // Đóng EntityManager khi không cần nữa
     public void close() {
         if (em != null && em.isOpen()) {
