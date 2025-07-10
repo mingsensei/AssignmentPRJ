@@ -8,6 +8,7 @@ import org.example.rf.model.Exam;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.rf.model.QuestionResult;
 
 public class ExamDAO {
 
@@ -25,7 +26,9 @@ public class ExamDAO {
             entityManager.persist(exam);
             tx.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             throw e;
         }
     }
@@ -43,7 +46,9 @@ public class ExamDAO {
             entityManager.merge(exam);
             tx.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             throw e;
         }
     }
@@ -59,7 +64,9 @@ public class ExamDAO {
             }
             tx.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             throw e;
         }
     }
@@ -86,7 +93,6 @@ public class ExamDAO {
         return query.getResultList();
     }
 
-
     public List<AnswerCheckDTO> findAnswerChecks(Long examId) {
         String sql = """
         SELECT eq.student_answer, aiq.correct_option
@@ -112,7 +118,50 @@ public class ExamDAO {
         return dtos;
     }
 
+    public List<QuestionResult> getExamQuestions(long examId) {
+        String sql = """
+        SELECT 
+            eq.question_order,
+            COALESCE(q.content, ai.content),
+            COALESCE(q.option_a, ai.option_a),
+            COALESCE(q.option_b, ai.option_b),
+            COALESCE(q.option_c, ai.option_c),
+            COALESCE(q.option_d, ai.option_d),
+            COALESCE(q.correct_option, ai.correct_option),
+            eq.student_answer,
+            CASE WHEN ai.id IS NOT NULL THEN 1 ELSE 0 END AS is_ai
+        FROM exam_question eq
+        LEFT JOIN question q ON eq.question_id = q.id
+        LEFT JOIN ai_question ai ON eq.ai_question_id = ai.id
+        WHERE eq.exam_id = :examId
+        ORDER BY eq.question_order
+    """;
 
+        List<Object[]> rows = entityManager.createNativeQuery(sql)
+                .setParameter("examId", examId)
+                .getResultList();
 
+        List<QuestionResult> result = new ArrayList<>();
+
+        for (Object[] row : rows) {
+            QuestionResult qr = new QuestionResult();
+            qr.setOrder(((Number) row[0]).intValue());
+            qr.setContent((String) row[1]);
+            qr.setOptionA((String) row[2]);
+            qr.setOptionB((String) row[3]);
+            qr.setOptionC((String) row[4]);
+            qr.setOptionD((String) row[5]);
+
+            qr.setCorrectOption(row[6] != null ? String.valueOf(row[6].toString().charAt(0)) : null);
+            qr.setStudentAnswer(row[7] != null ? String.valueOf(row[7].toString().charAt(0)) : null);
+
+            Number isAiNum = (Number) row[8];
+            qr.setAIQuestion(isAiNum != null && isAiNum.intValue() == 1);
+
+            result.add(qr);
+        }
+
+        return result;
+    }
 
 }
