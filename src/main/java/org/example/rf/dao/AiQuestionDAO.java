@@ -123,10 +123,11 @@ public class AiQuestionDAO {
         return dtos;
     }
 
-
-
-
-
+    public List<Integer> findAllDifficulties() {
+        TypedQuery<Integer> query = entityManager.createQuery(
+            "SELECT DISTINCT a.difficulty FROM AiQuestion a ORDER BY a.difficulty ASC", Integer.class);
+        return query.getResultList();
+    }
 
 
 }
