@@ -88,7 +88,7 @@ public class QuestionDAO {
 
     public List<Integer> findAllDifficulties() {
         TypedQuery<Integer> query = entityManager.createQuery(
-            "SELECT DISTINCT q.difficulty FROM Question q ORDER BY q.difficulty ASC", Integer.class);
+                "SELECT DISTINCT q.difficulty FROM Question q ORDER BY q.difficulty ASC", Integer.class);
         return query.getResultList();
     }
 

@@ -45,7 +45,7 @@
                             <table class="table table-bordered" id="examResultsTable" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th>ID Lần thi</th>
+                                    <th>ID</th>
                                     <th>Mã Sinh viên</th>
                                     <th>Mã Chương</th>
                                     <th>Điểm số</th>
