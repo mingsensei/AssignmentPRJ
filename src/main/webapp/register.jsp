@@ -31,8 +31,12 @@
                     <h2 class="form-title">Sign Up</h2>
                     <form method="POST" action="register" class="register-form" id="register-form" onsubmit="return checkPasswords()">
                         <div class="form-group">
-                            <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                            <input type="text" name="name" id="name" placeholder="Your Name" required/>
+                            <label for="first_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="first_name" id="first_name" placeholder="First Name" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="last_name" id="last_name" placeholder="Last Name" required/>
                         </div>
                         <div class="form-group">
                             <label for="email"><i class="zmdi zmdi-email"></i></label>

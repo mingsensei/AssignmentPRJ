@@ -3,13 +3,10 @@ package org.example.rf.servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import org.example.rf.model.User;
 import org.example.rf.service.UserService;
 import org.example.rf.util.HashPassword;
-
 import java.io.IOException;
-import java.util.UUID;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
@@ -25,7 +22,8 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Lấy thông tin từ form
-        String name = request.getParameter("name");
+        String firstName = request.getParameter("first_name");
+        String lastName = request.getParameter("last_name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
@@ -39,7 +37,8 @@ public class RegisterServlet extends HttpServlet {
 
         // Tạo mới user và hash password
         User user = new User();
-        user.setUserName(name);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(HashPassword.hashPassword(password));
         user.setRole(User.Role.STUDENT);
