@@ -564,7 +564,7 @@
                         <input type="hidden" name="action" value="convert">
                         <input type="hidden" name="type" value="ai-to-normal">
                         <div class="form-group">
-                            <label>Chọn câu hỏi AI để chuyển đổi:</label>
+                            <label>Chọn câu hỏi AI để thêm vào kho đề:</label>
                             <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                                 <table class="table table-sm table-bordered">
                                     <thead>
@@ -592,21 +592,12 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Chọn chương cho các câu hỏi được chuyển đổi <span class="text-danger">*</span></label>
-                            <select class="form-control" name="targetChapterId" required>
-                                <option value="">Chọn chương</option>
-                                <c:forEach var="chapter" items="${chapters}">
-                                    <option value="${chapter.id}">${chapter.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" id="submitForm">Lưu</button>
+                <button type="button" class="btn btn-primary" id="submitForm">Thêm mới</button>
             </div>
         </div>
     </div>
