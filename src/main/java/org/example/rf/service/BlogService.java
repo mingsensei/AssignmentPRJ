@@ -5,6 +5,8 @@ import org.example.rf.model.Blog;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 public class BlogService {
@@ -41,5 +43,26 @@ public class BlogService {
         if (em != null && em.isOpen()) {
             em.close();
         }
+    }
+    
+        @Transactional
+    public void incrementViewCount(Long blogId) {
+        blogDAO.incrementViewCount(blogId);
+    }
+
+    public List<Blog> getTopViewedBlogs(int limit) {
+        return blogDAO.getTopViewedBlogs(limit);
+    }
+
+    public List<Blog> getTopNewestBlogs(int limit) {
+        return blogDAO.getTopNewestBlogs(limit);
+    }
+    
+    public List<Blog> getTopViewedBlogs() {
+        return blogDAO.getTopViewedBlogs();
+    }
+
+    public List<Blog> getTopNewestBlogs() {
+        return blogDAO.getTopNewestBlogs();
     }
 }

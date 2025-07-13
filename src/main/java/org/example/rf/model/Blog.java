@@ -14,8 +14,17 @@ public class Blog {
     @Column(name = "title", length = 255)
     private String title;
 
+    @Column(name = "description", length = 512)
+    private String description;
+
+    @Column(name = "thumbnail", length = 1024)
+    private String thumbnail;
+
     @Column(name = "content", columnDefinition = "NVARCHAR(MAX)")
     private String content;
+
+    @Column(name = "view_count")
+    private Long viewCount = 0l;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -23,7 +32,8 @@ public class Blog {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Blog() {}
+    public Blog() {
+    }
 
     // Getters and Setters
 
@@ -43,12 +53,36 @@ public class Blog {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
     }
 
     public LocalDateTime getCreatedAt() {

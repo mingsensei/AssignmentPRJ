@@ -1,14 +1,20 @@
 <%@page import="org.example.rf.model.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     User user = (User) session.getAttribute("user");
+    // Fetch blog attribute if exists, avoid casting multiple times in JSP
+    org.example.rf.model.Blog blog = (org.example.rf.model.Blog) request.getAttribute("blog");
+    String action = (String) request.getAttribute("action");
+    if (action == null)
+        action = "create";
 %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Create Blog</title>
+        <title><c:out value="${action == 'edit' ? 'Edit Blog' : 'Create Blog'}"/></title>
         <link rel="stylesheet" href="<%= request.getContextPath()%>/css/markdownstyle.css" />
         <style>
             html, body {
@@ -185,43 +191,44 @@
         <form action="${pageContext.request.contextPath}/blog?action=${action}" method="post">
             <div class="topbar">
                 <div class="left-section">
-                    <img src="https://i.pravatar.cc/48" alt="Avatar" class="avatar">
-                    <a href="<%= request.getContextPath()%>/user-info" class="login-button"><%=user.getUserName()%></a>
+                    <img src="https://i.pravatar.cc/48" alt="Avatar" class="avatar" />
+                    <a href="<%= request.getContextPath()%>/user-info" class="login-button"><%= user != null ? user.getUserName() : "Guest"%></a>
                     <span class="slash">/</span>
-                    <input type="text" name="title" class="title-input" value="<%= request.getAttribute("blog") != null ? ((org.example.rf.model.Blog) request.getAttribute("blog")).getTitle() : "My blog"%>" required />
-
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        <input type="text" name="title" class="title-input" value="<%= blog != null && blog.getTitle() != null ? blog.getTitle() : "My blog"%>" required placeholder="Blog Title"/>
+                        <input type="url" name="thumbnail" style="font-size: 0.9rem; padding: 0.4rem; width: 100%; max-width: 400px;" value="<%= blog != null && blog.getThumbnail() != null ? blog.getThumbnail() : ""%>" placeholder="Thumbnail Image URL"/>
+                        <textarea name="description" rows="2" style="font-size: 0.9rem; padding: 0.4rem; resize: vertical; width: 100%; max-width: 600px;" placeholder="Short description of the blog"><%= blog != null && blog.getDescription() != null ? blog.getDescription() : ""%></textarea>
+                    </div>
                 </div>
                 <div class="right-section">
-                    <button class="icon-btn" title="Share">🔗 Share</button>
+                    <button class="icon-btn" title="Share" type="button">🔗 Share</button>
                     <button type="submit" class="submit-btn">Publish Blog</button>
                 </div>
             </div>
             <div class="editor-preview">
                 <div class="editor">
                     <div class="toolbar">
-                        <!-- Text Formatting -->
+                        <!-- Your toolbar buttons (same as original) -->
                         <button type="button" title="Bold" onclick="wrap('**')"><b>B</b></button>
                         <button type="button" title="Italic" onclick="wrap('_')"><i>I</i></button>
                         <button type="button" title="Strikethrough" onclick="wrap('~~')"><s>S</s></button>
                         <button type="button" title="Inline Code" onclick="wrap('`')">`Code`</button>
-
-                        <!-- Headings / Structure -->
                         <button type="button" title="Heading" onclick="insertHeading()">H</button>
                         <button type="button" title="Blockquote" onclick="insertBlockquote()">❝</button>
                         <button type="button" title="Horizontal Rule" onclick="insertHr()">―</button>
-
-                        <!-- Lists -->
                         <button type="button" title="Unordered List" onclick="insertList('- ')">• List</button>
                         <button type="button" title="Ordered List" onclick="insertList('1. ')">1. List</button>
                         <button type="button" title="Task List" onclick="insertList('- [ ] ')">☐ Task</button>
-
-                        <!-- Media -->
                         <button type="button" title="Link" onclick="insertLink()">🔗</button>
                         <button type="button" title="Image" onclick="insertImage()">🖼️</button>
                     </div>
-
-                    <textarea id="editor" name="content" oninput="updatePreview()" required>${blog.content}</textarea>
-                    <input type="hidden" name="id" value="${blog.id}"/>
+                    <textarea
+                        id="editor"
+                        name="content"
+                        oninput="updatePreview()"
+                        required
+                        ><%= blog != null && blog.getContent() != null ? blog.getContent() : ""%></textarea>
+                    <input type="hidden" name="id" value="<%= blog != null ? blog.getId() : ""%>" />
                 </div>
                 <div class="preview markdown-style" id="preview">
                     <p><em>Live preview will appear here...</em></p>
@@ -230,113 +237,6 @@
         </form>
 
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script>
-                            marked.setOptions({
-                                breaks: true,
-                                gfm: true,
-                                smartLists: true,
-                                smartypants: true
-                            });
-
-                            function updatePreview() {
-                                const text = document.getElementById('editor').value;
-                                document.getElementById('preview').innerHTML = marked.parse(text);
-                            }
-                            window.onload = updatePreview;
-
-                            function wrap(tag) {
-                                const textarea = document.getElementById('editor');
-                                const start = textarea.selectionStart;
-                                const end = textarea.selectionEnd;
-                                const selected = textarea.value.substring(start, end);
-                                const newText = tag + selected + tag;
-                                textarea.setRangeText(newText, start, end, 'end');
-                                updatePreview();
-                            }
-
-                            function insertLink() {
-                                const url = prompt('Enter URL:');
-                                if (!url)
-                                    return;
-                                const text = prompt('Enter link text:') || 'text';
-                                const textarea = document.getElementById('editor');
-                                const start = textarea.selectionStart;
-                                const end = textarea.selectionEnd;
-                                const markdown = '[' + text + '](' + url + ')';
-                                textarea.setRangeText(markdown, start, end, 'end');
-                                updatePreview();
-                            }
-
-                            function insertImage() {
-                                const url = prompt('Enter image URL:');
-                                if (!url)
-                                    return;
-                                let alt = prompt('Enter alt text (optional):') || 'image';
-                                const textarea = document.getElementById('editor');
-                                const start = textarea.selectionStart;
-                                const end = textarea.selectionEnd;
-                                const markdown = '![' + alt + '](' + url + ')';
-                                textarea.setRangeText(markdown, start, end, 'end');
-                                updatePreview();
-                            }
-
-                            function insertHeading() {
-                                const textarea = document.getElementById('editor');
-                                const lineStart = textarea.value.lastIndexOf('\n', textarea.selectionStart - 1) + 1;
-                                textarea.setRangeText('# ', lineStart, lineStart, 'end');
-                                updatePreview();
-                            }
-                            function insertBlockquote() {
-                                const textarea = document.getElementById('editor');
-                                const start = textarea.selectionStart;
-                                const end = textarea.selectionEnd;
-                                const selected = textarea.value.substring(start, end);
-                                const markdown = '> ' + selected.replace(/\n/g, '\n> ');
-                                textarea.setRangeText(markdown, start, end, 'end');
-                                updatePreview();
-                            }
-
-                            function insertHr() {
-                                const textarea = document.getElementById('editor');
-                                const pos = textarea.selectionStart;
-                                const markdown = '\n\n---\n\n';
-                                textarea.setRangeText(markdown, pos, pos, 'end');
-                                updatePreview();
-                            }
-
-                            function insertList(prefix) {
-                                const textarea = document.getElementById('editor');
-                                const start = textarea.selectionStart;
-                                const end = textarea.selectionEnd;
-                                const selected = textarea.value.substring(start, end);
-                                const lines = selected.split('\n');
-                                const modified = lines.map(line => prefix + line).join('\n');
-                                textarea.setRangeText(modified, start, end, 'end');
-                                updatePreview();
-                            }
-                            let isSyncingEditorScroll = false;
-                            let isSyncingPreviewScroll = false;
-
-                            const editor = document.getElementById('editor');
-                            const preview = document.getElementById('preview');
-
-                            editor.addEventListener('scroll', () => {
-                                if (isSyncingEditorScroll)
-                                    return;
-                                isSyncingPreviewScroll = true;
-                                const ratio = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
-                                preview.scrollTop = ratio * (preview.scrollHeight - preview.clientHeight);
-                                isSyncingPreviewScroll = false;
-                            });
-
-                            preview.addEventListener('scroll', () => {
-                                if (isSyncingPreviewScroll)
-                                    return;
-                                isSyncingEditorScroll = true;
-                                const ratio = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
-                                editor.scrollTop = ratio * (editor.scrollHeight - editor.clientHeight);
-                                isSyncingEditorScroll = false;
-                            });
-        </script>
+        <script src="<%= request.getContextPath() %>/js/markdowneditor.js"></script>
     </body>
 </html>

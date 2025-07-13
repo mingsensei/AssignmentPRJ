@@ -1,5 +1,6 @@
 package org.example.rf.service;
 
+import org.example.rf.dao.QuestionResult;
 import org.example.rf.api.python.PythonApiClient;
 import org.example.rf.dao.*;
 import org.example.rf.dto.AnswerCheckDTO;
