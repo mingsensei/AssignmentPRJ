@@ -1,0 +1,79 @@
+[33m52b5a2b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/admin_nguyen[m[33m)[m Add client_secret.json to .gitignore
+[33mfad5246[m Remove client_secret.json due to secret exposure
+[33m5b4fea2[m demo admin uploads file to google drive
+[33m6bf09f9[m[33m ([m[1;31morigin/feature/admin_nguyen[m[33m)[m edit convert ai to question
+[33m137ec15[m done add new question
+[33m236a086[m fix register
+[33m1dc298f[m admin question demo
+[33m00b36f3[m fix conflict lesson service
+[33m65bd452[m Merge branch 'main' into feature/admin_nguyen
+[33m1dfee0b[m Merge pull request #20 from mingsensei/Comment
+[33m2a2c1c9[m[33m ([m[1;31morigin/Comment[m[33m)[m Merge branch 'main' into Comment
+[33ma441dc3[m Comment.
+[33m265e1a3[m Merge pull request #18 from mingsensei/plan-pricing
+[33m5af6ba4[m Learning progress
+[33mc5e9e92[m  fix UI/logic my course
+[33m2baaec1[m Merge branch 'feature/admin_nguyen' of https://github.com/mingsensei/AssignmentPRJ into feature/admin_nguyen
+[33m2aba562[m admin course, chapter and settings
+[33m5f4d521[m Merge pull request #16 from mingsensei/plan-pricing
+[33m1e93550[m Merge branch 'main' into plan-pricing
+[33m2074caa[m base learning ( not fix bug)
+[33m0870abe[m Merge pull request #15 from mingsensei/blog
+[33m89b4a4b[m[33m ([m[1;31morigin/blog[m[33m)[m blog site.
+[33m7e2b875[m Merge branch 'main' into feature/admin_nguyen
+[33mcf20065[m Merge pull request #14 from mingsensei/feature/admin_nguyen
+[33m8ab8cd9[m Merge branch 'main' into feature/admin_nguyen
+[33mdf3f8c5[m set-up hikaricp pool
+[33mcb58763[m Merge pull request #13 from mingsensei/plan-pricing
+[33mc8176aa[m update plan /header
+[33m6a3ece9[m Done plan n pricing
+[33m3b55725[m payment view
+[33m5808ec4[m Merge pull request #12 from mingsensei/Fix-UI
+[33m4619f5f[m[33m ([m[1;31morigin/Fix-UI[m[33m)[m fix header/footer/cart/enrollment responsive
+[33ma83e29e[m fix cart
+[33md13b656[m fix header
+[33m658e579[m sua DAO
+[33ma2e0c54[m[33m ([m[1;32mfeature/vnpay_nguyen[m[33m)[m user admin
+[33m9710e30[m Merge pull request #10 from mingsensei/feature/admin_nguyen
+[33m21bc982[m order admin
+[33m65214c0[m A Merge branch 'main' into feature/admin_nguyen :wq
+[33m5d6a037[m Delete et --hard 9287f4b
+[33m35a1b38[m Merge pull request #11 from mingsensei/header/footer/course/chapter
+[33m7a0cdd7[m[33m ([m[1;31morigin/header/footer/course/chapter[m[33m, [m[1;32mheader/footer/course/chapter[m[33m)[m fix conflict Servlet
+[33m319c235[m fix conflict delete DAO and API PYTHON
+[33mfb0b21a[m merge minh cart
+[33m93fd29c[m setup admin page
+[33m55e2c5d[m Cart done done
+[33m05d5870[m Cart done
+[33m8a5fa2d[m Cart done ( giao dien hoi loi)
+[33m9287f4b[m Merge pull request #8 from mingsensei/feature/course_details_nguyen
+[33m256bf1f[m[33m ([m[1;31morigin/feature/course_details_nguyen[m[33m, [m[1;32mfeature/course_details_nguyen[m[33m)[m fix UI exan setuo
+[33m7cd8c44[m Merge pull request #7 from mingsensei/feature/course_details_nguyen
+[33m78aed07[m demo exam result
+[33mf339a2f[m Merge pull request #6 from mingsensei/header/footer/course/chapter
+[33mc160efa[m Merge remote-tracking branch 'origin/header/footer/course/chapter' into header/footer/course/chapter
+[33m248a802[m New giao dien
+[33m5413df0[m Merge pull request #5 from mingsensei/header/footer/course/chapter
+[33m6089bed[m Merge branch 'main' into header/footer/course/chapter
+[33ma81aa92[m Merge pull request #4 from mingsensei/feature/exam_nguyen
+[33m77d2f62[m[33m ([m[1;31morigin/feature/exam_nguyen[m[33m, [m[1;32mfeature/exam_nguyen[m[33m)[m clean code exam service
+[33m0357dc9[m Merge pull request #3 from mingsensei/blog
+[33mb272f53[m blog site.
+[33me5123df[m do exam ai
+[33m50e1b06[m blog site.
+[33m0f5c954[m uploads and do exam
+[33mfd29176[m blog site.
+[33mb9cbd59[m Sua header footer course
+[33m605ce72[m Merge pull request #2 from mingsensei/feature/course_chapter_nguyen_fix
+[33m17d1ea9[m[33m ([m[1;31morigin/feature/course_chapter_nguyen_fix[m[33m, [m[1;32mfeature/course_chapter_nguyen_fix[m[33m)[m done fix course and chapter list
+[33mf46ad94[m Merge pull request #1 from mingsensei/header/footer/course/chapter
+[33ma8999d0[m Header/Footer/Course/Chapter
+[33ma17a7a6[m Demo course/chapter
+[33maea9301[m Readme + DB
+[33m43bc4e4[m Base project and login/register/login by google
+[33m3d9fcee[m Chapter/Subject
+[33m6627f77[m Cách sử dụng.md
+[33ma686a8c[m Login/Register done
+[33m5623d89[m Base project
+[33m08cc0fc[m Base project
+[33mf8e6ef3[m Initial commit
