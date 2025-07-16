@@ -20,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/footer.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/header.css">
-
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/effect.css">
 
 </head>
 <style>
@@ -43,7 +43,7 @@
                         <a class="nav-link <%= uri.contains("category") || uri.contains("course") ? "active" : "" %>" href="<%= request.getContextPath() %>/category">Course</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <%= uri.contains("ai-agent") ? "active" : "" %>" href="<%= request.getContextPath() %>/ai-agent">AI Agent</a>
+                        <a class="nav-link <%= uri.contains("translate") ? "active" : "" %>" href="<%= request.getContextPath() %>/ai-translate">AI Translate</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <%= uri.contains("exam") ? "active" : "" %>" href="<%= request.getContextPath() %>/exam/setup/demo">AI Exam</a>
@@ -62,28 +62,38 @@
                         <a href="<%= request.getContextPath() %>/login" class="btn login-button">Login</a>
                     <% } else { %>
                         <a href="<%= request.getContextPath() %>/enrollment" class="btn logup-button">My Course</a>
-                    <c:choose>
-                        <c:when test="${sessionScope.currentPlan.name == 'Personal'}">
-                            <a href="${pageContext.request.contextPath}/user-info"
-                               class="btn plan-personal"
-                               style="background-color: #ffc107; color: black;">
-                                👤 ${sessionScope.user.userName}
+                    <div class="user-dropdown" style="position: relative; display: inline-block;">
+                        <c:choose>
+                            <c:when test="${sessionScope.currentPlan.name == 'Personal'}">
+                                <a href="${pageContext.request.contextPath}/user-info"
+                                   class="btn plan-personal user-btn"
+                                   style="background-color: #ffc107; color: black;">
+                                    👤 ${sessionScope.user.userName}
+                                </a>
+                            </c:when>
+                            <c:when test="${sessionScope.currentPlan.name == 'Ultimate'}">
+                                <a href="${pageContext.request.contextPath}/user-info"
+                                   class="btn plan-ultimate user-btn"
+                                   style="background-color: #6f42c1; color: white;">
+                                    👤 ${sessionScope.user.userName}
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/user-info"
+                                   class="btn plan-free user-btn">
+                                    👤 ${sessionScope.user.userName}
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
+                        <!-- Dropdown menu -->
+                        <div class="dropdown-menu" >
+                            <a href="${pageContext.request.contextPath}/logout"
+                               style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">
+                                Đăng xuất
                             </a>
-                        </c:when>
-                        <c:when test="${sessionScope.currentPlan.name == 'Ultimate'}">
-                            <a href="${pageContext.request.contextPath}/user-info"
-                               class="btn plan-ultimate"
-                               style="background-color: #6f42c1; color: white;">
-                                👤 ${sessionScope.user.userName}
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/user-info"
-                               class="btn plan-free">
-                                👤 ${sessionScope.user.userName}
-                            </a>
-                        </c:otherwise>
-                    </c:choose>
+                        </div>
+                    </div>
+
                     <% } %>
                 </div>
             </div>
@@ -95,6 +105,7 @@
 <%
     } // đóng if (!skipHeader)
 %>
+<script src="<%= request.getContextPath() %>/js/effect.js"></script>
 
 <script>
     // Sửa lại đoạn script cho Bootstrap navbar

@@ -19,6 +19,7 @@ public class CategoryServlet extends HttpServlet {
         request.setAttribute("categoryList", categoryList);
 
         List<Category> featuredCourses = categoryService.getTop4Courses(); // Lấy 4 khoá học đầu tiên
+        request.setAttribute("url", request.getRequestURL().toString());
         request.setAttribute("featuredCourses", featuredCourses);
         request.getRequestDispatcher("category.jsp").forward(request, response);
 
