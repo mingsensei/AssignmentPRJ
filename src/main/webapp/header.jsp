@@ -22,8 +22,6 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/header.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/effect.css">
 
-
-
 </head>
 <style>
     a{

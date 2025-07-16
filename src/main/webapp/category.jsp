@@ -74,6 +74,7 @@
                 <h2 class="mb-4 fw-bold text-primary" style="font-size:2.1rem">Search result: </h2>
             </c:if>
             <c:forEach var="course" items="${courses}">
+            <a href="<%= request.getContextPath() %>/course?courseId=${course.id}">
                 <div class="mycourse-result-card">
                     <img src="${pageContext.request.contextPath}/images/course${course.id}.webp"
                          class="mycourse-thumb"
@@ -83,6 +84,7 @@
                         <div class="mycourse-desc">${course.description}</div>
                     </div>
                 </div>
+            </a>
             </c:forEach>
         </div>
 
