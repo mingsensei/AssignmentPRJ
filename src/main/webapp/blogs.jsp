@@ -122,7 +122,8 @@
 
         <!-- FAB -->
         <a href="blog?action=create" class="fab-button" title="Create a new blog post">+</a>
-
+        <h1>${newsestBlogs.getSize()}</h1>
+        <h1>${newsestBlogs.size}</h1>
         <!-- Most Viewed -->
         <div class="container mt-5">
             <h2 class="text-center fw-bold mb-4">Most Viewed Blogs</h2>
@@ -154,7 +155,7 @@
             </div>
             <div class="dots" id="carouselDots"></div>
         </div>
-
+        
         <!-- Newest Blogs -->
         <div class="container py-5">
             <h2 class="text-center fw-bold mb-4">Newest Blogs</h2>

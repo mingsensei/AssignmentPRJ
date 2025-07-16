@@ -68,7 +68,7 @@
   </li>
 
   <li class="nav-item ${pageContext.request.servletPath.contains('/admin/blog') ? 'active' : ''}">
-    <a class="nav-link" href="${pageContext.request.contextPath}/admin/post">
+    <a class="nav-link" href="${pageContext.request.contextPath}/admin/blog">
       <i class="fas fa-fw fa-newspaper"></i>
       <span>Blog</span>
     </a>
