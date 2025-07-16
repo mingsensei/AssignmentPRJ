@@ -266,4 +266,102 @@ ul.navbar-nav {
     color: white !important;
     border: none  !important;
 }
+.user-dropdown {
+    position: relative;
+    display: inline-block; /* Đảm bảo chỉ bao quanh nút user */
+}
+
+.user-dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);   /* Cách nút user 8px, chỉnh tùy ý */
+    left: 0;                 /* Bắt đầu từ cạnh trái của thẻ cha */
+    min-width: 100%;         /* Luôn rộng bằng nút user */
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    border: none !important;
+    border-radius: 40px;      /* Bo góc giống nút user */
+    z-index: 1000;
+    padding: 0;               /* Không padding thừa */
+}
+
+.user-dropdown:hover .dropdown-menu,
+.user-dropdown:focus-within .dropdown-menu {
+    display: block !important;
+}
+
+.user-dropdown .dropdown-menu a {
+    display: block;
+    padding: 12px 0;
+    border-radius: 40px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    text-decoration: none;
+    background: #fff;
+    transition: background 0.2s;
+    border: none !important;
+}
+
+.user-dropdown .dropdown-menu a:hover {
+    background: #e8f5ff;
+    color: #1890ff;
+}
+.search-bar-wrap {
+    max-width: 900px;
+    margin: 60px auto 0 auto;
+    padding: 0 12px;
+}
+.modern-search-bar {
+    display: flex;
+    box-shadow: 0 6px 18px rgba(33,150,243,0.07);
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+    border: 1.5px solid #e3e9ef;
+}
+.modern-search-bar input {
+    flex: 1;
+    border: none;
+    padding: 1.07rem 1.15rem;
+    font-size: 1.16rem;
+    outline: none;
+    background: transparent;
+    border-right: 1.5px solid #e3e9ef;
+    border-radius: 0;
+}
+.modern-search-bar input:focus {
+    background: #f1f7fe;
+}
+.modern-search-bar button {
+    background: linear-gradient(90deg,#2196f3 65%,#1ac8fc 100%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.13rem;
+    border: none;
+    min-width: 115px;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 12px rgba(33,150,243,0.11);
+    border-radius: 0;
+    transition: background 0.13s, transform 0.12s;
+    text-transform: uppercase;
+}
+.modern-search-bar button:hover,
+.modern-search-bar button:focus {
+    background: linear-gradient(90deg,#156bc1 50%,#2196f3 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 16px rgba(33,150,243,0.13);
+}
+@media (max-width: 600px) {
+    .search-bar-wrap { padding: 0 3px; }
+    .modern-search-bar input { padding: 0.6rem 0.6rem; font-size: 1rem; }
+    .modern-search-bar button { min-width: 80px; font-size: 1rem;}
+}
+.search-note {
+    color: #64748b;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 1rem;
+}
 
