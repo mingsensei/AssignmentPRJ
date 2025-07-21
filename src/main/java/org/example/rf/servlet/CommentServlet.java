@@ -12,11 +12,17 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.example.rf.model.CommentChapter;
+import org.example.rf.model.CommentLesson;
 import org.example.rf.service.BlogService;
+import org.example.rf.service.ChapterService;
 import org.example.rf.service.CommentService;
 import org.example.rf.service.CommentBlogService;
+import org.example.rf.service.CommentChapterService;
 import org.example.rf.service.CommentCourseService;
+import org.example.rf.service.CommentLessonService;
 import org.example.rf.service.CourseService;
+import org.example.rf.service.LessonService;
 
 @WebServlet(name = "CommentServlet", urlPatterns = {"/Comment"})
 public class CommentServlet extends HttpServlet {
@@ -24,16 +30,24 @@ public class CommentServlet extends HttpServlet {
     private CommentService commentService;
     private CommentBlogService commentBlogService;
     private CommentCourseService commentCourseService;
+    private CommentChapterService commentChapterService;
+    private CommentLessonService commentLessonService;
     private BlogService blogService;
     private CourseService courseService;
+    private ChapterService chapterService;
+    private LessonService lessonService;
 
     @Override
     public void init() throws ServletException {
         commentBlogService = new CommentBlogService();
         commentCourseService = new CommentCourseService();
+        commentChapterService = new CommentChapterService();
+        commentLessonService = new CommentLessonService();
         commentService = new CommentService();
         blogService = new BlogService();
         courseService = new CourseService();
+        chapterService = new ChapterService();
+        lessonService = new LessonService();
     }
 
     @Override
@@ -60,16 +74,37 @@ public class CommentServlet extends HttpServlet {
 
                 commentService.create(comment); // Save base comment
 
+                switch (type) {
+                    case "blog":
+                        CommentBlog cb = new CommentBlog();
+                        cb.setBlog(blogService.getBlogById(contentId));
+                        cb.setComment(comment);
+                        commentBlogService.create(cb);
+                        break;
+                    case "course":
+                        CommentCourse cc = new CommentCourse();
+                        cc.setCourse(courseService.getCourseById(contentId));
+                        cc.setComment(comment);
+                        commentCourseService.create(cc);
+                        break;
+                    case "chapter":
+                        CommentChapter ch = new CommentChapter();
+                        ch.setChapter(chapterService.getChapterById(contentId));
+                        ch.setComment(comment);
+                        commentChapterService.create(ch);
+                        break;
+                    case "lesson":
+                        CommentLesson cl = new CommentLesson();
+                        cl.setLesson(lessonService.getLessonById(contentId));
+                        cl.setComment(comment);
+                        commentLessonService.create(cl);
+                        break;
+                }
+
                 if ("blog".equalsIgnoreCase(type)) {
-                    CommentBlog cb = new CommentBlog();
-                    cb.setBlog(blogService.getBlogById(contentId));
-                    cb.setComment(comment);
-                    commentBlogService.create(cb);
+
                 } else if ("course".equalsIgnoreCase(type)) {
-                    CommentCourse cc = new CommentCourse();
-                    cc.setCourse(courseService.getCourseById(contentId));
-                    cc.setComment(comment);
-                    commentCourseService.create(cc);
+
                 }
             }
             resp.sendRedirect(req.getHeader("Referer")); // Back to previous page
@@ -84,12 +119,20 @@ public class CommentServlet extends HttpServlet {
 
         List<Comment> comments = new ArrayList<>();
 
-        if ("blog".equalsIgnoreCase(type)) {
-            comments = commentBlogService.findCommentsByBlogId(contentId);
-        } else if ("course".equalsIgnoreCase(type)) {
-            comments = commentCourseService.findCommentsByCourseId(contentId);
+        switch (type) {
+            case "blog":
+                comments = commentBlogService.findCommentsByBlogId(contentId);
+            break;
+            case "course":
+                comments = commentCourseService.findCommentsByCourseId(contentId);
+            break;
+            case "chapter":
+                comments = commentChapterService.findCommentsByChapterId(contentId);
+            break;
+            case "lesson":
+                comments = commentLessonService.findCommentsByLessonId(contentId);
+            break;
         }
-
         req.setAttribute("comments", comments);
         req.setAttribute("type", type);
         req.setAttribute("id", contentId);

@@ -3,7 +3,6 @@
 
 <style>
     .comment-section {
-        max-width: 600px;
         margin: 2rem auto;
         padding: 1rem;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,12 +16,12 @@
 
     .comment {
         display: flex;
+        width: 90%;
         align-items: flex-start;
         gap: 0.75rem;
         background-color: #f0f2f5;
         padding: 0.75rem 1rem;
         border-radius: 18px;
-        margin-bottom: 1rem;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
@@ -66,7 +65,6 @@
         padding: 0.75rem 1rem;
         font-size: 1rem;
         resize: none;
-        width: 100%;
     }
 
     .comment-form button {
@@ -88,23 +86,24 @@
 
 <div class="comment-section">
     <h4>Comments</h4>
-
-    <c:forEach var="comment" items="${comments}">
-        <div class="comment">
-            <img class="avatar" src="https://i.pravatar.cc/48" alt="User"/>
-            <div class="comment-content">
-                <strong>${comment.user.userName}</strong>
-                <span>${comment.content}</span>
-                <small>${comment.createdAt}</small>
-            </div>
-        </div>
-    </c:forEach>
-
     <form class="comment-form" method="post" action="${pageContext.request.contextPath}/Comment">
         <input type="hidden" name="action" value="add"/>
         <input type="hidden" name="type" value="${type}"/>
         <input type="hidden" name="id" value="${id}"/>
         <textarea name="content" rows="3" required placeholder="Write a comment..."></textarea>
         <button type="submit">Post</button>
+        <c:forEach var="comment" items="${comments}">
+            <div class="comment">
+                <img class="avatar" src="https://i.pravatar.cc/48" alt="User"/>
+                <div class="comment-content">
+                    <strong>${comment.user.userName}</strong>
+                    <p style="word-break: break-word">${comment.content}</p>
+                    <small>${comment.createdAt}</small>
+                </div>
+            </div>
+        </c:forEach>
     </form>
+
+
+
 </div>

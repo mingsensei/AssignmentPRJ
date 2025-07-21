@@ -269,4 +269,8 @@ public class ExamService {
         List<ExamQuestion> examQuestionList = examQuestionDAO.findByExamId(examId);
         return examQuestionList.size();
     }
+    
+    public List<QuestionResult> getExamQuestions(long examId) {
+        return examDAO.getExamQuestions(examId);
+    }
 }

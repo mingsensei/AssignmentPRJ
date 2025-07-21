@@ -41,3 +41,23 @@
 .btn-learn:hover {
     background-color: #1d4ed8;
 }
+
+.search-container {
+    max-width: 900px;
+    margin: 60px auto 0 auto;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    padding: 36px 32px 24px 32px;
+}
+.search-form .form-control {
+    border-radius: 2rem 0 0 2rem !important;
+    font-size: 1.2rem;
+}
+.search-form .btn {
+    border-radius: 0 2rem 2rem 0 !important;
+    font-size: 1.3rem;
+}
+@media (max-width: 700px) {
+    .search-container { padding: 20px 8px 16px 8px; }
+}
