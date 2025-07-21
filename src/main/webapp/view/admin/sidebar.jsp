@@ -67,13 +67,6 @@
     </a>
   </li>
 
-  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/blog') ? 'active' : ''}">
-    <a class="nav-link" href="${pageContext.request.contextPath}/admin/blog">
-      <i class="fas fa-fw fa-newspaper"></i>
-      <span>Blog</span>
-    </a>
-  </li>
-
   <hr class="sidebar-divider d-none d-md-block">
 
   <div class="text-center d-none d-md-inline">

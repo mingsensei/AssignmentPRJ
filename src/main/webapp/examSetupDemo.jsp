@@ -81,7 +81,7 @@
 
     <!-- Nút thêm tài liệu bên phải -->
     <div class="upload-button-wrapper">
-        <a href="${pageContext.request.contextPath}/material">+ Thêm tài liệu</a>
+        <a href="${pageContext.request.contextPath}/exam/history">📝 Xem lịch sử</a>
     </div>
 
     <form action="${pageContext.request.contextPath}/exam" method="post">

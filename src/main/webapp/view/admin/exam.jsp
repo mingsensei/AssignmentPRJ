@@ -70,7 +70,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <fmt:formatDate value="${result.submittedAt}" pattern="HH:mm:ss dd/MM/yyyy" />
+                                            <fmt:formatDate value="${result.submittedAtAsDate}" pattern="HH:mm:ss dd/MM/yyyy" />
                                         </td>
                                         <td>
                                             <a href="${pageContext.request.contextPath}/admin/exam/details?id=${result.id}" class="btn btn-sm btn-info">

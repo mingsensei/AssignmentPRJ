@@ -79,7 +79,7 @@ public class ExamDAO {
     // Tìm Exam theo studentId
     public List<Exam> findByStudentId(Long studentId) {
         TypedQuery<Exam> query = entityManager.createQuery(
-                "SELECT e FROM Exam e WHERE e.student.id = :studentId", Exam.class);
+                "SELECT e FROM Exam e WHERE e.studentId = :studentId", Exam.class);
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }
@@ -87,7 +87,7 @@ public class ExamDAO {
     // Tìm Exam theo chapterId
     public List<Exam> findByChapterId(Long chapterId) {
         TypedQuery<Exam> query = entityManager.createQuery(
-                "SELECT e FROM Exam e WHERE e.chapter.id = :chapterId", Exam.class);
+                "SELECT e FROM Exam e WHERE e.chapterId = :chapterId", Exam.class);
         query.setParameter("chapterId", chapterId);
         return query.getResultList();
     }

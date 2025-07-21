@@ -274,4 +274,9 @@ public class ExamService {
     public List<QuestionResult> getExamQuestions(long examId) {
         return examDAO.getExamQuestions(examId);
     }
+
+    public List<Exam> getExamsByStudentId(Long studentId) {
+        // Phương thức này chỉ cần gọi tới DAO để lấy dữ liệu
+        return examDAO.findByStudentId(studentId);
+    }
 }

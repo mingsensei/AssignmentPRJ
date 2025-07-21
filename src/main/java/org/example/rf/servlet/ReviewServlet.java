@@ -10,7 +10,7 @@ import java.util.List;
 import org.example.rf.dao.QuestionResult;
 import org.example.rf.service.ExamService;
 
-@WebServlet(name = "ReviewServlet", urlPatterns = {"/Review"})
+@WebServlet(name = "ReviewServlet", urlPatterns = {"/review"})
 
 public class ReviewServlet extends HttpServlet {
     private ExamService examService;

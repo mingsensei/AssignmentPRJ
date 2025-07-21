@@ -85,7 +85,7 @@ public class MaterialDAO {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Material> query = em.createQuery(
-                    "SELECT m FROM Material m WHERE m.chapter.id = :chapterId", Material.class);
+                    "SELECT m FROM Material m WHERE m.chapterId = :chapterId", Material.class);
             query.setParameter("chapterId", chapterId);
             return query.getResultList();
         } finally {
@@ -109,7 +109,7 @@ public class MaterialDAO {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Material> query = em.createQuery(
-                    "SELECT m FROM Material m WHERE m.chapter.id = :chapterId AND m.type = :type", Material.class);
+                    "SELECT m FROM Material m WHERE m.chapterId = :chapterId AND m.type = :type", Material.class);
             query.setParameter("chapterId", chapterId);
             query.setParameter("type", type);
             return query.getResultList();

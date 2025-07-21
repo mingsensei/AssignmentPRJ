@@ -68,20 +68,20 @@
                                 <a href="${pageContext.request.contextPath}/user-info"
                                    class="btn plan-personal user-btn"
                                    style="background-color: #ffc107; color: black;">
-                                    👤 ${sessionScope.user.userName}
+                                    👤 ${sessionScope.user.fullName}
                                 </a>
                             </c:when>
                             <c:when test="${sessionScope.currentPlan.name == 'Ultimate'}">
                                 <a href="${pageContext.request.contextPath}/user-info"
                                    class="btn plan-ultimate user-btn"
                                    style="background-color: #6f42c1; color: white;">
-                                    👤 ${sessionScope.user.userName}
+                                    👤 ${sessionScope.user.fullName}
                                 </a>
                             </c:when>
                             <c:otherwise>
                                 <a href="${pageContext.request.contextPath}/user-info"
                                    class="btn plan-free user-btn">
-                                    👤 ${sessionScope.user.userName}
+                                    👤 ${sessionScope.user.fullName}
                                 </a>
                             </c:otherwise>
                         </c:choose>

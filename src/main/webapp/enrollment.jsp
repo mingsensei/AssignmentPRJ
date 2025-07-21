@@ -38,16 +38,16 @@
 
         <c:otherwise>
           <!-- Danh sách khóa học -->
-          <c:forEach var="courseList" items="${courseList}" varStatus="status">
+          <c:forEach var="course" items="${courseList}" varStatus="status">
             <a href="${pageContext.request.contextPath}/learning?courseid=${course.id}&chapterid=${firstChapterId}&lessonid=${firstLessonId}">
               <div class="col-12 mb-4 d-flex align-items-stretch">
                 <div class="course-card w-100">
                   <div class="course-header">
-                    <img src="${pageContext.request.contextPath}/images/course${courseList.id}.webp" alt="Course Image" class="course-image" />
+                    <img src="${pageContext.request.contextPath}/images/course${course.id}.webp" alt="Course Image" class="course-image" />
                     <div class="course-info">
-                      <h3 class="course-title"> ${courseList.name}</h3>
+                      <h3 class="course-title"> ${course.name}</h3>
                       <div class="chap_but">
-                        <a>${courseList.description}</a>
+                        <a>${course.description}</a>
                         <button class="toggle-btn" onclick="toggleChapters(this)">
                           <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

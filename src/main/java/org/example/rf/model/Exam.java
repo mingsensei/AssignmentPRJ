@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 @Table(name = "exam")
@@ -69,5 +71,12 @@ public class Exam {
 
     public void setSubmittedAt(LocalDateTime submittedAt) {
         this.submittedAt = submittedAt;
+    }
+
+    public Date getSubmittedAtAsDate() {
+        if (this.submittedAt == null) {
+            return null;
+        }
+        return Date.from(this.submittedAt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

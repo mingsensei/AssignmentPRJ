@@ -49,8 +49,8 @@
                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">Order Detail #${order.id}</h4>
                             <c:choose>
-                                <c:when test="${order.status eq 'paid'}"><span class="badge bg-light text-success p-2">Paid</span></c:when>
-                                <c:when test="${order.status eq 'pending_payment'}"><span class="badge bg-light text-warning p-2">Pending</span></c:when>
+                                <c:when test="${order.status eq 'Completed'}"><span class="badge bg-light text-success p-2">Completed</span></c:when>
+                                <c:when test="${order.status eq 'Pending'}"><span class="badge bg-light text-warning p-2">Pending</span></c:when>
                                 <c:otherwise><span class="badge bg-light text-danger p-2">Cancelled</span></c:otherwise>
                             </c:choose>
                         </div>

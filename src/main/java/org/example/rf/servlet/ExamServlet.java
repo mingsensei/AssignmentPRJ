@@ -5,11 +5,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.example.rf.dao.QuestionResult;
 import org.example.rf.dto.QuestionResponse;
 import org.example.rf.model.*;
 import org.example.rf.service.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,11 @@ public class ExamServlet extends HttpServlet {
             handleExamSetupDemoGet(request, response);
         }else if (pathInfo.equals("/result")) {
             examResultGet(request, response);
-        } else {
+        }else if (pathInfo.equals("/history")) {
+            handleExamHistoryGet(request, response);
+        }else if(pathInfo.equals("/review")) {
+            handleExamHistoryGet(request, response);
+        }else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -147,10 +154,12 @@ public class ExamServlet extends HttpServlet {
 
             examQuestionService.saveStudentAnswers(examId, studentAnswers);
             Exam exam = examService.getExamById(examId);
+            exam.setSubmittedAt(LocalDateTime.now());
+            examService.updateExam(exam);
             int level = examService.updateLevelOfStudent(studentId, exam.getChapterId(), examId);
             request.getSession().removeAttribute("examId");
 
-            response.sendRedirect(request.getContextPath() + "/exam/result?examId=" + examId);
+            response.sendRedirect(request.getContextPath() + "/review?examid=" + examId);
 
         } catch (Exception e) {
             response.getWriter().println("Error submitting exam: " + e.getMessage());
@@ -221,6 +230,30 @@ public class ExamServlet extends HttpServlet {
         return difficulty;
     }
 
+    private void handleExamHistoryGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        Long studentId = user.getId();
+
+        List<Exam> examHistory = examService.getExamsByStudentId(studentId);
+
+        request.setAttribute("examHistory", examHistory);
+
+        request.getRequestDispatcher("/examHistory.jsp").forward(request, response);
+    }
+
+    private void handleReviewExam(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long examId = Long.valueOf(request.getParameter("examid"));
+        List<QuestionResult> results = examService.getExamQuestions(examId);
+        request.setAttribute("results", results);
+        request.getRequestDispatcher("/review.jsp").forward(request, response);
+    }
 
 }
