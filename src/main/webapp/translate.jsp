@@ -33,11 +33,12 @@
             <div class="mb-2 d-flex align-items-center gap-2">
                 <select class="form-select lang-select" id="fromLang">
                     <option value="vi">Tiếng Việt</option>
-                    <option value="en" selected>English</option>
+                    <option value="en" >English</option>
                     <option value="ja">日本語</option>
                     <option value="fr">Français</option>
                     <option value="zh">中文</option>
                     <option value="ko">한국어</option>
+                    <option value="auto"selected>Tự động phát hiện</option>
                 </select>
             </div>
             <textarea class="form-control trans-textarea" id="inputText" placeholder="Enter text to translate..."></textarea>

@@ -22,6 +22,195 @@
         }
     </style>
 </head>
+<style>
+
+    :root{
+        --base-clr: rgb(240, 248, 255);
+        --line-clr: #00a0fb;
+        --hover-clr: hsl(219, 88%, 87%);
+        --text-clr: #00a0fb;
+        --accent-clr: #003399;
+        --secondary-text-clr: #00a0fb;
+    }
+    *{
+        margin: 0;
+        padding: 0;
+    }
+
+    #sidebar{
+        box-sizing: border-box;
+        height: calc(40vh);
+        width:180px ;
+        padding: 2px 1em;
+        border-radius: 5px;
+        position: fixed;
+        top: 120px;
+        left:10px;
+        align-self: start;
+        transition: 300ms ease-in-out;
+        overflow: hidden;
+        text-wrap: nowrap;
+    }
+    #sidebar.close{
+        padding: 6px;
+        width: 50px;
+    }
+    #sidebar ul{
+        list-style: none;
+        margin-left:-50px;
+    }
+    #sidebar > ul > li:first-child{
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 16px;
+        .logo{
+            font-weight: 600;
+        }
+    }
+    #sidebar ul li.active a {
+        color: var(--accent-clr);
+    }
+
+    #sidebar ul li.active a svg {
+        fill: var(--accent-clr);
+    }
+
+
+    #sidebar a, #sidebar .dropdown-btn, #sidebar .logo{
+        border-radius: .5em;
+        padding: .85em;
+        text-decoration: none;
+        color: var(--text-clr);
+        display: flex;
+        align-items: center;
+        gap: 1em;
+    }
+    .dropdown-btn{
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+    }
+    #sidebar svg{
+        flex-shrink: 0;
+        fill: var(--text-clr);
+    }
+    #sidebar a span, #sidebar .dropdown-btn span{
+        flex-grow: 1;
+    }
+    #sidebar a:hover, #sidebar .dropdown-btn:hover{
+        background-color: var(--hover-clr);
+    }
+    #sidebar .sub-menu{
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: 300ms ease-in-out;
+
+        > div{
+            overflow: hidden;
+        }
+    }
+    #sidebar .sub-menu.show{
+        grid-template-rows: 1fr;
+    }
+    .dropdown-btn svg{
+        transition: 200ms ease;
+    }
+    .rotate svg:last-child{
+        rotate: 180deg;
+    }
+    #sidebar .sub-menu a{
+        padding-left: 2em;
+    }
+    #toggle-btn{
+        margin-left: auto;
+        padding: 1em;
+        border: none;
+        border-radius: .5em;
+        background: none;
+        cursor: pointer;
+
+        svg{
+            transition: rotate 150ms ease;
+        }
+    }
+    #toggle-btn:hover{
+        background-color: var(--hover-clr);
+    }
+    @media(max-width: 800px){
+
+        main{
+            padding: 2em 1em 60px 1em;
+        }
+        .container{
+            border: none;
+            padding: 0;
+        }
+        #sidebar{
+            height: 60px;
+            width: 100%;
+            border-right: none;
+            border-top: 1px solid var(--line-clr);
+            padding: 0;
+            position: fixed;
+            top: unset;
+            bottom: 0;
+
+            > ul{
+                padding: 0;
+                display: grid;
+                grid-auto-columns: 60px;
+                grid-auto-flow: column;
+                align-items: center;
+                overflow-x: scroll;
+            }
+            ul li{
+                height: 100%;
+            }
+            ul a, ul .dropdown-btn{
+                width: 60px;
+                height: 60px;
+                padding: 0;
+                border-radius: 0;
+                justify-content: center;
+            }
+
+            ul li span, ul li:first-child, .dropdown-btn svg:last-child{
+                display: none;
+            }
+
+            ul li .sub-menu.show{
+                position: fixed;
+                bottom: 60px;
+                left: 0;
+                box-sizing: border-box;
+                height: 60px;
+                width: 100%;
+                background-color: var(--hover-clr);
+                border-top: 1px solid var(--line-clr);
+                display: flex;
+                justify-content: center;
+
+                > div{
+                    overflow-x: auto;
+                }
+                li{
+                    display: inline-flex;
+                }
+                a{
+                    box-sizing: border-box;
+                    padding: 1em;
+                    width: auto;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+
+</style>
 <%@ include file="header.jsp" %>
 <body>
 <%@ include file="menu.jsp" %>
