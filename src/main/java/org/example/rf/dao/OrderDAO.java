@@ -4,33 +4,39 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import org.example.rf.model.Order;
+import org.example.rf.util.JPAUtil;
 
 import java.util.List;
 
 public class OrderDAO {
-    private final EntityManager entityManager;
 
-    public OrderDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    // Không còn nhận EntityManager từ constructor
+    public OrderDAO() {
     }
 
     public Order findPendingOrderByUserId(Long userId) {
-        TypedQuery<Order> query = entityManager.createQuery(
-            "SELECT o FROM Order o WHERE o.user.id = :userId AND o.status = 'pending' ORDER BY o.createdAt DESC",
-            Order.class
-        );
-        query.setParameter("userId", userId);
-        query.setMaxResults(1);
-        
-        List<Order> results = query.getResultList();
-        return results.isEmpty() ? null : results.get(0);
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Order> query = em.createQuery(
+                    "SELECT o FROM Order o WHERE o.user.id = :userId AND o.status = 'pending' ORDER BY o.createdAt DESC",
+                    Order.class
+            );
+            query.setParameter("userId", userId);
+            query.setMaxResults(1);
+
+            List<Order> results = query.getResultList();
+            return results.isEmpty() ? null : results.get(0);
+        } finally {
+            em.close();
+        }
     }
 
     public Order create(Order order) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(order);
+            em.persist(order);
             transaction.commit();
             return order;
         } catch (Exception e) {
@@ -38,14 +44,17 @@ public class OrderDAO {
                 transaction.rollback();
             }
             throw e;
+        } finally {
+            em.close();
         }
     }
 
     public Order update(Order order) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            Order updatedOrder = entityManager.merge(order);
+            Order updatedOrder = em.merge(order);
             transaction.commit();
             return updatedOrder;
         } catch (Exception e) {
@@ -53,29 +62,42 @@ public class OrderDAO {
                 transaction.rollback();
             }
             throw e;
+        } finally {
+            em.close();
         }
     }
 
     public Order findById(Long id) {
-        return entityManager.find(Order.class, id);
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(Order.class, id);
+        } finally {
+            em.close();
+        }
     }
 
     public List<Order> findByUserId(Long userId) {
-        TypedQuery<Order> query = entityManager.createQuery(
-            "SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC",
-            Order.class
-        );
-        query.setParameter("userId", userId);
-        return query.getResultList();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Order> query = em.createQuery(
+                    "SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC",
+                    Order.class
+            );
+            query.setParameter("userId", userId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     public void delete(Long id) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            Order order = entityManager.find(Order.class, id);
+            Order order = em.find(Order.class, id);
             if (order != null) {
-                entityManager.remove(order);
+                em.remove(order);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -83,11 +105,32 @@ public class OrderDAO {
                 transaction.rollback();
             }
             throw e;
+        } finally {
+            em.close();
         }
     }
 
     public List<Order> findAll() {
-        TypedQuery<Order> query = entityManager.createQuery("SELECT o FROM Order o", Order.class);
-        return query.getResultList();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o ORDER BY o.id DESC", Order.class);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public long countTotalParticipants() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(DISTINCT o.user.id) FROM Order o WHERE o.status = 'COMPLETED'",
+                    Long.class
+            );
+            Long count = query.getSingleResult();
+            return count == null ? 0L : count;
+        } finally {
+            em.close();
+        }
     }
 }

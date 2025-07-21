@@ -1,10 +1,15 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "enrollment")
+@Builder
+@AllArgsConstructor
 public class Enrollment {
 
     @Id

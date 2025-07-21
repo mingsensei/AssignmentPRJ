@@ -43,6 +43,10 @@ public class AiQuestionService {
         dao.delete(id);
     }
 
+    public List<Integer> getAllDifficulties() {
+        return dao.findAllDifficulties();
+    }
+
     // Cleanup
     public void close() {
         if (em != null && em.isOpen()) {

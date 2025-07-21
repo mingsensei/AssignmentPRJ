@@ -47,7 +47,7 @@
   </li>
 
   <li class="nav-item ${pageContext.request.servletPath.contains('/admin/slider') ? 'active' : ''}">
-    <a class="nav-link" href="${pageContext.request.contextPath}/admin/slider">
+    <a class="nav-link" href="${pageContext.request.contextPath}/admin/material">
       <i class="fas fa-fw fa-images"></i>
       <span>Material</span>
     </a>

@@ -43,6 +43,10 @@ public class QuestionService {
         return questionDAO.findAll();
     }
 
+    public List<Integer> getAllDifficulties() {
+        return questionDAO.findAllDifficulties();
+    }
+
     // Đóng EntityManager khi không dùng nữa
     public void close() {
         if (em != null && em.isOpen()) {

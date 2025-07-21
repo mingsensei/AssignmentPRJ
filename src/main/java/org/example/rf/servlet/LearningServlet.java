@@ -74,7 +74,6 @@ public class LearningServlet extends HttpServlet {
         request.setAttribute("lesson", lesson);
         assert user != null;
 
-
         request.getRequestDispatcher("/learning.jsp").forward(request, response);
     }
 
@@ -132,4 +131,3 @@ public class LearningServlet extends HttpServlet {
         }
     }
 }
-

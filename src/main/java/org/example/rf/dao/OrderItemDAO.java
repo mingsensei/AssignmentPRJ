@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderItemDAO {
@@ -94,6 +95,51 @@ public class OrderItemDAO {
         query.setParameter("courseId", courseId);
         
         return query.getSingleResult() > 0;
+    }
+
+    public BigDecimal calculateTotalRevenue() {
+        // JPQL này tính tổng giá của tất cả OrderItem thuộc về các Order có status là 'COMPLETED'
+        TypedQuery<BigDecimal> query = entityManager.createQuery(
+                "SELECT SUM(oi.price) FROM OrderItem oi WHERE oi.order.status = 'COMPLETED'",
+                BigDecimal.class
+        );
+        BigDecimal total = query.getSingleResult();
+        return total == null ? BigDecimal.ZERO : total; // Trả về 0 nếu chưa có doanh thu
+    }
+
+    // Đếm tổng số khóa học đã bán (tổng số OrderItem trong các đơn hàng đã hoàn thành)
+    public long countAllSoldItems() {
+        TypedQuery<Long> query = entityManager.createQuery(
+                "SELECT COUNT(oi.id) FROM OrderItem oi WHERE oi.order.status = 'COMPLETED'",
+                Long.class
+        );
+        Long count = query.getSingleResult();
+        return count == null ? 0L : count;
+    }
+
+    public List<Object[]> getMonthlyRevenueForYear(int year) {
+        TypedQuery<Object[]> query = entityManager.createQuery(
+                "SELECT FUNCTION('MONTH', o.createdAt), SUM(oi.price) " +
+                        "FROM OrderItem oi JOIN oi.order o " +
+                        "WHERE o.status = 'COMPLETED' AND FUNCTION('YEAR', o.createdAt) = :year " +
+                        "GROUP BY FUNCTION('MONTH', o.createdAt) " +
+                        "ORDER BY FUNCTION('MONTH', o.createdAt) ASC",
+                Object[].class
+        );
+        query.setParameter("year", year);
+        return query.getResultList();
+    }
+
+    public List<Object[]> getRevenuePerCourse() {
+        TypedQuery<Object[]> query = entityManager.createQuery(
+                "SELECT c.name, SUM(oi.price) " +
+                        "FROM OrderItem oi JOIN oi.course c " +
+                        "WHERE oi.order.status = 'COMPLETED' " +
+                        "GROUP BY c.name " +
+                        "ORDER BY SUM(oi.price) DESC", // Sắp xếp giảm dần quan trọng nhất
+                Object[].class
+        );
+        return query.getResultList();
     }
 
 }

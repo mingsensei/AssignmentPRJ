@@ -1,11 +1,15 @@
 package org.example.rf.service;
 
 import org.example.rf.dao.EnrollmentDAO;
+import org.example.rf.model.Course;
 import org.example.rf.model.Enrollment;
+import org.example.rf.model.Order;
+import org.example.rf.model.User;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +24,15 @@ public class EnrollmentService {
     }
 
     // Tạo mới Enrollment
-    public void createEnrollment(Enrollment enrollment) {
-        enrollmentDAO.create(enrollment);
+    public void createEnrollment(User user, List<Course> courses) {
+        for (Course course : courses) {
+            Enrollment enrollment = Enrollment.builder()
+                    .user(user)
+                    .course(course)
+                    .enrolledAt(LocalDateTime.now())
+                    .build();
+            enrollmentDAO.create(enrollment);
+        }
     }
 
     // Tìm Enrollment theo ID

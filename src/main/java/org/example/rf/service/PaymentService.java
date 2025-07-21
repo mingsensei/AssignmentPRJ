@@ -27,7 +27,7 @@ public class PaymentService {
     public PaymentService() {
         this.em = JPAUtil.getEntityManager();  // tạo EntityManager 1 lần
         this.paymentDAO = new PaymentDAO(em);  // tạo DAO 1 lần với EntityManager đó
-        this.orderDAO = new OrderDAO(em);
+        this.orderDAO = new OrderDAO();
         this.planDAO = new PlanDAO(em);
         this.userDAO = new UserDAO(em);
     }
