@@ -8,7 +8,6 @@ import org.example.rf.model.Exam;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.example.rf.model.QuestionResult;
 
 public class ExamDAO {
 

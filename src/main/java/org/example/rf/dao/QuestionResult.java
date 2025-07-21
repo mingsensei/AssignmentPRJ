@@ -1,4 +1,4 @@
-package org.example.rf.model;
+package org.example.rf.dao;
 
 
 public class QuestionResult {

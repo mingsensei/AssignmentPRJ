@@ -32,9 +32,7 @@ public class BlogServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action == null) {
-            action = "";
-        }
+        if (action == null) action = "";
 
         try {
             switch (action) {
@@ -57,9 +55,7 @@ public class BlogServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action == null) {
-            action = "";
-        }
+        if (action == null) action = "";
 
         try {
             switch (action) {
@@ -70,7 +66,7 @@ public class BlogServlet extends HttpServlet {
                     updateBlog(request, response);
                     break;
                 default:
-                    response.sendRedirect("blog");
+                    response.sendRedirect(request.getContextPath() + "/blog");
                     break;
             }
         } catch (ServletException | IOException ex) {
@@ -99,18 +95,43 @@ public class BlogServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Long id = Long.valueOf(request.getParameter("id"));
         User user = (User) request.getSession().getAttribute("user");
-        Blog blog = blogService.getBlogById(id);
-
-        if (blog != null && user != null) {
-            request.setAttribute("action", "update");
-            request.setAttribute("blog", blog);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("editorBlog.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            response.sendRedirect("blog?id=" + id + "&error=Unauthorized");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
         }
+
+        String idParam = request.getParameter("id");
+        if (idParam == null) {
+            response.sendRedirect(request.getContextPath() + "/blog?error=Missing+blog+ID");
+            return;
+        }
+
+        Long id;
+        try {
+            id = Long.valueOf(idParam);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/blog?error=Invalid+blog+ID");
+            return;
+        }
+
+        Blog blog = blogService.getBlogById(id);
+        if (blog == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Blog not found");
+            return;
+        }
+
+        // Check if the user is authorized (is an author/editor of the blog)
+        List<BlogUser> roles = blogUserService.findByBlogUser(user.getId(), blog.getId());
+        if (roles.isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/blog?id=" + id + "&error=Unauthorized");
+            return;
+        }
+
+        request.setAttribute("action", "update");
+        request.setAttribute("blog", blog);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("editorBlog.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void showBlog(HttpServletRequest request, HttpServletResponse response)
@@ -118,25 +139,34 @@ public class BlogServlet extends HttpServlet {
         String idParam = request.getParameter("id");
 
         if (idParam != null) {
+            Long id;
             try {
-                Long id = Long.valueOf(idParam);
-                Blog blog = blogService.getBlogById(id);
-
-                if (blog != null) {
-                    List<BlogUser> blogUsers = blogUserService.findByBlogId(id);
-                    request.setAttribute("blogUsers", blogUsers);
-                    request.setAttribute("blog", blog);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("blog.jsp");
-                    dispatcher.forward(request, response);
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Blog not found");
-                }
+                id = Long.valueOf(idParam);
             } catch (NumberFormatException e) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid blog ID");
+                return;
             }
+
+            Blog blog = blogService.getBlogById(id);
+            if (blog == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Blog not found");
+                return;
+            }
+
+            List<BlogUser> blogUsers = blogUserService.findByBlogId(id);
+            request.setAttribute("blogUsers", blogUsers);
+            request.setAttribute("blog", blog);
+            blogService.incrementViewCount(id);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("blog.jsp");
+            dispatcher.forward(request, response);
         } else {
-            List<Blog> blogs = blogService.getAllBlogs();
-            request.setAttribute("blogs", blogs);
+            // Show blog listing page
+            List<Blog> newestBlogs = blogService.getTopNewestBlogs();
+            List<Blog> mostViewedBlogs = blogService.getTopViewedBlogs(5);
+            request.setAttribute("newestBlogs", newestBlogs);
+            request.setAttribute("mostViewed", mostViewedBlogs);
+
             RequestDispatcher dispatcher = request.getRequestDispatcher("blogs.jsp");
             dispatcher.forward(request, response);
         }
@@ -144,34 +174,39 @@ public class BlogServlet extends HttpServlet {
 
     private void createBlog(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String title = request.getParameter("title");
-        String content = request.getParameter("content");
         User user = (User) request.getSession().getAttribute("user");
-
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        if (title == null || content == null) {
-            response.sendRedirect("editorBlog.jsp?error=Missing+fields");
+        String title = request.getParameter("title");
+        String content = request.getParameter("content");
+        String description = request.getParameter("description");
+        String thumbnail = request.getParameter("thumbnail");
+
+        if (title == null || title.trim().isEmpty() || content == null || content.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/blog?action=create&error=Missing+title+or+content");
             return;
         }
 
         Blog blog = new Blog();
-        blog.setTitle(title);
-        blog.setContent(content);
+        blog.setTitle(title.trim());
+        blog.setContent(content.trim());
+        blog.setDescription(description != null ? description.trim() : null);
+        blog.setThumbnail(thumbnail != null ? thumbnail.trim() : null);
         blog.setCreatedAt(LocalDateTime.now());
         blog.setUpdatedAt(LocalDateTime.now());
 
-        BlogUser bloguser = new BlogUser();
-        bloguser.setAssignedAt(LocalDateTime.now());
-        bloguser.setBlog(blog);
-        bloguser.setBlogRole("author");
-        bloguser.setUser(user);
-
         blogService.createBlog(blog);
-        blogUserService.createBlogUser(bloguser);
+
+        BlogUser blogUser = new BlogUser();
+        blogUser.setAssignedAt(LocalDateTime.now());
+        blogUser.setBlog(blog);
+        blogUser.setBlogRole("author");
+        blogUser.setUser(user);
+
+        blogUserService.createBlogUser(blogUser);
 
         response.sendRedirect(request.getContextPath() + "/blog?id=" + blog.getId());
     }
@@ -179,19 +214,56 @@ public class BlogServlet extends HttpServlet {
     private void updateBlog(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
-        Long id = Long.valueOf(request.getParameter("id"));
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        String idParam = request.getParameter("id");
+        if (idParam == null) {
+            response.sendRedirect(request.getContextPath() + "/blog?error=Missing+blog+ID");
+            return;
+        }
+
+        Long id;
+        try {
+            id = Long.valueOf(idParam);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/blog?error=Invalid+blog+ID");
+            return;
+        }
+
+        Blog blog = blogService.getBlogById(id);
+        if (blog == null) {
+            response.sendRedirect(request.getContextPath() + "/blog?error=Blog+not+found");
+            return;
+        }
+
+        // Check if user is authorized (must be associated with blog)
+        List<BlogUser> roles = blogUserService.findByBlogUser(user.getId(), blog.getId());
+        if (roles.isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/blog?id=" + id + "&error=Unauthorized");
+            return;
+        }
+
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        Blog blog = blogService.getBlogById(id);
+        String description = request.getParameter("description");
+        String thumbnail = request.getParameter("thumbnail");
 
-        if (user != null && blog != null && !blogUserService.findByBlogUser(user.getId(), blog.getId()).isEmpty()) {
-            blog.setTitle(title);
-            blog.setContent(content);
-            blog.setUpdatedAt(LocalDateTime.now());
-            blogService.updateBlog(blog);
-            response.sendRedirect("blog?id=" + id);
-        } else {
-            response.sendRedirect("blog?id=" + id + "&error=Unauthorized");
+        if (title == null || title.trim().isEmpty() || content == null || content.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/blog?action=edit&id=" + id + "&error=Missing+title+or+content");
+            return;
         }
+
+        blog.setTitle(title.trim());
+        blog.setContent(content.trim());
+        blog.setDescription(description != null ? description.trim() : null);
+        blog.setThumbnail(thumbnail != null ? thumbnail.trim() : null);
+        blog.setUpdatedAt(LocalDateTime.now());
+
+        blogService.updateBlog(blog);
+
+        response.sendRedirect(request.getContextPath() + "/blog?id=" + id);
     }
 }
