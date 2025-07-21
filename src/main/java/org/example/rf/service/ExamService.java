@@ -40,7 +40,7 @@ public class ExamService {
         this.questionDAO = new QuestionDAO(em);
         this.aiQuestionDAO = new AiQuestionDAO(em);
         this.examQuestionDAO = new ExamQuestionDAO(em);
-        this.materialDAO = new MaterialDAO(em);
+        this.materialDAO = new MaterialDAO();
         this.levelDAO = new LevelDAO(em);
         this.testAttemptService = new TestAttemptService();
         this.subscriptionService = new UserSubscriptionService();

@@ -22,12 +22,10 @@ public class MaterialService {
     private final PythonApiClient pythonApiClient;
 
     public MaterialService() {
-        EntityManager em = JPAUtil.getEntityManager();
-        this.materialDAO = new MaterialDAO(em);
+        this.materialDAO = new MaterialDAO();
         this.pythonApiClient = new PythonApiClient();
     }
-
-
+    
     public void uploadMaterialToDrive(String title, Long chapterId, String type, Part filePart) throws IOException, GeneralSecurityException {
         Drive driveService = DriveServiceUtil.getDriveService();
         String originalFileName = getSubmittedFileName(filePart);

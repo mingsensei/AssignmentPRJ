@@ -42,8 +42,6 @@ public class AdminCourseServlet extends HttpServlet {
         request.getRequestDispatcher("/view/admin/course.jsp").forward(request, response);
     }
 
-
-
     private void addNewCourse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));

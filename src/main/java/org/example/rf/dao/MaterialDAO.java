@@ -4,84 +4,117 @@ import org.example.rf.model.Material;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import org.example.rf.util.JPAUtil; // Đảm bảo bạn đã import lớp tiện ích JPA
 
 import java.util.List;
 
 public class MaterialDAO {
 
-    private final EntityManager entityManager;
-
-    public MaterialDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public MaterialDAO() {
+        // Constructor không cần thay đổi
     }
 
     public void create(Material material) {
-        EntityTransaction tx = entityManager.getTransaction();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            entityManager.persist(material);
+            em.persist(material);
             tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             throw e;
+        } finally {
+            em.close(); // Luôn đóng EntityManager
         }
     }
 
     public Material findById(Long id) {
-        return entityManager.find(Material.class, id);
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(Material.class, id);
+        } finally {
+            em.close();
+        }
     }
 
     public void update(Material material) {
-        EntityTransaction tx = entityManager.getTransaction();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            entityManager.merge(material);
+            em.merge(material);
             tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             throw e;
+        } finally {
+            em.close();
         }
     }
 
     public void delete(Long id) {
-        EntityTransaction tx = entityManager.getTransaction();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            Material material = entityManager.find(Material.class, id);
+            Material material = em.find(Material.class, id);
             if (material != null) {
-                entityManager.remove(material);
+                em.remove(material);
             }
             tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             throw e;
+        } finally {
+            em.close();
         }
     }
 
     public List<Material> findAll() {
-        TypedQuery<Material> query = entityManager.createQuery("SELECT m FROM Material m", Material.class);
-        return query.getResultList();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Material> query = em.createQuery("SELECT m FROM Material m ORDER BY m.id DESC", Material.class);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     public List<Material> findAllByChapterId(Long chapterId) {
-        TypedQuery<Material> query = entityManager.createQuery(
-                "SELECT m FROM Material m WHERE m.chapterId = :chapterId", Material.class);
-        query.setParameter("chapterId", chapterId);
-        return query.getResultList();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Material> query = em.createQuery(
+                    "SELECT m FROM Material m WHERE m.chapter.id = :chapterId", Material.class);
+            query.setParameter("chapterId", chapterId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     public List<Material> findByType(String type) {
-        TypedQuery<Material> query = entityManager.createQuery(
-                "SELECT m FROM Material m WHERE m.type = :type", Material.class);
-        query.setParameter("type", type);
-        return query.getResultList();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Material> query = em.createQuery(
+                    "SELECT m FROM Material m WHERE m.type = :type", Material.class);
+            query.setParameter("type", type);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     public List<Material> findByChapterIdAndType(Long chapterId, String type) {
-        TypedQuery<Material> query = entityManager.createQuery(
-                "SELECT m FROM Material m WHERE m.chapterId = :chapterId AND m.type = :type", Material.class);
-        query.setParameter("chapterId", chapterId);
-        query.setParameter("type", type);
-        return query.getResultList();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Material> query = em.createQuery(
+                    "SELECT m FROM Material m WHERE m.chapter.id = :chapterId AND m.type = :type", Material.class);
+            query.setParameter("chapterId", chapterId);
+            query.setParameter("type", type);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 }

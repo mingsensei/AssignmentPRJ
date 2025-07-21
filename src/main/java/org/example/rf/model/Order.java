@@ -1,13 +1,20 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")  // vì table tên orders, tránh trùng với từ khóa SQL
+@Builder
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -72,7 +79,15 @@ public class Order {
         this.createdAt = createdAt;
     }
 
-    public Date getCreatedAtAsDate() {
-        return java.util.Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant());
+    // Trong file model Order.java
+
+    public java.util.Date getCreatedAtAsDate() {
+        // THÊM DÒNG KIỂM TRA NÀY
+        if (this.createdAt == null) {
+            return null; // Nếu ngày tạo là null, trả về null. JSP sẽ bỏ qua và không hiển thị gì.
+        }
+        // Chỉ chuyển đổi nếu createdAt có giá trị
+        return java.sql.Timestamp.valueOf(this.createdAt);
     }
+
 }

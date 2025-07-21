@@ -162,7 +162,7 @@
 
       <c:otherwise>
         <div class="course-price">${course.price} VNĐ</div>
-        <form action="${pageContext.request.contextPath}/add-to-cart" method="post">
+        <form action="${pageContext.request.contextPath}/cart/add" method="post">
           <input type="hidden" name="courseId" value="${course.id}">
           <button type="submit" class="buy-now-btn">Buy Now</button>
         </form>
