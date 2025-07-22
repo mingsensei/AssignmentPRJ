@@ -272,11 +272,15 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="addType">Loại khóa học <span class="text-danger">*</span></label>
-                                <select id="addType" name="type" class="form-control" required>
-                                    <option value="">-- Chọn loại --</option>
-                                    <option value="online">Online</option>
-                                    <option value="offline">Offline</option>
+                                <label for="addCategoryId">Danh mục <span class="text-danger">*</span></label>
+                                <select id="addCategoryId" name="categoryId" class="form-control" required>
+                                    <option value="">-- Chọn danh mục --</option>
+
+                                    <%-- Vòng lặp duyệt qua danh sách categories mà Servlet đã gửi sang --%>
+                                    <c:forEach var="category" items="${categories}">
+                                        <option value="${category.id}">${category.name}</option>
+                                    </c:forEach>
+
                                 </select>
                             </div>
                         </div>

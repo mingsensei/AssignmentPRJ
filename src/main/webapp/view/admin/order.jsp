@@ -36,6 +36,7 @@
                   <th style="min-width: 150px;">Khách hàng</th>
                   <th style="min-width: 200px;">Email</th>
                   <th style="min-width: 120px;">Tổng tiền</th>
+                  <th style="min-width: 150px;">Loại đơn hàng</th>
                   <th style="min-width: 120px;">Trạng thái</th>
                   <th style="min-width: 150px;">Ngày tạo</th>
                   <th style="min-width: 200px;">Hành động</th>
@@ -50,6 +51,20 @@
                     <td>
                       <fmt:formatNumber value="${order.totalAmount}" type="currency"
                                         currencySymbol="VND "/>
+                    </td>
+                    <td>
+                      <c:choose>
+                        <c:when test="${order.orderType == 'COURSE_PURCHASE'}">
+                          <span class="badge badge-info">Mua khóa học</span>
+                        </c:when>
+                        <%-- SỬA Ở ĐÂY: Thêm "and not empty order.plan" --%>
+                        <c:when test="${order.orderType == 'PLAN_PURCHASE' and not empty order.plan}">
+                          <span class="badge badge-primary">Mua Gói: ${order.plan.name}</span>
+                        </c:when>
+                        <c:otherwise>
+                          <span class="badge badge-secondary">${order.orderType}</span>
+                        </c:otherwise>
+                      </c:choose>
                     </td>
                     <td>
                       <c:choose>

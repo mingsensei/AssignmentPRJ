@@ -2,12 +2,14 @@ package org.example.rf.service;
 
 import org.example.rf.dao.UserSubscriptionDAO;
 import org.example.rf.model.Plan;
+import org.example.rf.model.User;
 import org.example.rf.model.UserSubscription;
 import org.example.rf.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,4 +75,26 @@ public class UserSubscriptionService {
                 .orElse(null);
     }
 
+    public void createUserSubscription(User user, Plan plan) {
+        if (user == null || plan == null) return;
+
+        UserSubscription subscription = UserSubscription.builder()
+                .userId(user.getId())
+                .planId(plan.getId())
+                .startDate(LocalDate.now())
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        userSubscriptionDAO.create(subscription);
+    }
+
+    public void updateUserScrition(User user, Plan plan) {
+        if (user == null || plan == null) return;
+        UserSubscription subscription = userSubscriptionDAO.findByUserId(user.getId()).get(0);
+        subscription.setPlanId(plan.getId());
+        subscription.setCreatedAt(LocalDateTime.now());
+        subscription.setUpdatedAt(LocalDateTime.now());
+        subscription.setStartDate(LocalDate.now());
+        userSubscriptionDAO.update(subscription);
+    }
 }

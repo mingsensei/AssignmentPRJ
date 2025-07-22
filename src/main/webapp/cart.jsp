@@ -75,7 +75,9 @@
                                             </div>
                                         </td>
                                         <td class="text-right font-weight-semibold align-middle p-4"><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="₫"/></td>
-                                        <td class="align-middle p-4"><input type="text" class="form-control text-center" value="1" readonly></td>
+                                        <td class="align-middle p-4">
+                                            <span class="form-control text-center border-0 bg-transparent">1</span>
+                                        </td>
                                         <td class="text-right font-weight-semibold align-middle p-4"><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="₫"/></td>
                                         <td class="text-center align-middle px-0">
                                                 <%-- SỬA 4: data-id giờ là course.id để gửi cho AJAX --%>

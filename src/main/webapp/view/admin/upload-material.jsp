@@ -78,7 +78,7 @@
 </div>
 
 <div style="text-align: center;">
-    <a href="${pageContext.request.contextPath}/home" class="home-link">← Về trang chủ</a>
+    <a href="${pageContext.request.contextPath}/admin/material" class="home-link">← Về trang chủ</a>
 </div>
 
 

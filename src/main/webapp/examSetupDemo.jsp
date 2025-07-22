@@ -81,56 +81,10 @@
 
     <!-- Nút thêm tài liệu bên phải -->
     <div class="upload-button-wrapper">
-        <a href="${pageContext.request.contextPath}/exam/history">📝 Xem lịch sử</a>
+        <a href="${pageContext.request.contextPath}/plan-pricing">PLan</a>
+        <a href="${pageContext.request.contextPath}/exam/history">Xem lịch sử</a>
     </div>
 
-    <form action="${pageContext.request.contextPath}/exam" method="post">
-        <div class="form-group">
-            <label for="courseId">Môn học:</label>
-            <select id="courseId" name="courseId" required>
-                <option value="">-- Chọn môn học --</option>
-                <%
-                    List<Course> courses = (List<Course>) request.getAttribute("courses");
-                    if (courses != null) {
-                        for (Course course : courses) {
-                %>
-                <option value="<%= course.getId() %>"><%= course.getName() %></option>
-                <%
-                        }
-                    }
-                %>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="chapterId">Chương:</label>
-            <select id="chapterId" name="chapterId" required>
-                <option value="">-- Chọn chương --</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="numQuestionsParam">Số câu hỏi:</label>
-            <input type="number" id="numQuestionsParam" name="numQuestionsParam" required>
-        </div>
-
-        <div class="form-group">
-            <label for="difficulty">Độ khó:</label>
-            <select id="difficulty" name="difficulty" required>
-                <option value="">--Chọn độ khó--</option>
-                <option value="ai">AI tự xác định</option>
-                <option value="veryEasy">Rất dễ</option>
-                <option value="easy">Dễ</option>
-                <option value="medium">Trung bình</option>
-                <option value="hard">Khó</option>
-                <option value="veryHard">Rất khó</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <button type="submit">Bắt đầu</button>
-        </div>
-    </form>
 </div>
 
 <div style="margin-top: 30px; text-align: center;">

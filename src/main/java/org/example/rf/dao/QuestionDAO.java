@@ -92,4 +92,36 @@ public class QuestionDAO {
         return query.getResultList();
     }
 
+    public List<Long> findAnsweredQuestionIdsByUserAndChapter(Long userId, Long chapterId) {
+        // Câu lệnh này join ExamQuestion với Exam để lọc theo studentId và chapterId
+        // và chỉ lấy ra các questionId (không phải aiQuestionId)
+        TypedQuery<Long> query = entityManager.createQuery(
+                "SELECT eq.questionId FROM ExamQuestion eq JOIN Exam e ON eq.examId = e.id " +
+                        "WHERE e.studentId = :userId AND e.chapterId = :chapterId AND eq.questionId IS NOT NULL", Long.class);
+        query.setParameter("userId", userId);
+        query.setParameter("chapterId", chapterId);
+        return query.getResultList();
+    }
+
+    public List<Question> findNewQuestionsByChapterAndDifficulty(Long chapterId, int difficulty, List<Long> excludedIds, int limit) {
+        // Nếu không có câu hỏi nào để loại trừ, thực hiện truy vấn đơn giản
+        if (excludedIds == null || excludedIds.isEmpty()) {
+            TypedQuery<Question> query = entityManager.createQuery(
+                    "SELECT q FROM Question q WHERE q.chapterId = :chapterId AND q.difficulty = :difficulty", Question.class);
+            query.setParameter("chapterId", chapterId);
+            query.setParameter("difficulty", difficulty);
+            query.setMaxResults(limit);
+            return query.getResultList();
+        }
+
+        // Nếu có câu hỏi cần loại trừ, dùng mệnh đề "NOT IN"
+        TypedQuery<Question> query = entityManager.createQuery(
+                "SELECT q FROM Question q WHERE q.chapterId = :chapterId AND q.difficulty = :difficulty AND q.id NOT IN :excludedIds", Question.class);
+        query.setParameter("chapterId", chapterId);
+        query.setParameter("difficulty", difficulty);
+        query.setParameter("excludedIds", excludedIds);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
+
 }

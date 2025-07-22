@@ -5,7 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.rf.model.Category;
 import org.example.rf.model.Course;
+import org.example.rf.service.CategoryService;
 import org.example.rf.service.CourseService;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @WebServlet("/admin/course/*")
 public class AdminCourseServlet extends HttpServlet {
+    private final CategoryService categoryService = new CategoryService();
     private final CourseService courseService = new CourseService();
 
     @Override
@@ -39,6 +42,8 @@ public class AdminCourseServlet extends HttpServlet {
     private void listCourses(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Course> courses = courseService.getAllCourses();
         request.setAttribute("courses", courses);
+        List<Category> categories = categoryService.getAllCategories();
+        request.setAttribute("categories", categories);
         request.getRequestDispatcher("/view/admin/course.jsp").forward(request, response);
     }
 

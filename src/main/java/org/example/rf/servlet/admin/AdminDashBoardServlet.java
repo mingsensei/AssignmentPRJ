@@ -36,18 +36,35 @@ public class AdminDashBoardServlet extends HttpServlet {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             this.orderItemDAO = new OrderItemDAO(em);
-            Gson gson = new Gson(); // Khai báo Gson một lần ở đầu
+            // orderDAO đã được khởi tạo trong init()
 
-            // =================== PHẦN 1: THỐNG KÊ CÁC CARD ===================
-            BigDecimal totalRevenue = orderItemDAO.calculateTotalRevenue();
+            // === TÍNH TOÁN DỮ LIỆU CHO CÁC CARD ===
+
+            // 1. Doanh thu từ Course
+            BigDecimal courseRevenue = orderItemDAO.calculateTotalRevenue();
+            // 2. Doanh thu từ Plan
+            BigDecimal planRevenue = orderDAO.calculateTotalRevenueFromPlans();
+            // 3. TỔNG DOANH THU
+            BigDecimal totalRevenue = courseRevenue.add(planRevenue);
+
+            // 4. Số khóa học đã bán
             long coursesSold = orderItemDAO.countAllSoldItems();
+
+            // 5. SỐ GÓI PLAN ĐÃ BÁN (Mới)
+            long plansSold = orderDAO.countCompletedPlanOrders();
+
+            // 6. Tổng số khách hàng
             long totalParticipants = orderDAO.countTotalParticipants();
 
+            // Gửi tất cả dữ liệu sang JSP
             req.setAttribute("totalRevenue", totalRevenue);
             req.setAttribute("coursesSold", coursesSold);
+            req.setAttribute("plansSold", plansSold); // Dữ liệu mới
             req.setAttribute("totalParticipants", totalParticipants);
 
-            // =================== PHẦN 2: DỮ LIỆU CHO AREA CHART (DOANH THU THEO THÁNG) ===================
+
+            // === PHẦN XỬ LÝ CHO CHART (GIỮ NGUYÊN) ===
+            Gson gson = new Gson();
             int currentYear = LocalDate.now().getYear();
             List<Object[]> monthlyDataFromDB = orderItemDAO.getMonthlyRevenueForYear(currentYear);
 
@@ -70,37 +87,6 @@ public class AdminDashBoardServlet extends HttpServlet {
 
             req.setAttribute("areaChartLabels", areaChartLabelsJson);
             req.setAttribute("areaChartData", areaChartDataJson);
-
-            // =================== PHẦN 3: DỮ LIỆU CHO PIE CHART (TOP 5 KHÓA HỌC) ===================
-            List<Object[]> revenuePerCourse = orderItemDAO.getRevenuePerCourse();
-
-            List<String> pieLabelsList = new ArrayList<>();
-            List<BigDecimal> pieDataList = new ArrayList<>();
-            BigDecimal otherRevenue = BigDecimal.ZERO;
-
-            for (int i = 0; i < revenuePerCourse.size(); i++) {
-                Object[] result = revenuePerCourse.get(i);
-                String courseName = (String) result[0];
-                BigDecimal revenue = (BigDecimal) result[1];
-
-                if (i < 5) {
-                    pieLabelsList.add(courseName);
-                    pieDataList.add(revenue);
-                } else {
-                    otherRevenue = otherRevenue.add(revenue);
-                }
-            }
-
-            if (otherRevenue.compareTo(BigDecimal.ZERO) > 0) {
-                pieLabelsList.add("Các khóa học khác");
-                pieDataList.add(otherRevenue);
-            }
-
-            String pieChartLabelsJson = gson.toJson(pieLabelsList);
-            String pieChartDataJson = gson.toJson(pieDataList);
-
-            req.setAttribute("pieChartLabels", pieChartLabelsJson);
-            req.setAttribute("pieChartData", pieChartDataJson);
 
         } catch (Exception e) {
             e.printStackTrace();

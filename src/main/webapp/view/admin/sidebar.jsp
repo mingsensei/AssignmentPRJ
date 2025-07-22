@@ -46,7 +46,7 @@
     </a>
   </li>
 
-  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/slider') ? 'active' : ''}">
+  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/material') ? 'active' : ''}">
     <a class="nav-link" href="${pageContext.request.contextPath}/admin/material">
       <i class="fas fa-fw fa-images"></i>
       <span>Material</span>
@@ -64,6 +64,13 @@
     <a class="nav-link" href="${pageContext.request.contextPath}/admin/question">
       <i class="fas fa-fw fa-question-circle"></i>
       <span>Question</span>
+    </a>
+  </li>
+
+  <li class="nav-item ${pageContext.request.servletPath.contains('/admin/blog') ? 'active' : ''}">
+    <a class="nav-link" href="${pageContext.request.contextPath}/admin/blog">
+      <i class="fas fa-fw fa-clipboard-list"></i>
+      <span>Blog</span>
     </a>
   </li>
 

@@ -75,7 +75,7 @@
                                                 </button>
                                             </form>
                                             <!-- Manage Lessons -->
-                                            <a href="${pageContext.request.contextPath}/admin/lesson?chapterId=${chapterId}" class="btn btn-sm btn-warning">
+                                            <a href="${pageContext.request.contextPath}/admin/lesson?chapterId=${chapter.id}" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-book"></i> Bài học
                                             </a>
                                         </td>

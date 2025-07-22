@@ -73,7 +73,7 @@
                                             <fmt:formatDate value="${result.submittedAtAsDate}" pattern="HH:mm:ss dd/MM/yyyy" />
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/exam/details?id=${result.id}" class="btn btn-sm btn-info">
+                                            <a href="${pageContext.request.contextPath}/review?examid=${result.id}" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye"></i> Xem chi tiết
                                             </a>
                                         </td>

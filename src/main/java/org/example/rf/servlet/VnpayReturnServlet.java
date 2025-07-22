@@ -46,10 +46,10 @@ public class VnpayReturnServlet extends HttpServlet {
                 String orderId = request.getParameter("vnp_TxnRef");
                 Long orderIdLong = Long.parseLong(orderId);
                 String transactionStatus = request.getParameter("vnp_TransactionStatus");
-
                 orderService.updateOrderStatusByVnpayReturn(transactionStatus, orderIdLong);
+                request.getSession().removeAttribute("cart");
+                response.sendRedirect(request.getContextPath() + "/order/history");
 
-                request.getRequestDispatcher("/order-history.jsp").forward(request, response);
             } else {
                 System.out.println("GD KO HOP LE (invalid signature)");
             }

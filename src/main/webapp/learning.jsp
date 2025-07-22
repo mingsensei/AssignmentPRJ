@@ -100,7 +100,8 @@
                         </c:otherwise>
                     </c:choose>
                     <div class="mt-4 mb-4">
-                        <a href="${pageContext.request.contextPath}/exam/setup/demo" class="btn btn-success px-4 py-2">Làm quiz ôn tập</a>
+                        <a href="${pageContext.request.contextPath}/exam/setup?chapterId=${param.chapterid}" class="btn btn-success px-4 py-2">Làm quiz ôn tập</a>
+                    </div>
                     </div>
                     <c:if test="${not empty lesson}">
                         <jsp:include page="/Comment">

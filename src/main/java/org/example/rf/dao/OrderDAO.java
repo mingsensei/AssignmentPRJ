@@ -6,6 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.example.rf.model.Order;
 import org.example.rf.util.JPAUtil;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderDAO {
@@ -113,7 +114,14 @@ public class OrderDAO {
     public List<Order> findAll() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o ORDER BY o.id DESC", Order.class);
+            // Yêu cầu Hibernate lấy luôn dữ liệu của User và Plan (nếu có)
+            TypedQuery<Order> query = em.createQuery(
+                    "SELECT o FROM Order o " +
+                            "JOIN FETCH o.user " +
+                            "LEFT JOIN FETCH o.plan " + // Lấy cả thông tin plan (nếu có)
+                            "ORDER BY o.id DESC",
+                    Order.class
+            );
             return query.getResultList();
         } finally {
             em.close();
@@ -125,6 +133,37 @@ public class OrderDAO {
         try {
             TypedQuery<Long> query = em.createQuery(
                     "SELECT COUNT(DISTINCT o.user.id) FROM Order o WHERE o.status = 'COMPLETED'",
+                    Long.class
+            );
+            Long count = query.getSingleResult();
+            return count == null ? 0L : count;
+        } finally {
+            em.close();
+        }
+    }
+
+    public BigDecimal calculateTotalRevenueFromPlans() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<BigDecimal> query = em.createQuery(
+                    "SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderType = 'PLAN_PURCHASE' AND o.status = 'Completed'",
+                    BigDecimal.class
+            );
+            BigDecimal total = query.getSingleResult();
+            return total == null ? BigDecimal.ZERO : total;
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Đếm tổng số đơn hàng MUA PLAN đã hoàn thành.
+     */
+    public long countCompletedPlanOrders() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(o.id) FROM Order o WHERE o.orderType = 'PLAN_PURCHASE' AND o.status = 'Completed'",
                     Long.class
             );
             Long count = query.getSingleResult();
