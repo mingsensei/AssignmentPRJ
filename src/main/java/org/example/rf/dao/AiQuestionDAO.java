@@ -109,8 +109,8 @@ public class AiQuestionDAO {
 
         List<QuestionRequestPython> dtos = new ArrayList<>();
         for (Object[] row : results) {
-            String correctAnswer = String.valueOf(row[0]);    // safe cast
-            String studentAnswer = String.valueOf(row[1]);    // fix here!
+            String correctAnswer = String.valueOf(row[0]);
+            String studentAnswer = String.valueOf(row[1]);
             Integer difficulty = (Integer) row[2];
 
             dtos.add(QuestionRequestPython.builder()

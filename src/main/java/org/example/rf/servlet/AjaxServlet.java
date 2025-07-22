@@ -30,16 +30,13 @@ public class AjaxServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String paymentType = req.getParameter("paymentType");
 
-        // Dựa vào paymentType để gọi phương thức xử lý tương ứng
         if ("plan".equals(paymentType)) {
             processPlanPayment(req, resp);
         } else {
-            // Mặc định là xử lý thanh toán khóa học từ giỏ hàng
             processCoursePayment(req, resp);
         }
     }
 
-    // Luồng 1: Xử lý thanh toán cho giỏ hàng (COURSE)
     private void processCoursePayment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
@@ -62,11 +59,9 @@ public class AjaxServlet extends HttpServlet {
             return;
         }
 
-        // Chuyển hướng đến VNPAY
         redirectToVnpay(orderId, BigDecimal.valueOf(amountDouble), req, resp);
     }
 
-    // Luồng 2: Xử lý thanh toán cho PLAN
     private void processPlanPayment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
