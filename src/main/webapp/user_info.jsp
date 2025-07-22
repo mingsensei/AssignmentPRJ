@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_info.css" />
 </head>
 <body>
+
 <%@ include file="header.jsp" %>
 <%
   User user = (User) request.getAttribute("user");

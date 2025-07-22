@@ -12,6 +12,7 @@
 </head>
 <body>
 
+
 <%
     String error = (String) request.getAttribute("error");
     if (error != null) {
@@ -106,5 +107,6 @@
 
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/InputValidator.js"></script>
 </body>
 </html>

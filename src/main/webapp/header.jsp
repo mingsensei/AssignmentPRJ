@@ -10,6 +10,17 @@
         HttpSession session1 = request.getSession(false);
         User user = (session1 != null) ? (User) session1.getAttribute("user") : null;
 %>
+<%
+    String error = (String) request.getAttribute("error");
+    if (error != null) {
+%>
+<div class="alert alert-danger" role="alert" style="margin: 10px;">
+    <%= error %>
+</div>
+<%
+    }
+%>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -148,6 +159,7 @@
         });
     }
 </script>
+<script src="js/InputValidator.js"></script>
 
 <%
     } // đóng if (!skipHeader)
