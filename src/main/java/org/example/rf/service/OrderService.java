@@ -25,22 +25,18 @@ public class OrderService {
         this.userSubscriptionService = new UserSubscriptionService();
     }
 
-    // Tạo mới đơn hàng
     public Order createOrder(Order order) {
         return orderDAO.create(order);
     }
 
-    // Tìm đơn hàng theo ID
     public Order getOrderById(Long id) {
         return orderDAO.findById(id);
     }
 
-    // Cập nhật đơn hàng
     public Order updateOrder(Order order) {
         return orderDAO.update(order);
     }
 
-    // Xóa đơn hàng theo ID
     public void deleteOrder(Long id) {
         orderDAO.delete(id);
     }
@@ -67,7 +63,6 @@ public class OrderService {
     }
 
     public BigDecimal calculateTotalAmount(Long orderId) {
-        // Vì DAO bây giờ tự quản lý EntityManager, logic này vẫn hoạt động đúng
         List<OrderItem> items = orderItemService.getOrderItemsByOrderId(orderId);
         BigDecimal total = BigDecimal.ZERO;
 
@@ -84,7 +79,6 @@ public class OrderService {
         return total;
     }
 
-    // CẬP NHẬT PHƯƠNG THỨC NÀY
     public void updateOrderStatusByVnpayReturn(String transactionStatus, Long orderIdLong) {
         Order order = this.getOrderById(orderIdLong);
         if (order == null) return;
@@ -97,9 +91,7 @@ public class OrderService {
         this.updateOrder(order);
 
         if ("Completed".equals(order.getStatus())) {
-            // === LOGIC PHÂN LOẠI ORDER ===
             if ("COURSE_PURCHASE".equals(order.getOrderType())) {
-                // Xử lý mua khóa học như cũ
                 List<OrderItem> orderItems = orderItemService.getOrderItemsByOrderId(orderIdLong);
                 List<Course> courses = new ArrayList<>();
                 for (OrderItem orderItem : orderItems) {
@@ -108,7 +100,6 @@ public class OrderService {
                 enrollmentService.createEnrollment(order.getUser(), courses);
             }
             else if ("PLAN_PURCHASE".equals(order.getOrderType())) {
-                // Xử lý nâng cấp plan
                 if (order.getPlan() != null) {
                     userSubscriptionService.updateUserScrition(order.getUser(), order.getPlan());
                 }
@@ -116,7 +107,6 @@ public class OrderService {
         }
     }
 
-    // CẬP NHẬT PHƯƠNG THỨC NÀY
     public Long createNewOrderByVnpay(Long userId, double amountDouble, Map<Long, Course> cart) {
         User userFind = userService.getUserById(userId);
         Order order = Order.builder()

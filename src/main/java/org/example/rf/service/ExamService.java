@@ -14,11 +14,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ExamService {
 
@@ -36,8 +37,8 @@ public class ExamService {
 
     public ExamService() {
         this.pythonApiClient = new PythonApiClient();
-        this.em = JPAUtil.getEntityManager();  // Tạo EntityManager 1 lần
-        this.examDAO = new ExamDAO(em);        // Tạo DAO 1 lần dùng chung EntityManager
+        this.em = JPAUtil.getEntityManager();
+        this.examDAO = new ExamDAO(em);
         this.questionDAO = new QuestionDAO(em);
         this.aiQuestionDAO = new AiQuestionDAO(em);
         this.examQuestionDAO = new ExamQuestionDAO(em);
@@ -75,9 +76,19 @@ public class ExamService {
         }
     }
 
-    public List<QuestionResponse> getQuestionsForExam(int numQuestions, Long chapterId, int difficulty, Long studentId, Exam exam) throws IOException {
+    public List<QuestionResponse> getQuestionsForExam(int numQuestions, Long chapterId, int difficulty, Long studentId, Exam exam) throws Exception {
         int firstIndexOrderQuestion = 1;
-        List<Question> questionList = questionDAO.findAllByChapterIdAndDifficulty(exam.getId(), difficulty);
+
+        List<Question> allQuestionList = questionDAO.findAllByChapterIdAndDifficulty(exam.getChapterId(), difficulty);
+        List<Question> questionList = new ArrayList<>();
+
+        int countQuestion = numQuestions;
+        for(Question question : allQuestionList) {
+            if(countQuestion == 0) break;
+            questionList.add(question);
+            countQuestion--;
+        }
+
         AtomicInteger order = new AtomicInteger(firstIndexOrderQuestion);
         questionList.stream()
                 .map(question -> ExamQuestion.builder()
@@ -89,13 +100,10 @@ public class ExamService {
 
         List<AiQuestion> aiQuestionList = new ArrayList<>();
         int numAiQuestions = numQuestions - questionList.size();
-        if(questionList.isEmpty() || numAiQuestions > 0) {
-            aiQuestionList = getGeneratedAiQuestions(chapterId, numAiQuestions, difficulty);
-            if(aiQuestionList == null) {
-                return null;
-            }
-        }
 
+        if(numAiQuestions > 0) {
+            aiQuestionList = getGeneratedAiQuestions(chapterId, numAiQuestions, difficulty);
+        }
         aiQuestionList.forEach(aiQuestionDAO::create);
         aiQuestionList.stream()
                 .map(aiQuestion -> ExamQuestion.builder()
@@ -105,8 +113,30 @@ public class ExamService {
                         .build())
                 .forEach(examQuestionDAO::create);
 
+        //List question cho nguoi dung lam
 
+        return getQuestionResponseListByQuestionListAndAiQuestionList(questionList, aiQuestionList);
+    }
+
+    private List<QuestionResponse> getQuestionResponseListByQuestionListAndAiQuestionList(List<Question> questionList, List<AiQuestion> aiQuestionList) {
         List<QuestionResponse> questionResponseList = new ArrayList<>();
+
+        for (Question question : questionList) {
+            QuestionResponse questionResponse = QuestionResponse.builder()
+                    .id(question.getId())
+                    .content(question.getContent())
+                    .difficulty(question.getDifficulty())
+                    .optionA(question.getOptionA())
+                    .optionB(question.getOptionB())
+                    .optionC(question.getOptionC())
+                    .optionD(question.getOptionD())
+                    .correctOption(question.getCorrectOption())
+                    .explain(question.getExplain())
+                    .build();
+            questionResponseList.add(questionResponse);
+        }
+
+        //Lay toan bo ai question
         for (AiQuestion aiQuestion : aiQuestionList) {
             QuestionResponse questionResponse = QuestionResponse.builder()
                     .id(aiQuestion.getId())
@@ -121,30 +151,13 @@ public class ExamService {
                     .build();
             questionResponseList.add(questionResponse);
         }
-        for (Question question : questionList) {
-            QuestionResponse questionResponse = QuestionResponse.builder()
-                    .id(question.getId())
-                    .content(question.getContent())
-                    .difficulty(question.getDifficulty())
-                    .optionA(question.getOptionA())
-                    .optionB(question.getOptionB())
-                    .optionC(question.getOptionC())
-                    .optionD(question.getOptionD())
-                    .correctOption(question.getCorrectOption())
-                    .explain(question.getExplain())
-                    .build();
-        }
+
         return questionResponseList;
     }
 
     public Exam createNewExam(Long chapterId, Long studentId) {
         // Lấy subscription đang active
-        UserSubscription subscription = subscriptionService
-                .getAllSubscriptions().stream()
-                .filter(s -> s.getUserId().equals(studentId) &&
-                        (s.getEndDate() == null || s.getEndDate().isAfter(LocalDate.now())))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User không có gói dịch vụ hợp lệ"));
+        UserSubscription subscription = subscriptionService.findActiveSub(studentId);
 
         // Lấy plan tương ứng
         Plan plan = planService.getPlanById(subscription.getPlanId());
@@ -156,7 +169,7 @@ public class ExamService {
                 .count();
 
         if (currentAttempts >= plan.getMaxTestAttempts()) {
-            throw new RuntimeException("Limit exam!");
+            throw new RuntimeException("Limit exam! Please buy new plan");
         }
 
         // Cho phép tạo Exam
@@ -178,15 +191,41 @@ public class ExamService {
     }
 
 
-    public List<QuestionResponse> addMoreQuestionForExam(Long examId, int additionalQuestions, Long studentId, Long chapterId) throws IOException {
+    public List<QuestionResponse> addMoreQuestionForExam(Long examId, int additionalQuestions, Long studentId, Long chapterId) throws Exception {
+        //Cap nhat level cua user truoc khi them cau hoi
         int levelValue = updateLevelOfStudent(studentId, chapterId, examId);
-        List<QuestionRequestPython> questionRequestPythons = aiQuestionDAO.findAnsweredQuestionData(examId);
+
+        List<QuestionRequestPython> questionRequestPythonsAiQuestions = aiQuestionDAO.findAnsweredQuestionData(examId);
+        List<QuestionRequestPython> questionRequestPythonsQuestions = questionDAO.findAnsweredQuestionData(examId);
+        List<QuestionRequestPython> questionRequestPythons = Stream.concat(
+                questionRequestPythonsAiQuestions.stream(),
+                questionRequestPythonsQuestions.stream()
+        ).toList();
+
         int firstIndexOrderQuestion = questionRequestPythons.size() + 1;
 
-        List<AiQuestion> aiQuestionList = getGeneratedAiQuestions(chapterId, additionalQuestions, levelValue);
-        aiQuestionList.forEach(aiQuestionDAO::create);
+        List<Question> questionList = getNewQuestionForExam(examId, additionalQuestions, levelValue);
 
         AtomicInteger order = new AtomicInteger(firstIndexOrderQuestion);
+
+        questionList.stream()
+                .map(question -> ExamQuestion.builder()
+                        .questionId(question.getId())
+                        .examId(examId)
+                        .questionOrder(order.getAndIncrement())
+                        .build())
+                .forEach(examQuestionDAO::create);
+
+        List<AiQuestion> aiQuestionList = new ArrayList<>();
+
+        int numAiQuestions = additionalQuestions - questionList.size();
+
+        if(numAiQuestions > 0) {
+            aiQuestionList = getGeneratedAiQuestions(chapterId, numAiQuestions, levelValue);
+        }
+
+        aiQuestionList.forEach(aiQuestionDAO::create);
+
         aiQuestionList.stream()
                 .map(aiQuestion -> ExamQuestion.builder()
                         .aiQuestionId(aiQuestion.getId())
@@ -195,27 +234,32 @@ public class ExamService {
                         .build())
                 .forEach(examQuestionDAO::create);
 
-        List<QuestionResponse> questionResponseList = new ArrayList<>();
-        for (AiQuestion aiQuestion : aiQuestionList) {
-            QuestionResponse questionResponse = QuestionResponse.builder()
-                    .id(aiQuestion.getId())
-                    .content(aiQuestion.getContent())
-                    .difficulty(aiQuestion.getDifficulty())
-                    .optionA(aiQuestion.getOptionA())
-                    .optionB(aiQuestion.getOptionB())
-                    .optionC(aiQuestion.getOptionC())
-                    .optionD(aiQuestion.getOptionD())
-                    .correctOption(aiQuestion.getCorrectOption())
-                    .explain(aiQuestion.getExplain())
-                    .build();
-            questionResponseList.add(questionResponse);
+        return getQuestionResponseListByQuestionListAndAiQuestionList(questionList, aiQuestionList);
+    }
+
+    private List<Question> getNewQuestionForExam(Long examId, int additionalQuestions, int difficulty) {
+        Exam exam = examDAO.findById(examId);
+        if (exam == null) {
+            return new ArrayList<>(); // hoặc ném ra một exception
         }
-        return questionResponseList;
+        Long chapterId = exam.getChapterId();
+
+        // Bước 1: Lấy danh sách ID các câu hỏi đã dùng trong bài thi này
+        List<Long> usedQuestionIds = examQuestionDAO.findUsedQuestionIdsByExamId(examId);
+
+        // Bước 2: Lấy câu hỏi mới, loại trừ các câu đã dùng và giới hạn số lượng
+        return questionDAO.findNewQuestions(chapterId, difficulty, usedQuestionIds, additionalQuestions);
     }
 
     public int updateLevelOfStudent(Long studentId, Long chapterId, Long examId) throws IOException {
-        List<QuestionRequestPython> questionRequestPythons = aiQuestionDAO.findAnsweredQuestionData(examId);
-        int firstIndexOrderQuestion = questionRequestPythons.size();
+
+        List<QuestionRequestPython> questionRequestPythonsAiQuestions = aiQuestionDAO.findAnsweredQuestionData(examId);
+        List<QuestionRequestPython> questionRequestPythonsQuestions = questionDAO.findAnsweredQuestionData(examId);
+        List<QuestionRequestPython> questionRequestPythons = Stream.concat(
+                questionRequestPythonsAiQuestions.stream(),
+                questionRequestPythonsQuestions.stream()
+        ).toList();
+
         JSONArray questionsData = new JSONArray();
         for (QuestionRequestPython question : questionRequestPythons) {
             JSONObject questionData = new JSONObject();
@@ -242,10 +286,10 @@ public class ExamService {
         return levelValue;
     }
 
-    private List<AiQuestion> getGeneratedAiQuestions(Long chapterId, int numAiQuestions, int difficulty) throws IOException {
+    private List<AiQuestion> getGeneratedAiQuestions(Long chapterId, int numAiQuestions, int difficulty) throws Exception {
         List<Material> materialList =  materialDAO.findAllByChapterId(chapterId);
         if(materialList.isEmpty()) {
-            return null;
+            throw new Exception("No material found for chapter id: " + chapterId);
         }
 //            List<String> vectorDbPathList = new ArrayList<>();
 //            for (Material material : materialList) {

@@ -115,4 +115,13 @@ public class ExamQuestionDAO {
                 .getResultList();
     }
 
+    public List<Long> findUsedQuestionIdsByExamId(Long examId) {
+        TypedQuery<Long> query = entityManager.createQuery(
+                "SELECT eq.questionId FROM ExamQuestion eq WHERE eq.examId = :examId AND eq.questionId IS NOT NULL",
+                Long.class
+        );
+        query.setParameter("examId", examId);
+        return query.getResultList();
+    }
+
 }
