@@ -34,4 +34,6 @@ public class Course {
     @Column(name = "category_id")
     private Long categoryId;
 
+    @Column(name = "quantity")
+    private int quantity;
 }

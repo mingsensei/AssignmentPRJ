@@ -58,11 +58,7 @@ public class ExamServlet extends HttpServlet {
         } else if(pathInfo.equals("/submit")) {
             handleExamSubmit(request, response);
         } else if (pathInfo.equals("/addMore")) {
-            try {
-                handleAddMoreQuestionPost(request, response);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            handleAddMoreQuestionPost(request, response);
         }
     }
 
@@ -177,7 +173,7 @@ public class ExamServlet extends HttpServlet {
         return answers;
     }
 
-    private void handleAddMoreQuestionPost(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void handleAddMoreQuestionPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String additionalQuestionsParam = request.getParameter("additionalQuestions");
         int additionalQuestions = Integer.parseInt(additionalQuestionsParam);
         String examIdParam = (String) request.getSession().getAttribute("examId");

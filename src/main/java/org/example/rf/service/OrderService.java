@@ -1,8 +1,12 @@
 package org.example.rf.service;
 
 // Bỏ import EntityManager không cần thiết
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.LockModeType;
 import org.example.rf.dao.OrderDAO;
 import org.example.rf.model.*;
+import org.example.rf.util.JPAUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -79,31 +83,85 @@ public class OrderService {
         return total;
     }
 
-    public void updateOrderStatusByVnpayReturn(String transactionStatus, Long orderIdLong) {
-        Order order = this.getOrderById(orderIdLong);
-        if (order == null) return;
-
+    public void updateOrderStatusByVnpayReturn(String transactionStatus, Long orderId) {
         if ("00".equals(transactionStatus)) {
-            order.setStatus("Completed");
+            boolean success = processSuccessfulPurchase(orderId);
+            if (!success) {
+                System.err.println("CRITICAL: Payment success for Order " + orderId + " but processing failed (out of stock). Manual refund needed.");
+            }
         } else {
-            order.setStatus("Failed");
+            processFailedPurchase(orderId);
         }
-        this.updateOrder(order);
+    }
 
-        if ("Completed".equals(order.getStatus())) {
-            if ("COURSE_PURCHASE".equals(order.getOrderType())) {
-                List<OrderItem> orderItems = orderItemService.getOrderItemsByOrderId(orderIdLong);
-                List<Course> courses = new ArrayList<>();
-                for (OrderItem orderItem : orderItems) {
-                    courses.add(orderItem.getCourse());
-                }
-                enrollmentService.createEnrollment(order.getUser(), courses);
+    private boolean processSuccessfulPurchase(Long orderId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            Order order = em.find(Order.class, orderId);
+            if (order == null) {
+                tx.rollback();
+                return false;
             }
-            else if ("PLAN_PURCHASE".equals(order.getOrderType())) {
-                if (order.getPlan() != null) {
-                    userSubscriptionService.updateUserScrition(order.getUser(), order.getPlan());
+
+            List<OrderItem> orderItems = orderItemService.getOrderItemsByOrderId(orderId);
+
+            for (OrderItem item : orderItems) {
+                Course course = em.find(Course.class, item.getCourse().getId(), LockModeType.PESSIMISTIC_WRITE);
+
+                if (course.getQuantity() <= 0) {
+                    order.setStatus("Failed_OutOfStock");
+                    em.merge(order);
+                    tx.rollback();
+                    return false;
                 }
+
+                course.setQuantity(course.getQuantity() - 1);
+                em.merge(course);
+
+                Enrollment enrollment = Enrollment.builder()
+                        .user(order.getUser())
+                        .course(course)
+                        .enrolledAt(LocalDateTime.now())
+                        .expiresAt(LocalDateTime.now().plusMonths(6))
+                        .build();
+                em.persist(enrollment);
             }
+
+            order.setStatus("Completed");
+            em.merge(order);
+
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            try {
+                Order order = orderDAO.findById(orderId);
+                if (order != null && !"Completed".equals(order.getStatus())) {
+                    order.setStatus("Failed_Exception");
+                    orderDAO.update(order);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    private void processFailedPurchase(Long orderId) {
+        Order order = orderDAO.findById(orderId);
+        if (order != null && !"Completed".equals(order.getStatus())) {
+            order.setStatus("Failed");
+            orderDAO.update(order);
         }
     }
 

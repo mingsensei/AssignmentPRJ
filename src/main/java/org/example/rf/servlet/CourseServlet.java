@@ -99,11 +99,4 @@ public class CourseServlet extends HttpServlet {
 
         req.getRequestDispatcher("/course.jsp").forward(req, resp);
     }
-
-    @Override
-    public void destroy() {
-        chapterService.close();
-        courseService.close();
-        super.destroy();
-    }
 }
