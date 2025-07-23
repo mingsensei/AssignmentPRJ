@@ -6,6 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.example.rf.dto.QuestionRequestPython;
 import org.example.rf.model.AiQuestion;
 import org.example.rf.model.Question;
+import org.example.rf.util.JPAUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +110,8 @@ public class AiQuestionDAO {
 
         List<QuestionRequestPython> dtos = new ArrayList<>();
         for (Object[] row : results) {
-            String correctAnswer = String.valueOf(row[0]);    // safe cast
-            String studentAnswer = String.valueOf(row[1]);    // fix here!
+            String correctAnswer = String.valueOf(row[0]);
+            String studentAnswer = String.valueOf(row[1]);
             Integer difficulty = (Integer) row[2];
 
             dtos.add(QuestionRequestPython.builder()
@@ -123,6 +124,10 @@ public class AiQuestionDAO {
         return dtos;
     }
 
+
+
+
+
     public List<Integer> findAllDifficulties() {
         TypedQuery<Integer> query = entityManager.createQuery(
             "SELECT DISTINCT a.difficulty FROM AiQuestion a ORDER BY a.difficulty ASC", Integer.class);
@@ -130,4 +135,37 @@ public class AiQuestionDAO {
     }
 
 
+    public List<QuestionRequestPython> findAllAiQuestionDataForExam(Long examId) {
+        // 1. Loại bỏ điều kiện "AND eq.student_answer IS NOT NULL"
+        String sql = """
+    SELECT aq.correct_option, eq.student_answer, aq.difficulty
+    FROM exam_question eq
+    JOIN ai_question aq ON eq.ai_question_id = aq.id
+    WHERE eq.exam_id = :examId
+    """;
+
+        List<Object[]> results = entityManager.createNativeQuery(sql)
+                .setParameter("examId", examId)
+                .getResultList();
+
+        List<QuestionRequestPython> dtos = new ArrayList<>();
+        for (Object[] row : results) {
+            String correctAnswer = String.valueOf(row[0]);
+
+            // 2. Xử lý trường hợp student_answer có thể là NULL
+            // Nếu row[1] là null, studentAnswer sẽ là null.
+            // Nếu không, chuyển nó thành String.
+            String studentAnswer = (row[1] != null) ? String.valueOf(row[1]) : null;
+
+            Integer difficulty = (Integer) row[2];
+
+            dtos.add(QuestionRequestPython.builder()
+                    .correctAnswer(correctAnswer)
+                    .studentAnswer(studentAnswer)
+                    .difficulty(difficulty)
+                    .build());
+        }
+
+        return dtos;
+    }
 }

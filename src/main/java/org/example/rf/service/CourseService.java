@@ -12,12 +12,10 @@ import java.util.List;
 
 public class CourseService {
 
-    private final EntityManager em;
     private final CourseDAO courseDAO;
 
     public CourseService() {
-        this.em = JPAUtil.getEntityManager();  // tạo EntityManager 1 lần
-        this.courseDAO = new CourseDAO(em);    // tạo DAO 1 lần dùng chung
+        this.courseDAO = new CourseDAO();    // tạo DAO 1 lần dùng chung
     }
 
     // Tạo course mới
@@ -48,11 +46,6 @@ public class CourseService {
     public ArrayList<Course> getTop4Courses() {
         return new ArrayList<>(courseDAO.getTop4Courses());
     }
-    // Đóng EntityManager khi không cần nữa
-    public void close() {
-        if (em != null && em.isOpen()) {
-            em.close();
-        }
-    }
+
 
 }

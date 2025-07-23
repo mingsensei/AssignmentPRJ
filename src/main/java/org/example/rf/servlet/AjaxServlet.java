@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.rf.config.vnpay.ConfigVnpay;
+import org.example.rf.dao.CourseDAO;
 import org.example.rf.model.Course;
 import org.example.rf.model.Plan;
 import org.example.rf.model.User;
@@ -25,21 +26,18 @@ public class AjaxServlet extends HttpServlet {
 
     private final OrderService orderService = new OrderService();
     private final PlanService planService = new PlanService(); // Khởi tạo PlanService
-
+    private final CourseDAO courseDAO = new CourseDAO();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String paymentType = req.getParameter("paymentType");
 
-        // Dựa vào paymentType để gọi phương thức xử lý tương ứng
         if ("plan".equals(paymentType)) {
             processPlanPayment(req, resp);
         } else {
-            // Mặc định là xử lý thanh toán khóa học từ giỏ hàng
             processCoursePayment(req, resp);
         }
     }
 
-    // Luồng 1: Xử lý thanh toán cho giỏ hàng (COURSE)
     private void processCoursePayment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
@@ -48,13 +46,26 @@ public class AjaxServlet extends HttpServlet {
             return;
         }
 
+        Map<Long, Course> cart = (Map<Long, Course>) session.getAttribute("cart");
+        if (cart == null || cart.isEmpty()) {
+            resp.sendRedirect(req.getContextPath() + "/cart");
+            return;
+        }
+        for (Course courseInCart : cart.values()) {
+            Course freshCourse = courseDAO.findById(courseInCart.getId());
+            if (freshCourse == null || freshCourse.getQuantity() <= 0) {
+                String errorMessage = "Khóa học '" + courseInCart.getName() + "' đã hết chỗ. Vui lòng xóa khỏi giỏ hàng.";
+                resp.sendRedirect(req.getContextPath() + "/cart?error=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8));
+                return;
+            }
+        }
+
         if (req.getParameter("totalBill") == null) {
             resp.sendRedirect("/cart");
             return;
         }
 
         double amountDouble = Double.parseDouble(req.getParameter("totalBill"));
-        Map<Long, Course> cart = (Map<Long, Course>) session.getAttribute("cart");
 
         Long orderId = orderService.createNewOrderByVnpay(user.getId(), amountDouble, cart);
         if (orderId == null || orderId < 1) {
@@ -62,11 +73,9 @@ public class AjaxServlet extends HttpServlet {
             return;
         }
 
-        // Chuyển hướng đến VNPAY
         redirectToVnpay(orderId, BigDecimal.valueOf(amountDouble), req, resp);
     }
 
-    // Luồng 2: Xử lý thanh toán cho PLAN
     private void processPlanPayment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");

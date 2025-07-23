@@ -14,13 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnrollmentService {
-
-    private final EntityManager em;
     private final EnrollmentDAO enrollmentDAO;
 
     public EnrollmentService() {
-        this.em = JPAUtil.getEntityManager();  // tạo EntityManager 1 lần
-        this.enrollmentDAO = new EnrollmentDAO(em); // tạo DAO 1 lần
+        this.enrollmentDAO = new EnrollmentDAO(); // tạo DAO 1 lần
     }
 
     // Tạo mới Enrollment
@@ -55,12 +52,6 @@ public class EnrollmentService {
         return enrollmentDAO.findAll();
     }
 
-    // Đóng EntityManager khi không dùng nữa
-    public void close() {
-        if (em != null && em.isOpen()) {
-            em.close();
-        }
-    }
 
     public ArrayList<Enrollment> findByUserId(long userId){
         return new ArrayList<>(enrollmentDAO.findByUserId(userId));

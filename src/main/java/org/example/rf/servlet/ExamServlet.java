@@ -39,13 +39,11 @@ public class ExamServlet extends HttpServlet {
             handleExamSetupGet(request, response);
         } else if (pathInfo.equals("/setup/demo")) {
             handleExamSetupDemoGet(request, response);
-        }else if (pathInfo.equals("/result")) {
-            examResultGet(request, response);
-        }else if (pathInfo.equals("/history")) {
+        } else if (pathInfo.equals("/history")) {
             handleExamHistoryGet(request, response);
-        }else if(pathInfo.equals("/review")) {
+        } else if(pathInfo.equals("/review")) {
             handleExamHistoryGet(request, response);
-        }else {
+        } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -91,10 +89,12 @@ public class ExamServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
+        //O day phai check time -> vao history de xem list exam -> check thay co 1 cai chua submitted thi chon continue
         if (examId != null) {
             response.getWriter().println("Đang có 1 bài kiểm tra khác, vui lòng quay về làm");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
+
         try {
             int numQuestions = Integer.parseInt(numQuestionsParam);
             Long chapterId = Long.parseLong(chapterIdParam);
@@ -124,16 +124,6 @@ public class ExamServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Lỗi hệ thống khi tạo bài kiểm tra: " + e.getMessage());
         }
-    }
-
-    private void examResultGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long examId = Long.parseLong(request.getParameter("examId"));
-        request.setAttribute("examId", examId);
-        int result = examService.getResultByExamIdAndStudentId(examId);
-        request.setAttribute("result", result);
-        int examSize = examService.getSizeByExamId(examId);
-        request.setAttribute("examSize", examSize);
-        request.getRequestDispatcher("/examResult.jsp").forward(request, response);
     }
 
     private void handleExamSubmit(HttpServletRequest request, HttpServletResponse response)
@@ -184,7 +174,7 @@ public class ExamServlet extends HttpServlet {
     }
 
     private void handleAddMoreQuestionPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String additionalQuestionsParam = (String)request.getParameter("additionalQuestions");
+        String additionalQuestionsParam = request.getParameter("additionalQuestions");
         int additionalQuestions = Integer.parseInt(additionalQuestionsParam);
         String examIdParam = (String) request.getSession().getAttribute("examId");
         Long examId = Long.parseLong(examIdParam);

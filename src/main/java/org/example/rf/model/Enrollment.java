@@ -1,8 +1,7 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +9,9 @@ import java.time.LocalDateTime;
 @Table(name = "enrollment")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Enrollment {
 
     @Id
@@ -29,17 +31,7 @@ public class Enrollment {
     @Column(name = "enrolled_at")
     private LocalDateTime enrolledAt;
 
-    public Enrollment() {}
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
-    public Course getCourse() { return course; }
-    public void setCourse(Course course) { this.course = course; }
-
-    public LocalDateTime getEnrolledAt() { return enrolledAt; }
-    public void setEnrolledAt(LocalDateTime enrolledAt) { this.enrolledAt = enrolledAt; }
 }
