@@ -1,15 +1,13 @@
 package org.example.rf.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "exam_question")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class ExamQuestion {
@@ -34,7 +32,7 @@ public class ExamQuestion {
     @Column(name = "student_answer", length = 1)
     private String studentAnswer;
 
-    public ExamQuestion() {
+    @Column(name = "batchNumber")
+    private int batchNumber;
 
-    }
 }
