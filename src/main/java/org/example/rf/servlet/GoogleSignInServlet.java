@@ -81,23 +81,28 @@ public class GoogleSignInServlet extends HttpServlet {
             String email = payload.getEmail();
             String name = (String) payload.get("name");
 
-            // Tạo hoặc lấy user bằng UserService
-            User user = userService.getUserByGoogleId(googleId);
-            if (user == null) {
-                user = new User();
+            User user = userService.getUserByEmail(email);
 
+            if (user != null) {
+                // Email đã tồn tại -> cập nhật Google ID nếu chưa có
+                if (user.getGoogleId() == null || user.getGoogleId().isEmpty()) {
+                    user.setGoogleId(googleId);
+                    userService.updateUser(user); // đảm bảo bạn có phương thức này
+                }
+            } else {
+                // Email chưa tồn tại -> tạo user mới
+                user = new User();
                 user.setGoogleId(googleId);
                 user.setEmail(email);
                 user.setUserName(name);
                 user.setRole(User.Role.STUDENT);
                 user.setPassword("GOOGLE_USER"); // placeholder
-
                 userService.createUser(user);
             }
 
+            // Đăng nhập thành công
             request.getSession().setAttribute("user", user);
 
-            // Trả về JSON
             JsonObject result = new JsonObject();
             result.addProperty("status", "success");
             result.addProperty("email", email);
@@ -110,6 +115,7 @@ public class GoogleSignInServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid ID token");
         }
     }
+
 
     @Override
     public void destroy() {
