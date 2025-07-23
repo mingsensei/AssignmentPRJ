@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.rf.config.vnpay.ConfigVnpay;
+import org.example.rf.dao.CourseDAO;
 import org.example.rf.model.Course;
 import org.example.rf.model.Plan;
 import org.example.rf.model.User;
@@ -25,7 +26,7 @@ public class AjaxServlet extends HttpServlet {
 
     private final OrderService orderService = new OrderService();
     private final PlanService planService = new PlanService(); // Khởi tạo PlanService
-
+    private final CourseDAO courseDAO = new CourseDAO();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String paymentType = req.getParameter("paymentType");
@@ -45,13 +46,26 @@ public class AjaxServlet extends HttpServlet {
             return;
         }
 
+        Map<Long, Course> cart = (Map<Long, Course>) session.getAttribute("cart");
+        if (cart == null || cart.isEmpty()) {
+            resp.sendRedirect(req.getContextPath() + "/cart");
+            return;
+        }
+        for (Course courseInCart : cart.values()) {
+            Course freshCourse = courseDAO.findById(courseInCart.getId());
+            if (freshCourse == null || freshCourse.getQuantity() <= 0) {
+                String errorMessage = "Khóa học '" + courseInCart.getName() + "' đã hết chỗ. Vui lòng xóa khỏi giỏ hàng.";
+                resp.sendRedirect(req.getContextPath() + "/cart?error=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8));
+                return;
+            }
+        }
+
         if (req.getParameter("totalBill") == null) {
             resp.sendRedirect("/cart");
             return;
         }
 
         double amountDouble = Double.parseDouble(req.getParameter("totalBill"));
-        Map<Long, Course> cart = (Map<Long, Course>) session.getAttribute("cart");
 
         Long orderId = orderService.createNewOrderByVnpay(user.getId(), amountDouble, cart);
         if (orderId == null || orderId < 1) {

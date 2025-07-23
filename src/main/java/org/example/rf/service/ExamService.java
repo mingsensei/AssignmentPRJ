@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -191,12 +192,12 @@ public class ExamService {
     }
 
 
-    public List<QuestionResponse> addMoreQuestionForExam(Long examId, int additionalQuestions, Long studentId, Long chapterId) throws Exception {
+    public List<QuestionResponse> addMoreQuestionForExam(Long examId, int additionalQuestions, Long studentId, Long chapterId) throws IOException {
         //Cap nhat level cua user truoc khi them cau hoi
         int levelValue = updateLevelOfStudent(studentId, chapterId, examId);
 
-        List<QuestionRequestPython> questionRequestPythonsAiQuestions = aiQuestionDAO.findAnsweredQuestionData(examId);
-        List<QuestionRequestPython> questionRequestPythonsQuestions = questionDAO.findAnsweredQuestionData(examId);
+        List<QuestionRequestPython> questionRequestPythonsAiQuestions = aiQuestionDAO.findAllAiQuestionDataForExam(examId);
+        List<QuestionRequestPython> questionRequestPythonsQuestions = questionDAO.findAllQuestionDataForExam(examId);
         List<QuestionRequestPython> questionRequestPythons = Stream.concat(
                 questionRequestPythonsAiQuestions.stream(),
                 questionRequestPythonsQuestions.stream()
@@ -252,22 +253,36 @@ public class ExamService {
     }
 
     public int updateLevelOfStudent(Long studentId, Long chapterId, Long examId) throws IOException {
+        // Bước 1: Lấy tất cả dữ liệu câu hỏi từ DAO
+        List<QuestionRequestPython> questionRequestPythonsAiQuestions = aiQuestionDAO.findAllAiQuestionDataForExam(examId);
+        List<QuestionRequestPython> questionRequestPythonsQuestions = questionDAO.findAllQuestionDataForExam(examId);
 
-        List<QuestionRequestPython> questionRequestPythonsAiQuestions = aiQuestionDAO.findAnsweredQuestionData(examId);
-        List<QuestionRequestPython> questionRequestPythonsQuestions = questionDAO.findAnsweredQuestionData(examId);
-        List<QuestionRequestPython> questionRequestPythons = Stream.concat(
+        // Gộp hai danh sách lại
+        List<QuestionRequestPython> allQuestions = Stream.concat(
                 questionRequestPythonsAiQuestions.stream(),
                 questionRequestPythonsQuestions.stream()
         ).toList();
 
+        // Nếu bài thi không có câu hỏi nào, dừng xử lý
+        if (allQuestions.isEmpty()) {
+            System.out.println("Cảnh báo: Không có câu hỏi nào trong bài thi ID: " + examId);
+            return 0;
+        }
+
+        // Bước 2: Xây dựng payload JSON
         JSONArray questionsData = new JSONArray();
-        for (QuestionRequestPython question : questionRequestPythons) {
+        for (QuestionRequestPython question : allQuestions) {
             JSONObject questionData = new JSONObject();
             questionData.put("difficulty", question.getDifficulty());
-            questionData.put("isCorrect", question.getStudentAnswer().equals(question.getCorrectAnswer()));
+
+            // Dùng Objects.equals() để so sánh an toàn, tự động xử lý null
+            boolean isCorrect = Objects.equals(question.getStudentAnswer(), question.getCorrectAnswer());
+
+            questionData.put("isCorrect", isCorrect);
             questionsData.put(questionData);
         }
 
+        // Bước 3: Gọi API Python và cập nhật level
         String thetaJson = pythonApiClient.callPythonAPIForTheta(questionsData.toString());
         JSONObject thetaResponse = new JSONObject(thetaJson);
         int levelValue = thetaResponse.getInt("level");
@@ -277,19 +292,20 @@ public class ExamService {
             existingLevel.setLevel(levelValue);
             levelDAO.update(existingLevel);
         } else {
-            Level level = new Level();
-            level.setStudentId(studentId);
-            level.setChapterId(chapterId);
-            level.setLevel(levelValue);
-            levelDAO.create(level);
+            Level newLevel = new Level();
+            newLevel.setStudentId(studentId);
+            newLevel.setChapterId(chapterId);
+            newLevel.setLevel(levelValue);
+            levelDAO.create(newLevel);
         }
+
         return levelValue;
     }
 
-    private List<AiQuestion> getGeneratedAiQuestions(Long chapterId, int numAiQuestions, int difficulty) throws Exception {
+    private List<AiQuestion> getGeneratedAiQuestions(Long chapterId, int numAiQuestions, int difficulty) throws IOException {
         List<Material> materialList =  materialDAO.findAllByChapterId(chapterId);
         if(materialList.isEmpty()) {
-            throw new Exception("No material found for chapter id: " + chapterId);
+            return null;
         }
 //            List<String> vectorDbPathList = new ArrayList<>();
 //            for (Material material : materialList) {
@@ -323,4 +339,6 @@ public class ExamService {
         // Phương thức này chỉ cần gọi tới DAO để lấy dữ liệu
         return examDAO.findByStudentId(studentId);
     }
+
+
 }
