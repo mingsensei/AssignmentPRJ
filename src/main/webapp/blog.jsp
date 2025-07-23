@@ -64,6 +64,16 @@
             .comment-box textarea {
                 font-family: monospace;
             }
+            .blog-description {
+                background-color: #e0f2fe;
+                border-left: 5px solid #0284c7;
+                padding: 1rem;
+                font-size: 1.1rem;
+                border-radius: 6px;
+                margin: 1rem 0;
+                color: #0f172a;
+            }
+
         </style>
     </head>
     <body>
@@ -107,19 +117,25 @@
                     <!-- Blog Meta -->
                     <div class="d-flex align-items-center flex-wrap mb-4 text-muted small gap-3">
                         <c:forEach var="blogUser" items="${blogUsers}">
-                            <div class="d-flex align-items-center gap-2">
-                                <img src="https://i.pravatar.cc/48" class="rounded-circle" width="40" height="40" alt="Author">
-                                <div>
-                                    <div class="fw-semibold text-dark">${blogUser.user.userName}</div>
-                                    <div>${blogUser.blogRole}</div>
+                            <a href="${pageContext.request.contextPath}/user-info?id=${blogUser.id}">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="${(user.profilePic!=null)?user.profilePic:"https://i.pravatar.cc/150"}" class="rounded-circle" width="40" height="40" alt="Author">
+                                    <div>
+                                        <div class="fw-semibold text-dark">${blogUser.user.userName}</div>
+                                        <div>${blogUser.blogRole}</div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </c:forEach>
                     </div>
                     <div class="ms-auto">${blog.createdAt}</div>
                     <img src="${(blog.thumbnail==null)?"https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png":blog.thumbnail}" class="col-md-12" alt="Blog Thumbnail">
-                    <p>${blog.description}</p>
-                    <p>${blog.viewCount}</p>
+                    <c:if test="${not empty blog.description}">
+                        <div class="blog-description">
+                            ${blog.description}
+                        </div>
+                    </c:if>
+
                     <!-- Blog Content -->
                     <div class="markdown-style" data-raw="${fn:escapeXml(blog.content)}"></div>
                     <div id="comment">
@@ -128,7 +144,7 @@
                             <jsp:param name="id" value="${blog.id}" />
                         </jsp:include>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -178,7 +194,7 @@
                         margin = '1rem';
                     if (tag === 'h3')
                         margin = '2rem';
-                    toc.innerHTML += '<li style="margin-left: '+margin+'"><a href="#'+anchor+'">'+text+'</a></li>';
+                    toc.innerHTML += '<li style="margin-left: ' + margin + '"><a href="#' + anchor + '">' + text + '</a></li>';
                 });
                 toc.innerHTML += `<li style="margin-left: 0"><a href="#comment">Comment</a></li>`;
                 toc.innerHTML += '</ul>';

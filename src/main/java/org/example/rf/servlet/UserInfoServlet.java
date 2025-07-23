@@ -8,13 +8,13 @@ import org.example.rf.model.Plan;
 import org.example.rf.model.User;
 import org.example.rf.model.UserSubscription;
 import org.example.rf.service.*;
-
 import org.example.rf.util.InputValidator;
 
 import java.io.IOException;
 
 @WebServlet("/user-info")
 public class UserInfoServlet extends HttpServlet {
+
     private final PlanService planService = new PlanService();
     private final UserSubscriptionService subscriptionService = new UserSubscriptionService();
     private final TestAttemptService testAttemptService = new TestAttemptService();
@@ -35,26 +35,12 @@ public class UserInfoServlet extends HttpServlet {
             return;
         }
 
-        User user = (User) session.getAttribute("user");
-        request.setAttribute("user", user);
+        User loggedInUser = (User) session.getAttribute("user");
 
-        UserSubscription currentSub = subscriptionService.findActiveSub(user.getId());
+        String userIdParam = request.getParameter("id");
+        Long targetUserId = userIdParam != null ? Long.valueOf(userIdParam) : loggedInUser.getId();
 
-        if (currentSub != null) {
-            Plan currentPlan = planService.getPlanById(currentSub.getPlanId());
-            long examCount = testAttemptService.getAllTestAttempts().stream()
-                    .filter(t -> t.getUserId().equals(user.getId()))
-                    .count();
-            long postCount = userPostService.getAllPosts().stream()
-                    .filter(p -> p.getUserId().equals(user.getId()))
-                    .count();
-
-            request.setAttribute("currentPlan", currentPlan);
-            request.setAttribute("currentSubscription", currentSub);
-            request.setAttribute("examCount", examCount);
-            request.setAttribute("postCount", postCount);
-        }
-
+        prepareUserInfoPage(request, loggedInUser, targetUserId);
         request.getRequestDispatcher("user_info.jsp").forward(request, response);
     }
 
@@ -68,12 +54,27 @@ public class UserInfoServlet extends HttpServlet {
             return;
         }
 
-        User user = (User) session.getAttribute("user");
+        User loggedInUser = (User) session.getAttribute("user");
+        String idParam = request.getParameter("id");
+        long targetId = loggedInUser.getId();
+        if (idParam != null) {
+            try {
+                targetId = Long.parseLong(idParam);
+            } catch (NumberFormatException e) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID");
+                return;
+            }
+        }
+
+        if (targetId != loggedInUser.getId()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot update another user's information.");
+            return;
+        }
 
         if ("updateInfo".equals(action)) {
-            updateUserInfo(request, response, user);
+            updateUserInfo(request, response, loggedInUser);
         } else if ("updatePassword".equals(action)) {
-            updatePassword(request, response, user);
+            updatePassword(request, response, loggedInUser);
         } else if ("logout".equals(action)) {
             response.sendRedirect("logout");
         } else {
@@ -88,25 +89,29 @@ public class UserInfoServlet extends HttpServlet {
 
         if (!userService.checkPassword(user.getId(), currentPass)) {
             request.setAttribute("error", "Mật khẩu hiện tại không đúng.");
-            request.getRequestDispatcher("/user_info.jsp").forward(request, response);
+            prepareUserInfoPage(request, user, user.getId());
+            request.getRequestDispatcher("user_info.jsp").forward(request, response);
             return;
         }
 
         if (InputValidator.isEmpty(newPass) || !InputValidator.match(newPass, confirmPass)) {
             request.setAttribute("error", "Mật khẩu mới và xác nhận không khớp.");
-            request.getRequestDispatcher("/user_info.jsp").forward(request, response);
+            prepareUserInfoPage(request, user, user.getId());
+            request.getRequestDispatcher("user_info.jsp").forward(request, response);
             return;
         }
 
         if (!InputValidator.isStrongPassword(newPass)) {
             request.setAttribute("error", "Mật khẩu quá yếu. Cần ít nhất 8 ký tự, gồm chữ hoa, thường, số và ký tự đặc biệt.");
-            request.getRequestDispatcher("/user_info.jsp").forward(request, response);
+            prepareUserInfoPage(request, user, user.getId());
+            request.getRequestDispatcher("user_info.jsp").forward(request, response);
             return;
         }
 
         userService.updatePassword(user.getId(), newPass);
         request.setAttribute("message", "Cập nhật mật khẩu thành công.");
-        request.getRequestDispatcher("/user_info.jsp").forward(request, response);
+        prepareUserInfoPage(request, user, user.getId());
+        request.getRequestDispatcher("user_info.jsp").forward(request, response);
     }
 
     private void updateUserInfo(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
@@ -114,34 +119,34 @@ public class UserInfoServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String phone = request.getParameter("phone");
         String userName = request.getParameter("userName");
+        String profilePic = request.getParameter("profilePic");
 
-        // Validate
         if (InputValidator.isEmpty(firstName) || InputValidator.isEmpty(lastName) || InputValidator.isEmpty(userName)) {
             request.setAttribute("error", "Họ, tên và tên người dùng không được để trống.");
-            request.setAttribute("user", user);
+            prepareUserInfoPage(request, user, user.getId());
             request.getRequestDispatcher("user_info.jsp").forward(request, response);
             return;
         }
 
         if (!InputValidator.isAlphabetic(firstName) || !InputValidator.isAlphabetic(lastName)) {
             request.setAttribute("error", "Họ và tên chỉ được chứa chữ cái.");
-            request.setAttribute("user", user);
+            prepareUserInfoPage(request, user, user.getId());
             request.getRequestDispatcher("user_info.jsp").forward(request, response);
             return;
         }
 
         if (!InputValidator.isValidPhone(phone)) {
             request.setAttribute("error", "Số điện thoại không hợp lệ.");
-            request.setAttribute("user", user);
+            prepareUserInfoPage(request, user, user.getId());
             request.getRequestDispatcher("user_info.jsp").forward(request, response);
             return;
         }
 
-        // Format lại tên
         user.setLastName(InputValidator.formatName(lastName));
         user.setFirstName(InputValidator.formatName(firstName));
         user.setPhone(phone);
         user.setUserName(userName);
+        user.setProfilePic(profilePic);
 
         boolean success = userService.updateUser(user);
 
@@ -152,7 +157,32 @@ public class UserInfoServlet extends HttpServlet {
             request.setAttribute("error", "Cập nhật thông tin thất bại.");
         }
 
-        request.setAttribute("user", user);
+        prepareUserInfoPage(request, user, user.getId());
         request.getRequestDispatcher("user_info.jsp").forward(request, response);
     }
-}
+
+    private void prepareUserInfoPage(HttpServletRequest request, User loggedInUser, Long targetUserId) {
+        User targetUser = userService.getUserById(targetUserId);
+        request.setAttribute("user", targetUser);
+        boolean isOwner = targetUser.getId().equals(loggedInUser.getId());
+        request.setAttribute("isOwner", isOwner);
+
+        if (isOwner) {
+            UserSubscription currentSub = subscriptionService.findActiveSub(loggedInUser.getId());
+            if (currentSub != null) {
+                Plan currentPlan = planService.getPlanById(currentSub.getPlanId());
+                long examCount = testAttemptService.getAllTestAttempts().stream()
+                        .filter(t -> t.getUserId().equals(loggedInUser.getId()))
+                        .count();
+                long postCount = userPostService.getAllPosts().stream()
+                        .filter(p -> p.getUserId().equals(loggedInUser.getId()))
+                        .count();
+
+                request.setAttribute("currentPlan", currentPlan);
+                request.setAttribute("currentSubscription", currentSub);
+                request.setAttribute("examCount", examCount);
+                request.setAttribute("postCount", postCount);
+            }
+        }
+    }
+} 

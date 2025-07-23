@@ -94,9 +94,13 @@
         <button type="submit">Post</button>
         <c:forEach var="comment" items="${comments}">
             <div class="comment">
-                <img class="avatar" src="https://i.pravatar.cc/48" alt="User"/>
+                <a href="${pageContext.request.contextPath}/user-info?id=${comment.user.id}">
+                    <img class="avatar" src="${(comment.user.profilePic!=null)?comment.user.profilePic:"https://i.pravatar.cc/48"}">
+                </a>
                 <div class="comment-content">
-                    <strong>${comment.user.userName}</strong>
+                    <a href="${pageContext.request.contextPath}/user-info?id=${comment.user.id}">
+                        <strong>${comment.user.userName}</strong>
+                    </a>
                     <p style="word-break: break-word">${comment.content}</p>
                     <small>${comment.createdAt}</small>
                 </div>
