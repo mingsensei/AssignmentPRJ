@@ -61,6 +61,11 @@ public class User {
     @Column(name = "google_id", length = 100, unique = true)
     private String googleId;
 
+    @Getter
+    @Setter
+    @Column(name = "profile_pic", length = 255)
+    private String profilePic;
+    
 
     public User() {}
 

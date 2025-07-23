@@ -90,7 +90,7 @@
                             <c:when test="${sessionScope.currentPlan.name == 'Personal'}">
                                 <a href="#" class="btn plan-personal user-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                                    style="background-color: #ffc107; color: black;">
-                                    👤
+                                    <img class="avatar" src="${(user.profilePic!=null)?user.profilePic:"https://i.pravatar.cc/48"}">
                                     <c:choose>
                                         <c:when test="${not empty user.firstName and not empty user.lastName}">${user.firstName} ${user.lastName}</c:when>
                                         <c:when test="${not empty user.firstName}">${user.firstName}</c:when>
@@ -102,7 +102,7 @@
                             <c:when test="${sessionScope.currentPlan.name == 'Ultimate'}">
                                 <a href="#" class="btn plan-ultimate user-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                                    style="background-color: #6f42c1; color: white;">
-                                    👤
+                                    <img class="avatar" src="${(user.profilePic!=null)?user.profilePic:"https://i.pravatar.cc/48"}">
                                     <c:choose>
                                         <c:when test="${not empty user.firstName and not empty user.lastName}">${user.firstName} ${user.lastName}</c:when>
                                         <c:when test="${not empty user.firstName}">${user.firstName}</c:when>
@@ -113,7 +113,7 @@
                             </c:when>
                             <c:otherwise>
                                 <a href="#" class="btn plan-free user-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    👤
+                                    <img class="avatar" src="${(user.profilePic!=null)?user.profilePic:"https://i.pravatar.cc/48"}">
                                     <c:choose>
                                         <c:when test="${not empty user.firstName and not empty user.lastName}">${user.firstName} ${user.lastName}</c:when>
                                         <c:when test="${not empty user.firstName}">${user.firstName}</c:when>
