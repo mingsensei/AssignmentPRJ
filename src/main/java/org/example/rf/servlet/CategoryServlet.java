@@ -6,19 +6,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.rf.model.Category;
+import org.example.rf.model.Course;
 import org.example.rf.service.CategoryService;
+import org.example.rf.service.CourseService;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/category")
 public class CategoryServlet extends HttpServlet {
+    private final CourseService courseService = new CourseService();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CategoryService categoryService = new CategoryService();
-        List<Category> categoryList = categoryService.getAllCategories(); // Lấy dữ liệu từ DB
+
+        List<Course> categoryList = courseService.getAllCourses(); 
         request.setAttribute("categoryList", categoryList);
 
-        List<Category> featuredCourses = categoryService.getTop4Courses(); // Lấy 4 khoá học đầu tiên
+        List<Course> featuredCourses = courseService.getTop4Courses();
         request.setAttribute("url", request.getRequestURL().toString());
         request.setAttribute("featuredCourses", featuredCourses);
         request.getRequestDispatcher("category.jsp").forward(request, response);
